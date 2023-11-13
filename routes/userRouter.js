@@ -44,9 +44,9 @@ const {
     updateAddress,
     deleteAddress,
     emailOTP,
-    sortProducts,
     categoryPage,
     walletLoad,
+    filterCategory
 } = require("../controllers/userController");
 
 //-------user athuentication----
@@ -91,9 +91,7 @@ userRouter.get("/viewProduct", viewProduct);
 
 userRouter.get("/allProducts", allProducts);
 
-userRouter.post("/allProducts",allProducts)
-
-userRouter.get("/sortProducts", sortProducts);
+userRouter.get("/filterCategory",filterCategory)
 
 userRouter.post("/search", searchProducts);
 

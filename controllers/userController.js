@@ -466,45 +466,32 @@ const viewProduct = asyncHandler(async (req, res) => {
 //---------view all products-------
 const allProducts = asyncHandler(async (req, res) => {
     try {
-        const checkedCategoryNames = req.body.checkedValues || []; // Ensure checkedValues is an array
-        console.log("Categories selected:", checkedCategoryNames);
+        const categoryId = req.query.id;
         const page = parseInt(req.query.page) || 1;
-        const perPage = 9;
+        const perPage = 6;
         const totalProducts = await Product.countDocuments({ is_listed: true });
         const totalPages = Math.ceil(totalProducts / perPage);
-        const categories = await Category.find();
-
+        const category = await Category.find();
+        //console.log("category",category);
         const user = await User.findById(req.session.userId);
         const userCart = await Cart.findOne({ userId: user ? user._id : null });
-
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
 
-        let products;
+        const products = await Product.find({ is_listed: true })
+            .skip((page - 1) * perPage)
+            .limit(perPage);
 
-        if (checkedCategoryNames.length === 0) {
-            products = await Product.find({
-                is_listed: true,
-                category: { $in: categories.filter((category) => category.status).map((category) => category._id) },
-            })
-                .skip((page - 1) * perPage)
-                .limit(perPage);
-        } else {
-            const selectedCategories = await Category.find({ name: { $in: checkedCategoryNames } }, "_id");
-            const categoryIds = selectedCategories.map((category) => category._id);
-            products = await Product.find({ category: { $in: categoryIds }, is_listed: true })
-                .populate("category")
-                .skip((page - 1) * perPage)
-                .limit(perPage);
-             
-        }
-        // console.log("products",products);
+        //console.log("products", products);
+
         res.render("all-Products", {
             user,
             products,
             currentPage: page,
             totalPages,
             cartCount,
+            category,
+            categoryId,
         });
     } catch (error) {
         console.error(error);
@@ -512,83 +499,39 @@ const allProducts = asyncHandler(async (req, res) => {
     }
 });
 
-//categories
-
-// const categories = async (req, res) => {
-//     try {
-//         const checkedCategoryNames = req.body.checkedValues || []; // Ensure checkedValues is an array
-//         console.log("Categories selected:", checkedCategoryNames);
-
-//         const page = parseInt(req.query.page) || 1;
-//         const perPage = 9;
-
-//         const totalProducts = await Product.countDocuments({ is_listed: true });
-//         const totalPages = Math.ceil(totalProducts / perPage);
-
-//         const categories = await Category.find();
-
-//         const user = await User.findById(req.session.userId);
-//         const userCart = await Cart.findOne({ userId: user._id });
-//         const userCartCount = userCart.products.reduce((acc, product) => acc + product.quantity, 0);
-//         const cartCount = userCartCount;
-
-//         let products;
-
-//         if (checkedCategoryNames.length === 0) {
-//             console.log("start3");
-//             products = await Product.find({
-//                 is_listed: true,
-//                 category: { $in: categories.filter((category) => category.status).map((category) => category._id) },
-//             })
-//                 .skip((page - 1) * perPage)
-//                 .limit(perPage);
-//         } else {
-//             console.log("start1");
-//             const selectedCategories = await Category.find({ name: { $in: checkedCategoryNames } }, "_id");
-//             const categoryIds = selectedCategories.map((category) => category._id);
-//             products = await Product.find({ category: { $in: categoryIds }, is_listed: true })
-//                 .populate("category")
-//                 .skip((page - 1) * perPage)
-//                 .limit(perPage);
-//         }
-//         console.log("products",products);
-//         res.render("all-Products", {
-//             user,
-//             products,
-//             currentPage: page,
-//             totalPages,
-//             cartCount,
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Server Error" });
-//     }
-// };
-
-const sortProducts = asyncHandler(async (req, res) => {
+const filterCategory = asyncHandler(async (req, res) => {
     try {
-        let sortQuery = {};
-        const sortBy = req.query.sort;
-        console.log("sort", sortBy);
-        if (sortBy === "lowToHigh") {
-            sortQuery = { salePrice: 1 };
-        } else if (sortBy === "highToLow") {
-            sortQuery = { salePrice: -1 };
-        } else if (sortBy === "newestArrivals") {
-            sortQuery = { date: -1 };
-        } else {
-            sortQuery = {};
+        const categoryId = req.query.id;
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 6;
+
+        const totalProducts = await Product.countDocuments({ is_listed: true, category: categoryId });
+        const totalPages = Math.ceil(totalProducts / perPage);
+        const category = await Category.find();
+        const user = await User.findById(req.session.userId);
+        const userCart = await Cart.findOne({ userId: user ? user._id : null });
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
+        const cartCount = userCartCount;
+
+        const products = await Product.find({ is_listed: true, category: categoryId })
+            .skip((page - 1) * perPage)
+            .limit(perPage);
+        // console.log("products",products);
+        if (products) {
+            res.render("all-Products", {
+                user,
+                products,
+                currentPage: page,
+                totalPages,
+                cartCount,
+                category,
+                categoryId,
+            });
         }
-        console.log(sortQuery);
-        const categories = await Category.find();
-        const products = await Product.find({
-            is_listed: true,
-            category: { $in: categories.filter((category) => category.status) },
-        }).sort(sortQuery);
-        //console.log('productlist',products);
-        res.json({ products });
     } catch (error) {
+        // Handle the error
         console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
@@ -937,7 +880,7 @@ module.exports = {
     updateAddress,
     deleteAddress,
     emailOTP,
-    sortProducts,
     categoryPage,
     walletLoad,
+    filterCategory,
 };

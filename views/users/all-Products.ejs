@@ -323,46 +323,22 @@
                                 </div>
                                 <div id="filter-collection" class="accordion-collapse collapse show">
                                     <ul class="filter-lists list-unstyled mb-0">
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                                <input type="checkbox" name="category" value="MOBILE"/>
-                                                <span class="filter-checkbox rounded me-2"></span>
-                                                <span class="filter-text">MOBILE</span>
-                                            </label>
-                                        </li>
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                                <input type="checkbox" name="category" value="LAPTOP" />
-                                                <span class="filter-checkbox rounded me-2"></span>
-                                                LAPTOP
-                                            </label>
-                                        </li>
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                                <input type="checkbox" name="category" value="WATCH" />
-                                                <span class="filter-checkbox rounded me-2"></span>
-                                                WATCH
-                                            </label>
-                                        </li>
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                                <input type="checkbox" name="category" value="AIRPODS" />
-                                                <span class="filter-checkbox rounded me-2"></span>
-                                                AIRPODS
-                                            </label>
-                                        </li>
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                                <input type="checkbox" name="category" value="AIRPODS" />
-                                                <span class="filter-checkbox rounded me-2"></span>
-                                                IPAD
-                                            </label>
-                                        </li>
+                                        <% if(category.length){ %>
+                                            <% for(let i=0; i<category.length;i++){%>
+                                                <li class="filter-item">
+                                                    <label class="filter-label">
+                                                <li><a href="/user/filterCategory?id=<%-category[i]._id%>"
+                                                        class="text_14"><%-category[i].name%></a></li>
+                                                </label>
+                                                </li>
+                                                <%} %>
+                                                    <% } %>
                                     </ul>
                                 </div>
+
                             </div>
 
-                            <div class="filter-widget">
+                            <!-- <div class="filter-widget">
                                 <div class="filter-header faq-heading heading_18 d-flex align-items-center justify-content-between border-bottom"
                                     data-bs-toggle="collapse" data-bs-target="#filter-availability">
                                     SORT
@@ -394,7 +370,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
@@ -511,8 +487,7 @@
                                                         <% } %>
 
                                                             <% if (currentPage < totalPages) { %>
-                                                                <a href="?page=<%= currentPage + 1 %>"
-                                                                    class="next">Next</a>
+                                                                <a href="?page=<%= currentPage + 1 %>&id=<%= categoryId %>" class="next">Next</a>
                                                                 <% } else { %>
                                                                     <% } %>
                                                 </div>
@@ -866,187 +841,6 @@
         });
 
     </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const checkboxes = document.querySelectorAll('input[name="category"]');
-
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', function () {
-                const checkedValues = Array.from(checkboxes)
-                    .filter(checkbox => checkbox.checked)
-                    .map(checkbox => checkbox.value);
-
-                // Send the checked values to the server using Fetch API
-                fetch('/user/allProducts', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ checkedValues }),
-                })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error(error));
-            });
-        });
-    });
-</script>
-    <!-- <script>
-        const checkboxes = document.querySelectorAll('input[name="category"]');
-
-        function sendDataToServer(data) {
-            fetch('/user/categories', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ checkedValues: data }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Response from server:', data.products);
-                    displayCategoryProducts(data.products);
-
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        function handleCheckboxChange() {
-            const checkedValues = Array.from(checkboxes)
-                .filter(checkbox => checkbox.checked)
-                .map(checkbox => checkbox.parentElement.textContent.trim());
-
-            sendDataToServer(checkedValues);
-        }
-
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', handleCheckboxChange);
-        });
-
-        function displayCategoryProducts(products) {
-            const productArea = document.getElementById('productArea');
-            productArea.innerHTML = ''; // Clear the product area
-
-            if (products.length === 0) {
-                productArea.innerHTML = `
-            <div class="col-lg-12 col-md-12 col-12 text-center mt-48" data-aos="fade-up" data-aos-duration="700">
-                        
-                        <lord-icon
-                        src="https://cdn.lordicon.com/yxczfiyc.json"
-                        trigger="hover"
-                        colors="primary:#000000"
-                        style="width:100px;height:100px">
-                    </lord-icon>
-                    <h2>NO PRODUCT FOUND</h2>
-                    </div>`;
-                // Display message for no products found
-            } else {
-                products.forEach(product => {
-                    const productHTML = `
-                       <div class="col-lg-4 col-md-6 col-6" data-aos="fade-up" data-aos-duration="700">
-                           <div class="product-card">
-                               <div class="product-card-img">
-                                   <a class="hover-switch" href="/user/viewProduct/?id=${product._id}">
-                                       <img class="primary-img" style="height: 215px; width: 175px;" src="admin-assets/imgs/products/${product.images[1]}" alt="product-img">
-                                   </a>
-                                   <div class="product-card-action product-card-action-2 justify-content-center">
-                                       <!-- Your action buttons and SVGs here -->
-                                   <!-- </div>
-                               </div>
-                               <div class="product-card-details">
-                                   <h3 class="product-card-title">
-                                       <a href="">${product.productName}</a>
-                                   </h3>
-                                   <div class="product-card-price">
-                                       <span class="card-price-regular">${product.salePrice}</span>
-                                       <span class="card-price-compare text-decoration-line-through">${product.regularPrice}</span>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>`;
-
-                    productArea.insertAdjacentHTML('beforeend', productHTML);
-                });
-            }
-        }
-
-
-    </script> --> 
-    
-    <script>
-        function sortProducts(sortingParameter) {
-            fetch(`/user/sortProducts?sort=${sortingParameter}`, { method: 'GET' })
-                .then(response => response.json())
-                .then(data => {
-                    displayCategoryProducts(data.products);
-                    console.log('productlist', data.products);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-        // Add event listeners to your sorting elements
-        document.querySelectorAll('.filter-lists a').forEach(link => {
-            link.addEventListener('click', function (event) {
-                event.preventDefault();
-
-                const sortingParameter = this.getAttribute('href').split('=')[1]; // Extracting sorting parameter
-
-                sortProducts(sortingParameter);
-            });
-        });
-
-        // Function to display products
-        function displayCategoryProducts(products) {
-            const productArea = document.getElementById('productArea');
-            productArea.innerHTML = ''; // Clear the product area
-
-            if (products.length === 0) {
-                productArea.innerHTML = `
-                        <div class="col-lg-12 col-md-12 col-12 text-center mt-48" data-aos="fade-up" data-aos-duration="700">             
-                        <lord-icon
-                        src="https://cdn.lordicon.com/yxczfiyc.json"
-                        trigger="hover"
-                        colors="primary:#000000"
-                        style="width:100px;height:100px">
-                    </lord-icon>
-                    <h2>NO PRODUCT FOUND</h2>
-                    </div>`; // Display message for no products found
-            } else {
-                products.forEach(product => {
-                    // Create HTML to display each product and append it to productArea
-                    const productHTML = `
-                        <div class="col-lg-4 col-md-6 col-6" data-aos="fade-up" data-aos-duration="700">
-                            <div class="product-card">
-                                <div class="product-card-img">
-                                    <a class="hover-switch" href="/user/viewProduct/?id=${product._id}">
-                                        <img class="primary-img" style="height: 215px; width: 175px;" src="admin-assets/imgs/products/${product.images[1]}" alt="product-img">
-                                    </a>
-                                    <div class="product-card-action product-card-action-2 justify-content-center">
-                                        <!-- Your action buttons and SVGs here -->
-                                    </div>
-                                </div>
-                                <div class="product-card-details">
-                                    <h3 class="product-card-title">
-                                        <a href="">${product.productName}</a>
-                                    </h3>
-                                    <div class="product-card-price">
-                                        <span class="card-price-regular">${product.salePrice}</span>
-                                        <span class="card-price-compare text-decoration-line-through">${product.regularPrice}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
-
-                    productArea.insertAdjacentHTML('beforeend', productHTML);
-                });
-            }
-        }
-    </script>
-
 </body>
 
 </html>
