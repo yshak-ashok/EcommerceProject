@@ -1,0 +1,42 @@
+
+.alert-message{
+  color: #ff0000;
+ text-align: center;
+ font-family: Arial,sans-serif;
+
+}
+.alert-success{
+  color: #ff0000;
+ text-align: center;
+ background-color: white;
+ font-family: Arial,sans-serif;
+
+}
+.password-container {
+  position: relative;
+}
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 73%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.order-modal {
+  position: fixed;
+  top: 150px;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Change 'center' to 'flex-start' to align content at the top */
+}
+.order-modal-content {
+   background-color: #000;
+   color: #fff;
+   padding: 1rem;
+   border-radius: 0.5rem;
+   max-width: 500px;
+     }

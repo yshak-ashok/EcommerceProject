@@ -1,0 +1,294 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashborad</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/iStorelogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    
+    <!-- Template CSS -->
+
+    <link rel="stylesheet" href="/admin-assets/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/admin-assets/css/user.css">
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+      <div class="aside-top">
+          <a href="/admin/dashboard" class="brand-wrap">
+             <p style="color: black; font-size: x-large; font-weight: 800;"> i Store</p>
+          </a>
+          <div>
+              <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+          </div>
+      </div>
+      <nav>
+          <ul class="menu-aside">
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                      <span class="text">Dashboard</span>
+                  </a>
+              </li>
+              <li class="menu-item has-submenu">
+                  <a class="menu-link" href="#"> <i class="icon material-icons md-shopping_bag"></i>
+                      <span class="text">Menu</span>
+                  </a>
+                  <div class="submenu">
+                      <a href="/admin/productList">PRODUCT</a>
+                      <a href="/admin/viewcategory">CATEGORY</a>
+                      <a href="/admin/userManagement">USER</a>
+                      <a href="/admin/coupon">COUPON</a>
+                      <a href="/admin/banner">BANNER</a>
+                      <a href="/admin/offerList">OFFER</a>
+                  </div>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/orderList"> <i class="icon material-icons md-local_shipping"></i>
+                      <span class="text">Order</span>
+                  </a>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/salesReport"><i class="icon material-icons md-insert_drive_file"></i>
+
+                      <span class="text">Sales Report</span>
+                  </a>
+              </li>
+              
+          <hr>
+          
+             
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/logout"> <i class="icon fa fa-sign-out"></i>
+                      <span class="text"> Logout </span>
+                  </a>
+              </li>
+       
+          <br>
+          <br>
+      </nav>
+  </aside>
+
+
+    <main class="main-wrap">
+        
+        <section class="content-main">
+            <div class="row">
+               
+              <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Dashboard </h2>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-primary-light"><i class="fa-solid fa-sack-dollar fa-sm"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">REVENUE</h6>
+                                <span> <i class="fa-solid fa-indian-rupee-sign fa-sm"></i> &nbsp; <%- totalAmount %></span>
+                               
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-success-light"><i class="text-success material-icons md-local_shipping"></i></span>
+                            <div class="text">
+                                <h6 class="mb-1 card-title">ORDER'S</h6> 
+                                <span>
+                                    <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
+                                   <%- totalOrders %>
+                                </span>
+                               
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="card card-body mb-4">
+                        <article class="icontext">
+                            <span class="icon icon-sm rounded-circle bg-secondary"><i class="fa-solid fa-user fa-sm" style="color: #434343;"></i></span>
+
+                            <div class="text">
+                                <h6 class="mb-1 card-title">USER'S</h6> 
+                                <span>
+                                    <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
+                                    <%= totalUsers %>
+                                </span>
+                              
+                            </div>
+                        </article>
+                    </div>
+                </div>
+               
+                <div class="col-lg-3">
+                  <div class="card card-body mb-4">
+                      <article class="icontext">
+                        <span class="icon icon-sm rounded-circle bg-warning-light"><i class="fa-solid fa-bag-shopping fa-sm"></i></span>
+                          <div class="text">
+                              <h6 class="mb-1 card-title">PRODUCT'S</h6> 
+                              <span>
+                                <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
+                                 <%= totalProducts %>
+                                </span>
+                              
+                          </div>
+                      </article>
+                  </div>
+              </div>
+               
+            </div>
+            <div class="row">
+                <div class="col-xl-6 col-lg-12">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <input type="text" hidden value="<%= JSON.stringify(Object.keys(cCount)) %>" id="keys">
+                            <input type="text" hidden value="<%=JSON.stringify( Object.values(cCount))%>" id="values">
+                            <canvas id="cChart" height="200px"></canvas>
+                        </article>
+                    </div>
+                    </div>
+                    
+                <div class="col-xl-6 col-lg-12">
+                    <div class="card mb-4">
+                        <article class="card-body">
+                            <canvas id="mChart" height="150px" ></canvas>
+                        </article>
+                    </div>
+                    
+                </div>
+            </div>
+            </div>
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // References of order data
+            const mCtx = document.getElementById('mChart');
+            const delivered = parseInt('<%- delivered %>');
+            const pending = parseInt('<%- pending %>');
+            const orderPlaced=parseInt('<%- orderPlaced %>')
+            const orderCancelled=parseInt('<%- orderCancelled %>')
+            
+
+            // Checking if the canvas is existing or not 
+            if (mCtx) {
+                new Chart(mCtx, {
+                    type: 'pie', // Change to 'pie' for pie chart
+                    data: {
+                        labels: ['Delivered','Pending','Placed','Cancelled'],
+                        datasets: [{
+                            label: 'Orders',
+                            data: [delivered,pending,orderPlaced,orderCancelled],
+                            borderWidth: 1,
+                            backgroundColor: [
+                                'rgba(3, 252, 61, 0.8)',  // Red
+                                'rgba(75, 192, 192, 0.8)', // Teal
+                                'rgba(255, 206, 86, 0.8)',  // Yellow
+                                'rgba(255, 99, 132, 1)',  // Blue
+                                'rgba(153, 102, 255, 0.8)'  // Purple
+                            ],
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Sale Statistics',
+                                font: {
+                                    size: 30 // Change the font size here
+                                }
+                            }
+                        }
+                    }
+                })
+            }
+        });
+
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cCtx = document.getElementById('cChart')
+            const keys = JSON.parse(document.getElementById('keys').value);
+            console.log(keys)
+            const values = JSON.parse(document.getElementById('values').value);
+            if (cCtx) {
+                new Chart(cCtx, {
+                    type: 'bar',
+                    data: {
+                        labels:keys,
+                        datasets: [{
+                            label: 'Number of Products',
+                            data: values,
+                            backgroundColor: 'rgba(75, 192, 192,1)',
+                            borderWidth: 1,
+                        }],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Products',
+                                },
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                        },
+                    },
+                });
+            }
+
+        });
+
+    </script>
+
+
+    <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin-assets/js/vendors/select2.min.js"></script>
+    <script src="/admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/admin-assets/js/vendors/chart.js"></script>
+    <!-- Main Script -->
+    <script src="/admin-assets/js/main.js" type="text/javascript"></script>
+    <script src="/admin-assets/js/custom-chart.js" type="text/javascript"></script>
+  
+
+    
+</body>
+
+</html>

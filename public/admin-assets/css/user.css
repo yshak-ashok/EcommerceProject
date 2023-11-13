@@ -1,0 +1,187 @@
+
+@media (max-width: 768px) { /* Adjust the breakpoint as needed */
+  h1 {
+    font-size: 24px; /* Set the desired font size for smaller screens */
+  }
+}
+body {
+  font-family: Arial, sans-serif;
+}
+.table-container {
+  width: 100%; /* Set a fixed width for the table container */
+  margin: 20px auto;
+  overflow-x: auto; /* Enable horizontal scrolling when needed */
+  
+}
+.table-head{
+  background-color: #000;
+  color: #bdb7b7;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  border: 1px solid #ddd;
+  min-width: 100px; 
+}
+
+/* tr:hover {
+  background-color: #e6e6e6;
+} */
+
+.active {
+  color: #2ecc71;
+}
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-direction: row;
+}
+
+.main-container{
+  margin-top: 3em;
+}
+
+
+
+/* tr:nth-child(even) {
+  background-color: #f2f2f2;
+} */
+
+.search-text{
+  width: 100%;
+}
+
+.input-field {
+  width: 250px; 
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 13px;
+}
+
+.input-field::placeholder {
+  color: #888;
+}
+
+.input-field:focus {
+  outline: none; 
+  border-color:black; 
+  
+} 
+
+.filter-dropdown {
+    width: 200px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    margin-right: 11%;
+  }
+
+  @media screen and (max-width: 768px) {
+    .input-field {
+      width: 100%;
+    }
+  
+ .filter-dropdown {
+      font-size: 10px;
+      overflow-x: scroll;
+      margin-left: 10px;
+      height: 40px;
+      
+    }
+  
+ .filter-dropdown option {
+      font-size: 10px;
+      overflow-x: scroll;
+      
+      
+    }
+  }
+
+  /* Styles for the Success Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.modal-content {
+  background-color: #fff;
+  width: 350px;
+  margin: 20% auto;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+.btn-unblock{
+  color: #2ecc71;
+}
+.btn-block{
+  color: red;
+  
+}
+.btn-user{
+  color: #fff;
+  background-color: #098179;
+  border-radius: 3px;
+  border: 1px solid #098179;
+  width:80px;
+  height: 30px;
+
+
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pagination a.prev {
+  padding: 5px 10px;
+  background-color: transparent;
+  text-decoration: none;
+   margin-right: 10px;
+   font-size: larger;
+  font-weight: 300
+}
+
+
+.pagination a.next {
+  padding: 5px 10px;
+  background-color: transparent;
+  text-decoration: none;
+  font-size: larger;
+  font-weight: 300
+  
+}
+
+/* Hover effect for the links */
+.pagination a.prev:hover,
+.pagination a.next:hover {
+  color: black;
+}
+.page-count{
+  font-size: larger;
+  font-weight: 300
+}

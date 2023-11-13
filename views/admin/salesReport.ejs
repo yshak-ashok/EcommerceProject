@@ -1,0 +1,339 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashborad</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/iStorelogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- Template CSS -->
+
+    <link rel="stylesheet" href="/admin-assets/css/main.css" type="text/css">
+    <link rel="stylesheet" href="/admin-assets/css/user.css">
+</head>
+
+<body>
+    <style>
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+           
+            font-family: Arial, sans-serif;
+            font-size: small;
+
+        }
+
+        .table-head {
+            background-color: #000;
+            color: #cac9c9;
+        }
+
+        .custom-table th,
+        .custom-table td {
+           
+            padding: 8px;
+        }
+
+        tbody tr:hover {
+            background-color: rgb(234, 233, 243);
+            transition: 0.1s;
+        }
+    </style>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="/admin/dashboard" class="brand-wrap">
+                <p style="color: black; font-size: x-large; font-weight: 800;"> i Store</p>
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+                </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Menu</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="/admin/productList">PRODUCT</a>
+                        <a href="/admin/viewcategory">CATEGORY</a>
+                        <a href="/admin/userManagement">USER</a>
+                        <a href="/admin/coupon">COUPON</a>
+                        <a href="/admin/banner">BANNER</a>
+                        <a href="/admin/offerList">OFFER</a>
+                    </div>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/orderList"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Order</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href=""><i class="icon material-icons md-insert_drive_file"></i>
+
+                        <span class="text">Sales Report</span>
+                    </a>
+                </li>
+
+                <hr>
+
+
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/logout"> <i class="icon material-icons md-local_offer"></i>
+                        <span class="text"> Logout </span>
+                    </a>
+                </li>
+
+                <br>
+                <br>
+        </nav>
+</aside>
+
+
+    <main class="main-wrap">
+
+        <section class="content-main">
+            <div class="row">
+
+                <div class="content-header">
+                    <div class="col-lg-9">
+                        <h2 class="content-title card-title">Sales Report </h2>
+                    </div>
+                    <div class="col-lg-3">
+
+                        <button onclick="generatePDF()" class="btn btn-primary">Generate PDF Report</button>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-5">
+                        <div class="card card-body ">
+                            <div class="datetime-container">
+                                <span id="date"><i class="fa-regular fa-calendar fa-lg"></i> &nbsp;</span>
+                                <br>
+                                <br>
+                                <span id="time"><i class="fa-regular fa-clock fa-lg "></i> &nbsp;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card card-body ">
+                            <article class="icontext">
+                                <span class="icon icon-sm rounded-circle bg-primary-light"><i
+                                        class="fa-solid fa-indian-rupee-sign fa-sm"></i></span>
+                                <div class="text">
+                                    <h6 class="mb-1 card-title">TOTAL SALE</h6>
+                                    <span> <%- totalAmount %></span>
+
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="card card-body ">
+                            <select class="form-select" onchange="filter(this.value)">
+                                <option value="all">All Report</option>
+                                <option value="today">Today</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                        <div class="card-body" id="orderList">
+                            <table class="custom-table">
+                                <thead class="table-head">
+                                    <tr>
+                                        <th>ORDER ID</th>
+                                        <th>ORDER NO</th>
+                                        <th>DATE</th>
+                                        <th>TOTAL AMOUNT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(deliveredProducts.length){ %>
+                                        <% for(let i=0; i< deliveredProducts.length; i++){ %>
+                                            <tr>
+                                                <td><%- deliveredProducts[i]._id %></td>
+                                                <td><%- deliveredProducts[i].ord%></td>
+                                                <td><%- new Date(deliveredProducts[i].date).toLocaleDateString('en-GB') %></td>
+                                                <td>₹ &nbsp;<%- deliveredProducts[i].actualTotalAmount %></td>
+                                            </tr>
+                                            <% } %>
+                                        <%} else{ %>
+                                            <tr>
+                                                <td colspan="4">
+                                                  <h2 class="not-found text-center">NO DATA FOUND</h2>
+                                                </td>
+                                                
+                                              </tr>
+                                    <%}%>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                        document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="/admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin-assets/js/vendors/select2.min.js"></script>
+    <script src="/admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/admin-assets/js/vendors/chart.js"></script>
+    <!-- Main Script -->
+    <script src="/admin-assets/js/main.js" type="text/javascript"></script>
+    <script src="/admin-assets/js/custom-chart.js" type="text/javascript"></script>
+
+    <script>
+        async function filter(filterValue) {
+            if (filterValue) {
+                try {
+                    const response = await fetch(`/admin/filterSales/?identify=${filterValue}`);
+                    const data = await response.json();
+                    const orders = data.orders;
+                    console.log('orderlist:',orders);
+                    const orderListDiv = document.getElementById('orderList');
+                    if (!orderListDiv) {
+                        console.error("Element with ID 'orderList' not found in HTML");
+                        return;
+                    }
+
+                    const orderListHTML = `
+                               <div class="card-body" id="orderList">
+                                  <table class="custom-table">
+                                      <thead class="table-head">
+                                        <tr>
+                                            <th>ORDER ID</th>
+                                            <th> ORDER NO </td>
+                                            <th>DATE</th>
+                                            <th>TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${orders.length > 0 ?
+                            orders.map(order => `
+                                                <tr>
+                                                    <td> ${order.orderId}</td>
+                                                    <td> ${order.orderNo}</td>
+                                                    <td>${order.orderDate}</td>
+                                                    <td>${order.total}</td>
+                                                </tr>
+                                            `).join('') :
+                            '<tr><td colspan="4" class="text-center"><h2>NOT DATA FOUND</h2></td></tr>'
+                        }
+                                </tbody>
+                            </table>   
+                        </div>
+                 
+                    `;
+                    orderListDiv.innerHTML = orderListHTML;
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+
+    </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dateElement = document.getElementById('date');
+            const timeElement = document.getElementById('time');
+
+            function updateDateTime() {
+                const now = new Date();
+                const date = now.toLocaleDateString(undefined, {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                const time = now.toLocaleTimeString();
+                const dateString = `<i class="fa-regular fa-calendar fa-lg"></i> &nbsp; ${date}`;
+                const timeString = `<i class="fa-regular fa-clock fa-lg"></i> &nbsp; ${time}`;
+                dateElement.innerHTML = dateString;
+                timeElement.innerHTML = timeString;
+            }
+
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+        });
+    </script>
+
+    <script>
+        function generatePDF() {
+            // AJAX call to the server to generate the PDF
+            fetch('/admin/generate-pdf', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({}) // No need to send any specific data here
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(blob => {
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'sales_report.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>

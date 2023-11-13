@@ -1,0 +1,224 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/iStorelogo.png">
+    <!-- Template CSS -->
+    <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="admin-assets/css/category.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+      <div class="aside-top">
+          <a href="/admin/dashboard" class="brand-wrap">
+             <p style="color: black; font-size: x-large; font-weight: 800;"> i Store</p>
+          </a>
+          <div>
+              <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+          </div>
+      </div>
+      <nav>
+          <ul class="menu-aside">
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                      <span class="text">Dashboard</span>
+                  </a>
+              </li>
+              <li class="menu-item has-submenu">
+                  <a class="menu-link" href="#"> <i class="icon material-icons md-shopping_bag"></i>
+                      <span class="text">Menu</span>
+                  </a>
+                  <div class="submenu">
+                    <a href="/admin/productList">PRODUCT</a>
+                    <a href="/admin/viewcategory">CATEGORY</a>
+                    <a href="/admin/userManagement">USER</a>
+                    <a href="/admin/coupon">COUPON</a>
+                    <a href="/admin/banner">BANNER</a>
+                    <a href="/admin/offerList">OFFER</a>
+                </div>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/orderList"> <i class="icon material-icons md-local_shipping"></i>
+                      <span class="text">Order</span>
+                  </a>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/salesReport"><i class="icon material-icons md-insert_drive_file"></i>
+
+                      <span class="text">Sales Report</span>
+                  </a>
+              </li>
+              
+          <hr>
+          
+             
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/logout"> <i class="icon fa fa-sign-out"></i>
+                      <span class="text"> Logout </span>
+                  </a>
+              </li>
+       
+          <br>
+          <br>
+      </nav>
+  </aside>
+
+    <main class="main-wrap">
+      <header class="main-header navbar">
+        <div class="col-nav">
+            <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
+        </div>
+    </header>
+        <section class="content-main">
+            <div class="row">
+                <div class="col-12">
+                    <div class="content-header">
+                        <h2 class="content-title">CATEGORY LIST</h2> 
+                        <div>
+                          <a href="/admin/loadAddCategory" class="btn btn-primary btn-sm rounded">Add New Category</a>
+                      </div>
+                    </div>
+                  
+                </div>
+                <div class="table-container table-responsive">
+                  <table class="table">
+                    <thead class="table-head">
+                      <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Edit</th>
+                  
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% if (viewcategory.length > 0) { %>
+                        <% for (let i = 0; i < viewcategory.length; i++) { %>
+                          <tr>
+                            <td class="align-middle"><img class="rounded" style="width: 50px; height: 60px;" src="admin-assets/imgs/products/<%=  viewcategory[i].image %>" alt="image"></td>
+                            <td class="align-middle"><%= viewcategory[i].name %></td>
+                            <td class="align-middle"><%= viewcategory[i].description %></td>
+                            <td class="align-middle">
+                            <% if(viewcategory[i].status==false){ %>
+                              <div class="col-12 mt-3">
+                                <button type="button" class=" category-btn btn-list" data-category-id="<%= viewcategory[i]._id %>">List</button>
+                    
+                             </div>
+                              <!-- listcategory Modal -->
+                              <div id="listModal_<%= viewcategory[i]._id %>" class="modal">
+                                <div class="modal-content">
+                                    <span class="close">&times;</span>
+                                    <p>Are you sure you want to list this category</p>
+                                    <a href="/admin/listCategory?id=<%= viewcategory[i]._id %>">
+                                      <button type="button" class="btn btn-dark">Confirm</button>
+                                   </a>
+                                </div>
+                              </div>
+                            <% }else{ %>
+                              <div class="col-12 mt-3">
+                                <button type="button" class=" category-btn btn-unlist" data-category-id="<%= viewcategory[i]._id %>">Unlist</button>
+                  
+                            </div>
+                  
+                            <!-- unlist Modal -->
+                            <div id="unlistModal_<%= viewcategory[i]._id %>" class="modal">
+                              <div class="modal-content">
+                                  <span class="close">&times;</span>
+                                  <p>Are you sure you want to unlist this category</p>
+                                  <a href="/admin/unListCategory?id=<%= viewcategory[i]._id %>">
+                                    <button type="button" class="btn btn-dark">Confirm</button>
+                                  </a>
+                              </div>
+                            </div>
+                
+                              <%}%>
+                            </td>
+
+                            <td class="align-middle">
+                              <div class="col-12 mt-3">
+                                <a href="/admin/editCategory?id=<%= viewcategory[i]._id %>">
+                                <button type="button" class=" edit-btn " data-category-id="<%= viewcategory[i]._id %>">Edit</button>
+                              </a>
+                            </div>
+                          </td>
+
+
+                          </tr>
+                        <% } %>
+                      <% } else { %>
+                        <tr>
+                          <td colspan="5">
+                            <h2 class="not-found text-center">NO CATEGORY FOUND</h2>
+                          </td>
+                        </tr>
+                      <% } %>
+                    </tbody>
+                  </table>
+
+                  <!-- Pagination controls -->
+             <div class="pagination-container">
+              <div class="page-count">
+                Page <%= currentPage %> of <%= totalPages %>
+              </div>
+            
+              <div class="pagination">
+                <% if (currentPage > 1) { %>
+                  <a href="?page=<%= currentPage - 1 %>" class="prev">Previous</a>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                  <a href="?page=<%= currentPage + 1 %>" class="next">Next</a>
+                <% } else { %>
+                  
+                <% } %>
+              </div>
+          </div>
+                </div>
+            </div>
+             
+        </section> 
+
+  <!-- --------------footer start ----------->
+
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin-assets/js/vendors/select2.min.js"></script>
+    <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="admin-assets/js/main.js" type="text/javascript"></script>
+
+    <script src="admin-assets/js/categoryValidation.js"></script>
+
+
+</body>
+
+</html>

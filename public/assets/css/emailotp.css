@@ -1,0 +1,66 @@
+   /* Import Google font - Poppins */
+   @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+   * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: "Poppins", sans-serif;
+   }
+
+   .input-field {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+     justify-content: center;
+   }
+   form .input-field {
+     flex-direction: row;
+     column-gap: 10px;
+   }
+   .input-field input {
+     height: 45px;
+     width: 42px;
+     border-radius: 6px;
+     outline: none;
+     font-size: 1.125rem;
+     text-align: center;
+     border: 1px solid #ddd;
+   }
+   .input-field input:focus {
+     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+   }
+   .input-field input::-webkit-inner-spin-button,
+   .input-field input::-webkit-outer-spin-button {
+     display: none;
+   }
+   .order-modal {
+    position: fixed;
+    top: 150px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Change 'center' to 'flex-start' to align content at the top */
+  }
+  .order-modal-content {
+     background-color: #000;
+     color: #fff;
+     padding: 1rem;
+     border-radius: 0.5rem;
+     max-width: 500px;
+   }
+   .alert-success{
+    color: #ff0000;
+   text-align: center;
+   background-color: white;
+   font-family: Arial,sans-serif;
+  
+  }
+  .alert-message{
+    color: #ff0000;
+   text-align: center;
+   font-family: Arial,sans-serif;
+  }
+

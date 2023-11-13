@@ -1,0 +1,60 @@
+.nav-item{
+  margin-right: 20px;
+  
+}
+.nav-item a{
+  color: #94a0b3;
+}
+.custom-login-form {
+  max-width: 400px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the form horizontally */
+  padding: 20px; /* Add some padding for spacing */
+}
+
+.custom-login-form .form-group {
+  margin-bottom: 20px;
+}
+/* Custom CSS for the login form */
+.custom-login-container {
+  max-width: 350px; /* Adjust the maximum width as needed */
+  margin: 0 auto; /* Center the form horizontally */
+  position: relative;
+  padding: 20px;
+}
+
+.custom-login-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px; /* Adjust the border radius for the box shape */
+  position: relative;
+  z-index: 1;
+}
+
+.custom-login-form::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10px; /* Adjust the position of the shadow effect */
+  right: -10px; /* Adjust the position of the shadow effect */
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 100%);
+  z-index: -1;
+  border-radius: 15px;
+}
+
+/* Custom CSS for the black button */
+.black-button {
+  background-color: black;
+  color: white; /* Text color */
+  
+  
+}
+.black-button:hover{
+  color: #0053b0;
+}
+.custom-navbar {
+  background-color: #071C1F; /* Set the background color to #071C1F */
+}
+.navbar-brand{
+  color: #fff;
+}

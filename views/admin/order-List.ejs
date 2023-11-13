@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <style>
+        .btn-more{
+            background-color: #000;
+            color: #fff;
+            width: 100px;
+            height: 35px;
+            border-radius: 3px;
+        }
+        .btn-more:hover{
+            background-color: #292929;
+        }
+        tbody tr:hover {
+            background-color: rgb(234, 233, 243);
+            transition: 0.1s;
+        }
+    </style>
+    <meta charset="utf-8">
+    <title>Admin Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/iStorelogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <!-- Template CSS -->
+    <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <link href="admin-assets/css/user.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+      <div class="aside-top">
+          <a href="/admin/dashboard" class="brand-wrap">
+             <p style="color: black; font-size: x-large; font-weight: 800;"> i Store</p>
+          </a>
+          <div>
+              <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+          </div>
+      </div>
+      <nav>
+          <ul class="menu-aside">
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                      <span class="text">Dashboard</span>
+                  </a>
+              </li>
+              <li class="menu-item has-submenu">
+                  <a class="menu-link" href="#"> <i class="icon material-icons md-shopping_bag"></i>
+                      <span class="text">Menu</span>
+                  </a>
+                  <div class="submenu">
+                    <a href="/admin/productList">PRODUCT</a>
+                    <a href="/admin/viewcategory">CATEGORY</a>
+                    <a href="/admin/userManagement">USER</a>
+                    <a href="/admin/coupon">COUPON</a>
+                    <a href="/admin/banner">BANNER</a>
+                    <a href="/admin/offerList">OFFER</a>
+                </div>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/orderList"> <i class="icon material-icons md-local_shipping"></i>
+                      <span class="text">Order</span>
+                  </a>
+              </li>
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/salesReport"><i class="icon material-icons md-insert_drive_file"></i>
+
+                      <span class="text">Sales Report</span>
+                  </a>
+              </li>
+              
+          <hr>
+          
+             
+              <li class="menu-item">
+                  <a class="menu-link" href="/admin/logout"> <i class="icon fa fa-sign-out"></i>
+                      <span class="text"> Logout </span>
+                  </a>
+              </li>
+       
+          <br>
+          <br>
+      </nav>
+  </aside>
+
+    <main class="main-wrap">
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">ORDER LIST</h2> 
+                    </div>
+                  </div>
+                  <div class="col-3">
+                    <div class="card card-body ">
+                      <select class="form-select" onchange="filter(this.value)">
+                        <option value="all">All Order</option>
+                        <option value="newest">Newest</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="orderplaced">Order Placed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    </div>
+                  </div>
+              </div>
+             <div class="row">
+              <div class="col-xl-12 col-lg-12">
+                <div class="card-body" id="orderList">
+                   <table class="table">
+                    <thead class="table-head">
+                      <tr>
+                        <th>Order Id</th>
+                        <th>Customer Name</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Return Status</th>
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                
+                      <!-- Sample user data, replace with dynamic data from your backend -->
+                      <% if(orders.length >0) {%>
+                        <% for(let i=0; i< orders.length; i++){ %>
+                      <tr>
+                        <td><%- orders[i].ord %></td>
+                        <td><%- orders[i].address.name %></td>
+                        <td><%- orders[i].totalAmount %></td>
+                        <td><%- orders[i].orderStatus %></td>
+                        <td><%- orders[i].date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) %></td>
+                        <td ><%-orders[i].returnOrderStatus.status %></td>
+                        <td >
+                            <a href="/admin/orderDetails/?orderId=<%-orders[i]._id %>">
+                                <button type="button" class="btn-more">More</button>
+                             </a>
+                        </td>
+                      </tr>
+                    <% } %>
+                    <% }else { %>
+                      <tr>
+                        <td colspan="7">
+                          <h2 class="not-found text-center">NO ORDER'S FOUND</h2>
+                        </td>
+                        
+                      </tr>
+                      <% } %>
+                 
+                    </tbody>
+                  </table>
+                  </div>
+                  </div>
+               </div>
+               <!-- Pagination controls -->
+               <div class="pagination-container">
+                <div class="page-count">
+                  Page <%= currentPage %> of <%= totalPages %>
+                </div>
+              
+                <div class="pagination">
+                  <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>" class="prev">Previous</a>
+                  <% } %>
+                  
+                  <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>" class="next">Next</a>
+                  <% } else { %>
+                    
+                  <% } %>
+                </div>
+            </div>
+                  
+          </div>
+            
+
+        </section> 
+
+  <!-- --------------footer start ----------->
+
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin-assets/js/vendors/select2.min.js"></script>
+    <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="admin-assets/js/main.js" type="text/javascript"></script>
+    <script src="admin-assets/js/userValidation.js"></script>
+
+    <script>
+        async function filter(filterValue) {
+            if (filterValue) {
+                try {
+                    const response = await fetch(`/admin/filterOrder/?identify=${filterValue}`);
+                    const data = await response.json();
+                    const orders = data;
+                    console.log('orders:',orders);
+
+                    const orderListDiv = document.getElementById('orderList');
+                    if (!orderListDiv) {
+                        console.error("Element with ID 'orderList' not found in HTML");
+                        return;
+                    }
+
+                    const orderListHTML = `
+                    <div class="row">
+                    <div class="col-xl-12 col-lg-12">
+                    <div class="card-body" id="orderList">
+                   <table class="table">
+                    <thead class="table-head">
+                      <tr>
+                        <th>Order Id</th>
+                        <th>Customer Name</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Return Status</th>
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                                        ${orders.length > 0 ?
+                            orders.map(order => `
+                                                <tr>
+                                                    <td> ${order.ord}</td>
+                                                    <td> ${order.address.name}</td>
+                                                    <td> ${order.totalAmount}</td>
+                                                    <td> ${order.orderStatus}</td>
+                                                    <td>${formatDate(order.date)}</td>
+                                                    <td> ${order.returnOrderStatus.status}</td> 
+                                                    <td>
+                                                    <a href="/admin/orderDetails/?orderId=${order._id}">
+                                                    <button type="button" class="btn-more">More</button>
+                                                      </a>
+                                                  </td>                               
+                                                </tr>
+                                            `).join('') :
+                            '<tr><td colspan="7" class="text-center" style="color:red"><h2>NO ORDERS FOUND</h2></td></tr>'
+                        }
+                                </tbody>
+                            </table>   
+                        </div>
+                        </div>
+                        </div>
+                 
+                    `;
+                    orderListDiv.innerHTML = orderListHTML;
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+    </script>
+    <script>
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    }
+    </script>
+
+</body>
+
+</html>

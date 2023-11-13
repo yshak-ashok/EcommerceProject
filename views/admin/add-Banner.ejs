@@ -1,0 +1,223 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Admin Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/iStorelogo.png">
+    <!-- Template CSS -->
+    <link href="admin-assets/css/main.css" rel="stylesheet" type="text/css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+</head>
+
+<body>
+    <style>
+        .img-div {
+        position: relative;
+        width: 15%;
+        float:left;
+        margin-right:5px;
+        margin-left:5px;
+        margin-bottom:10px;
+        margin-top:10px;
+    }
+    
+    .image {
+        opacity: 1;
+        display: block;
+        width: 100%;
+        max-width: auto;
+        transition: .5s ease;
+        backface-visibility: hidden;
+    }
+    
+    .middle {
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    
+    .img-div:hover .image {
+        opacity: 0.3;
+    }
+    
+    .img-div:hover .middle {
+        opacity: 1;
+    }
+    .row-price {
+    overflow-x: auto; /* This will enable horizontal scrollbar if the content overflows */
+}
+      </style>
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <a href="/admin/dashboard" class="brand-wrap">
+               <p style="color: black; font-size: x-large; font-weight: 800;"> i Store</p>
+            </a>
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item has-submenu">
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-shopping_bag"></i>
+                        <span class="text">Menu</span>
+                    </a>
+                    <div class="submenu">
+                        <a href="/admin/productList">PRODUCT</a>
+                        <a href="/admin/viewcategory">CATEGORY</a>
+                        <a href="/admin/userManagement">USER</a>
+                        <a href="/admin/coupon">COUPON</a>
+                        <a href="/admin/banner">BANNER</a>
+                        <a href="/admin/offerList">OFFER</a>
+                    </div>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/orderList"> <i class="icon material-icons md-local_shipping"></i>
+                        <span class="text">Order</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/salesReport"><i class="icon material-icons md-insert_drive_file"></i>
+  
+                        <span class="text">Sales Report</span>
+                    </a>
+                </li>
+                
+            <hr>
+            
+               
+                <li class="menu-item">
+                    <a class="menu-link" href="/admin/logout"> <i class="icon fa fa-sign-out"></i>
+                        <span class="text"> Logout </span>
+                    </a>
+                </li>
+         
+            <br>
+            <br>
+        </nav>
+    </aside>
+
+    <main class="main-wrap">
+       
+        <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Banner</h2>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="card mb-4">
+                      <div class="card-header">
+                        <p id="ErrorMessage" class="alert-message" style="text-align: center; color:red ;"></p>
+                         <!-- Sucess -->
+                     <% if (Message !=='undefined') { %>
+                      <div class="alert-success" style="text-align: center; color: rgb(2, 107, 2);" role="alert">
+                          <%- Message %>
+                      </div>
+                      <script>
+                        setTimeout(function() {
+                            var successAlert = document.querySelector('.alert-success');
+                            if (successAlert) {
+                                successAlert.style.display = 'none';
+                            }
+                        }, 4000);
+                    </script>
+                    <% } %>
+                      </div>
+                        <div class="card-body">
+
+                          <form method="post" action="/admin/addBanner" id="addBannerForm" enctype="multipart/form-data">
+                           
+                            <div class="mb-4">
+                                <label for="productName" class="form-label">Title</label>
+                                <input  type="text" placeholder="Type here" class="form-control" id="title" name="title">
+                               
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Description</label>
+                                <textarea id="description" name="description" placeholder="Type here" class="form-control" rows="1"></textarea>
+                               
+                            </div>
+                            <div class="row row-price" >
+                                <div class="col-lg-5">
+                                    <div class="mb-4">
+                                 
+                                        <label class="form-label">Expire Date</label>
+                                        <input  name="expDate" id="expDate"  type="date" class="form-control">
+                              
+                                      </div>
+                                </div>
+                                <div class="col-lg-7">
+                                    <div class="mb-4">
+                                        <label class="form-label">Image</label>
+                                          <input value="" id="images" name="images" class="form-control" type="file">
+                                        
+                                      </div> 
+                                  </div>
+                               </div>
+                                
+                         
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Add Banner</button>
+                            </div>
+                        </div>
+                        </form>
+                       
+                        </div>
+                    </div> <!-- card end// -->
+
+                    
+                </div>
+              
+            </div>
+        </section> <!-- content-main end// -->
+        <footer class="main-footer font-xs">
+            <div class="row pb-30 pt-15">
+                <div class="col-sm-6">
+                    <script>
+                    document.write(new Date().getFullYear())
+                    </script> ©, Evara - HTML Ecommerce Template .
+                </div>
+                <div class="col-sm-6">
+                    <div class="text-sm-end">
+                        All rights reserved
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="admin-assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="admin-assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="admin-assets/js/vendors/select2.min.js"></script>
+    <script src="admin-assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="admin-assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <!-- Main Script -->
+    <script src="admin-assets/js/main.js" type="text/javascript"></script>
+
+</body>
+
+</html>
