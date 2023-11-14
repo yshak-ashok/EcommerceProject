@@ -1,12 +1,15 @@
-const Product = require("../models/productModel");
-const Category = require("../models/categoryModel");
-const asyncHandler = require("express-async-handler");
+const Product = require('../models/productModel');
+const Category = require('../models/categoryModel');
+const asyncHandler = require('express-async-handler');
+const fs = require('fs');
+const path = require('path');
+
 
 const loadAddProduct = asyncHandler(async (req, res) => {
     try {
         const category = await Category.find();
         if (category) {
-            res.render("add-Products", { categories: category, Message: "" });
+            res.render('add-Products', { categories: category, Message: '' });
         }
     } catch (error) {
         console.log(error.message);
@@ -37,7 +40,7 @@ const addProducts = async (req, res) => {
         await productData.save();
         const categoryList = await Category.find();
 
-        res.render("add-Products", { categories: categoryList, Message: "Product Added Successfullly" });
+        res.render('add-Products', { categories: categoryList, Message: 'Product Added Successfullly' });
     } catch (error) {
         console.log(error.message);
     }
@@ -54,9 +57,9 @@ const productList = asyncHandler(async (req, res) => {
         const products = await Product.find({ is_listed: true })
             .skip((page - 1) * perPage)
             .limit(perPage)
-            .populate("category");
+            .populate('category');
         console.log(products);
-        res.render("product-List", { products, currentPage: page, totalPages });
+        res.render('product-List', { products, currentPage: page, totalPages });
     } catch (error) {
         console.error(error); // Log the actual error for debugging
         //res.render('error', { errorMessage: 'Something went wrong' });
@@ -81,10 +84,10 @@ const unListProduct = asyncHandler(async (req, res) => {
         const productId = req.query.id;
         const unlistproduct = await Product.findByIdAndUpdate(productId, { is_listed: false }, { new: true });
         if (unlistproduct) {
-            res.redirect("/admin/productList");
+            res.redirect('/admin/productList');
         }
     } catch (error) {
-        console.error("Error");
+        console.error('Error');
     }
 });
 
@@ -92,14 +95,14 @@ const loadEditProduct = asyncHandler(async (req, res) => {
     try {
         const id = req.query.id;
         //console.log(id);
-        const productData = await Product.findById(id).populate("category"); //id= category
+        const productData = await Product.findById(id).populate('category'); //id= category
         //console.log(productData);
         if (productData) {
             const categories = await Category.find();
-            res.render("edit-Product", { productData, categories, Message: "" });
+            res.render('edit-Product', { productData, categories, Message: '' });
         }
     } catch (error) {
-        console.error("error");
+        console.error('error');
     }
 });
 
@@ -120,9 +123,9 @@ const updateProduct = async (req, res) => {
         const product = await Product.findById(id);
 
         if (images.length <= 1) {
-            const productData = await Product.findById(id).populate("category");
+            const productData = await Product.findById(id).populate('category');
             const categories = await Category.find();
-            return res.render("edit-Product", { productData, categories, message: "Set at least Two Images" });
+            return res.render('edit-Product', { productData, categories, message: 'Set at least Two Images' });
         }
 
         const updateFields = {
@@ -147,14 +150,50 @@ const updateProduct = async (req, res) => {
         }
 
         if (UpdatedData) {
-            res.redirect("/admin/productList");
+            res.redirect('/admin/productList');
         } else {
             // Handle scenario if the update fails
         }
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ error: "An error occurred" });
+        res.status(500).json({ error: 'An error occurred' });
     }
 };
 
-module.exports = { loadAddProduct, addProducts, productList, unListProduct, loadEditProduct, updateProduct };
+
+
+const deleteImage = async (req, res) => {
+    try {
+        const { productId, imageIndex } = req.body;
+        const indexToRemove = parseInt(imageIndex, 10);
+        // Find the product by ID
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.json({ status: 'fail', message: 'Product not found' });
+        }
+        if (indexToRemove >= 0 && indexToRemove < product.images.length) {
+            const imageNameToRemove = product.images[indexToRemove];
+
+            // Delete the image file from local storage
+            const imagePath = path.join('public/admin-assets/imgs/products',imageNameToRemove);
+            fs.unlinkSync(imagePath);
+
+            // Update the database by pulling the image name from the array
+            const result = await Product.updateOne({ _id: productId }, { $pull: { images: imageNameToRemove } });
+
+            if (result.modifiedCount > 0) {
+                res.json({ status: 'success', message: 'Image removed successfully' });
+            } else {
+                res.json({ status: 'fail', message: 'Image not found or already removed' });
+            }
+        } else {
+            res.json({ status: 'fail', message: 'Invalid image index' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.json({ status: 'fail', message: 'Internal server error' });
+    }
+};
+
+module.exports = { loadAddProduct, addProducts, productList, unListProduct, loadEditProduct, updateProduct, deleteImage };

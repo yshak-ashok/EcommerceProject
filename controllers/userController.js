@@ -584,7 +584,17 @@ const searchProducts = async (req, res) => {
 const userProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        res.render('user-profile', { user });
+        const userCart = await Cart.findOne({ userId: user._id });
+        if (user) {
+            if (userCart) {
+                const userCartCount = userCart.products.reduce((acc, product) => {
+                    return (acc += product.quantity);
+                }, 0);
+                const cartCount = userCartCount;
+            
+            res.render('user-profile', { user,cartCount });
+            }
+        }
     } catch (error) {
         console.error('error');
     }
@@ -595,7 +605,17 @@ const userProfile = asyncHandler(async (req, res) => {
 const editUserProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        res.render('edit-User-Profile', { user });
+        const userCart = await Cart.findOne({ userId: user._id });
+        if (user) {
+            if (userCart) {
+                const userCartCount = userCart.products.reduce((acc, product) => {
+                    return (acc += product.quantity);
+                }, 0);
+                const cartCount = userCartCount;
+            
+            res.render('edit-User-profile', { user,cartCount });
+            }
+        }
     } catch (error) {
         console.error('error');
     }
@@ -671,6 +691,8 @@ const userAddress = asyncHandler(async (req, res) => {
         const user = await User.findById(req.session.userId);
         let userDetail = await Address.findOne({ userId: user._id });
         const user_Id = user._id;
+        const userCart = await Cart.findOne({ userId: user._id });
+        if(user){
         if (!userDetail) {
             userDetail = new Address({ userId: user_Id, address: [] });
             await userDetail.save();
@@ -678,7 +700,12 @@ const userAddress = asyncHandler(async (req, res) => {
         //const userAddress=userDetail.address
         //console.log('useraddress:',userAddress.address);
         //console.log(userAddress[0].name);
-        res.render('user-Address', { user, userAddress: userDetail.address, Message: '' });
+        const userCartCount = userCart.products.reduce((acc, product) => {
+            return (acc += product.quantity);
+        }, 0);
+        const cartCount = userCartCount;
+        res.render('user-Address', { user, userAddress: userDetail.address, Message: '' ,cartCount});
+    }
     } catch (error) {
         console.error('error');
     }
@@ -686,7 +713,14 @@ const userAddress = asyncHandler(async (req, res) => {
 const loadAddAddress = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        res.render('add-Address', { user, Message: '' });
+        const userCart = await Cart.findOne({ userId: user._id });
+        if(user){
+        const userCartCount = userCart.products.reduce((acc, product) => {
+            return (acc += product.quantity);
+        }, 0);
+        const cartCount = userCartCount;
+        res.render('add-Address', { user, Message: '',cartCount });
+    }
     } catch (error) {
         console.error('error');
     }

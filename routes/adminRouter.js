@@ -108,6 +108,7 @@ const {
     unListProduct,
     loadEditProduct,
     updateProduct,
+    deleteImage
 } = require("../controllers/productController");
 
 
@@ -131,6 +132,8 @@ adminRouter.get("/editProduct", isLogin, loadEditProduct);
 
 //edit products
 adminRouter.post("/updateProduct",upload.array("images"), updateProduct);
+
+adminRouter.post("/deleteImage",isLogin,deleteImage)
 
 
 //  --------------admin order management------------
