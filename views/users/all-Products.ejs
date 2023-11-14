@@ -304,11 +304,11 @@
         <div class="collection mt-100">
             <div class="container">
                 <div class="row flex-start">
-
+    
                     <!-- sidebar start -->
                     <div class="col-lg-2 col-md-12 col-12">
                         <div class="collection-filter filter-drawer">
-
+    
                             <div class="filter-widget">
                                 <div class="filter-header faq-heading heading_18 d-flex align-items-center justify-content-between border-bottom"
                                     data-bs-toggle="collapse" data-bs-target="#filter-collection">
@@ -327,68 +327,27 @@
                                             <% for(let i=0; i<category.length;i++){%>
                                                 <li class="filter-item">
                                                     <label class="filter-label">
-                                                <li><a href="/user/filterCategory?id=<%-category[i]._id%>"
-                                                        class="text_14"><%-category[i].name%></a></li>
-                                                </label>
+                                                        <li><a href="/user/filter-Category?id=<%-category[i]._id%>"
+                                                                class="text_14"><%-category[i].name%></a></li>
+                                                    </label>
                                                 </li>
-                                                <%} %>
-                                                    <% } %>
+                                            <%} %>
+                                        <% } %>
                                     </ul>
                                 </div>
-
                             </div>
-
-                            <!-- <div class="filter-widget">
-                                <div class="filter-header faq-heading heading_18 d-flex align-items-center justify-content-between border-bottom"
-                                    data-bs-toggle="collapse" data-bs-target="#filter-availability">
-                                    SORT
-                                    <span class="faq-heading-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" class="icon icon-down">
-                                            <polyline points="6 9 12 15 18 9"></polyline>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div id="filter-availability" class="accordion-collapse collapse show">
-                                    <ul class="filter-lists list-unstyled mb-0">
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                        <li><a href="/allProducts?sort=lowToHigh" class="text_14">LOW TO HIGH</a></li>
-                                        </label>
-                                        </li>
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                        <li><a href="/allProducts?sort=highToLow" class="text_14">HIGH TO LOW</a></li>
-                                        </label>
-                                        </li>
-                                        <li class="filter-item">
-                                            <label class="filter-label">
-                                        <li><a href="/allProducts?sort=newestArrivals" class="text_14">NEWEST
-                                                ARRIVALS</a></li>
-                                        </label>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div> -->
-
                         </div>
                     </div>
-
                     <!-- sidebar end -->
-
-
-
-
+    
                     <!-- product area start -->
                     <div class="col-lg-10 col-md-12 col-12">
                         <div class="collection-product-container " style="text-align: center;" id="productList">
                             <div class="row" id="productArea">
-
-
+    
                                 <% if(products.length>0 ) { %>
                                     <% for(let i=0; i < products.length; i++) { %>
-
+    
                                         <div class="col-lg-4 col-md-6 col-6" data-aos="fade-up" data-aos-duration="700">
                                             <div class="product-card">
                                                 <div class="product-card-img">
@@ -398,123 +357,103 @@
                                                             src="admin-assets/imgs/products/<%- products[i].images[1] %>"
                                                             alt="product-img">
                                                     </a>
-                                                    <%if(products[i].offer>0){ %>
-
+                                                    <% if(products[i].offer>0){ %>
                                                         <div class="product-badge">
                                                             <span class="badge-label badge-percentage rounded">-<%-
                                                                     products[i].offer%>%</span>
                                                         </div>
-                                                        <% } %>
-                                                            <div
-                                                                class="product-card-action product-card-action-2 justify-content-center">
-                                                                <a href=""
-                                                                    class="action-card action-wishlist add-to-wishlist-button"
-                                                                    data-productId="<%- products[i]._id  %>">
-                                                                    <script
-                                                                        src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
-                                                                    <lord-icon
-                                                                        src="https://cdn.lordicon.com/xyboiuok.json"
-                                                                        trigger="hover" colors="primary:#808080"
-                                                                        style="width:30px;height:30px">
-                                                                    </lord-icon>
-                                                                </a>
-                                                                <a href="" class="action-card  add-to-cart-button"
-                                                                    data-productId="<%- products[i]._id %>">
-                                                                    <script
-                                                                        src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
-                                                                    <lord-icon
-                                                                        src="https://cdn.lordicon.com/mfmkufkr.json"
-                                                                        trigger="hover" colors="primary:#808080"
-                                                                        style="width:35px;height:35px">
-                                                                    </lord-icon>
-                                                                </a>
-                                                            </div>
+                                                    <% } %>
+                                                    <div class="product-card-action product-card-action-2 justify-content-center">
+                                                        <a href="" class="action-card action-wishlist add-to-wishlist-button"
+                                                            data-productId="<%- products[i]._id  %>">
+                                                            <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
+                                                            <lord-icon src="https://cdn.lordicon.com/xyboiuok.json"
+                                                                trigger="hover" colors="primary:#808080"
+                                                                style="width:30px;height:30px">
+                                                            </lord-icon>
+                                                        </a>
+                                                        <a href="" class="action-card  add-to-cart-button"
+                                                            data-productId="<%- products[i]._id %>">
+                                                            <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
+                                                            <lord-icon src="https://cdn.lordicon.com/mfmkufkr.json"
+                                                                trigger="hover" colors="primary:#808080"
+                                                                style="width:35px;height:35px">
+                                                            </lord-icon>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                                 <div class="product-card-details">
-                                                    <% if(products[i].stock>= 1 && products[i].stock <= 5) { %>
-
-                                                            <!-- <span >Limited Stock</span> -->
-                                                            <span class="label label-default"
-                                                                style="color: #ec942c; font-size: small;">Limited
-                                                                Stock</span>
-                                                            <% }else if(products[i].stock < 1) {%>
-
-                                                                <span class="label label-default"
-                                                                    style="color: #d00c0c; font-size: small">Out of
-                                                                    Stock</span>
-
-                                                                <% }else{ %>
-                                                                    <span class="label label-default"
-                                                                        style=" font-size: small">Stock Available</span>
-                                                                    <%} %>
-
-                                                                        <h3 class="product-card-title">
-                                                                            <a href=""><%- products[i].productName
-                                                                                    %></a>
-                                                                        </h3>
-
-                                                                        <%if(products[i].offer>0){ %>
-                                                                            <div class="product-card-price">
-                                                                                <span class="card-price-regular"><%-
-                                                                                        products[i].salePrice %></span>
-                                                                                <span
-                                                                                    class="card-price-compare text-decoration-line-through"><%-
-                                                                                        products[i].regularPrice
-                                                                                        %></span>
-                                                                            </div>
-                                                                            <% }else { %>
-                                                                                <div class="product-card-price">
-                                                                                    <span class="card-price-regular"><%-
-                                                                                            products[i].regularPrice
-                                                                                            %></span>
-
-                                                                                </div>
-                                                                                <% } %>
+                                                    <% if(products[i].stock >= 1 && products[i].stock <= 5) { %>
+                                                        <span class="label label-default"
+                                                            style="color: #ec942c; font-size: small;">Limited Stock</span>
+                                                    <% } else if(products[i].stock < 1) { %>
+                                                        <span class="label label-default"
+                                                            style="color: #d00c0c; font-size: small">Out of Stock</span>
+                                                    <% } else { %>
+                                                        <span class="label label-default" style=" font-size: small">Stock
+                                                            Available</span>
+                                                    <% } %>
+    
+                                                    <h3 class="product-card-title">
+                                                        <a href=""><%- products[i].productName %></a>
+                                                    </h3>
+    
+                                                    <%if(products[i].offer>0){ %>
+                                                        <div class="product-card-price">
+                                                            <span class="card-price-regular"><%- products[i].salePrice %></span>
+                                                            <span class="card-price-compare text-decoration-line-through"><%- products[i].regularPrice %></span>
+                                                        </div>
+                                                    <% } else { %>
+                                                        <div class="product-card-price">
+                                                            <span class="card-price-regular"><%- products[i].regularPrice %></span>
+                                                        </div>
+                                                    <% } %>
                                                 </div>
                                             </div>
                                         </div>
-                                        <% } %>
-                                            <!-- Pagination controls -->
-                                            <br>
-                                            <div class="pagination-container">
-                                                <div class="page-count">
-                                                    Page <%= currentPage %> of <%= totalPages %>
-                                                </div>
-
-                                                <div class="productpagination">
-                                                    <% if (currentPage> 1) { %>
-                                                        <a href="?page=<%= currentPage - 1 %>" class="prev">Previous</a>
-                                                        <% } %>
-
-                                                            <% if (currentPage < totalPages) { %>
-                                                                <a href="?page=<%= currentPage + 1 %>&id=<%= categoryId %>" class="next">Next</a>
-                                                                <% } else { %>
-                                                                    <% } %>
-                                                </div>
-                                            </div>
-                                            <% }else{ %>
-                                                <div class="col-lg-12 col-md-12 col-12 text-center mt-48"
-                                                    data-aos="fade-up" data-aos-duration="700">
-
-                                                    <lord-icon src="https://cdn.lordicon.com/yxczfiyc.json"
-                                                        trigger="hover" colors="primary:#000000"
-                                                        style="width:100px;height:100px">
-                                                    </lord-icon>
-                                                    <h2>NO PRODUCT FOUND</h2>
-                                                </div>
-                                                <% } %>
+                                    <% } %>
+                                    <!-- Pagination controls -->
+                                    <div class="pagination-container mt-100">
+                                        <div class="page-count">
+                                            Page <%= currentPage %> of <%= totalPages %>
+                                        </div>
+    
+                                        <div class="productpagination">
+                                            <% if (currentPage > 1) { %>
+                                                <a href="?page=<%= currentPage - 1 %>" class="prev"><i
+                                                        class="fa-solid fa-circle-chevron-left fa-xl"
+                                                        style="color: #000000;"></i></a>
+                                            <% } %>
+                                            <span style="font-size: larger;">
+                                                <%= currentPage %>
+                                            </span>
+                                            &nbsp;
+                                            &nbsp;
+                                            <% if (currentPage < totalPages) { %>
+                                                <a href="?page=<%= currentPage + 1 %>&id=<%= categoryId %>" class="next"><i
+                                                        class="fa-solid fa-circle-chevron-right fa-xl"
+                                                        style="color: #000000;"></i></a>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                <% } else { %>
+                                    <div class="col-lg-12 col-md-12 col-12 text-center mt-48" data-aos="fade-up"
+                                        data-aos-duration="700">
+                                        <lord-icon src="https://cdn.lordicon.com/yxczfiyc.json" trigger="hover"
+                                            colors="primary:#000000" style="width:100px;height:100px">
+                                        </lord-icon>
+                                        <h2>NO PRODUCT FOUND</h2>
+                                    </div>
+                                <% } %>
                             </div>
                             <!-- product area end -->
-
-
-
-
                         </div>
                     </div>
-
                 </div>
+            </div>
+        </div>
     </main>
-
+    
     <!-- footer start -->
     <footer class="mt-100 overflow-hidden">
         <div class="footer-top bg-4">

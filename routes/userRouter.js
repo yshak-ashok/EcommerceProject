@@ -91,13 +91,13 @@ userRouter.get("/viewProduct", viewProduct);
 
 userRouter.get("/allProducts", allProducts);
 
-userRouter.get("/filterCategory",filterCategory)
+userRouter.get("/filter-Category",filterCategory)
 
 userRouter.post("/search", searchProducts);
 
 // userRouter.post("/categories", categories);
 
-userRouter.get("/categoryPage", categoryPage);
+userRouter.get("/category", categoryPage);
 
 // ----------user Profile----------
 

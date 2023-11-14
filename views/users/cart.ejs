@@ -22,7 +22,7 @@
         <!-- all css -->
         <style>
             .alert-error{
-                
+
                 color: #f00;
             }
             .modal {
@@ -349,7 +349,6 @@
                                                     <p class="cart-item-stock product-vendor">
                                                         In Stock: <%- cart[i].productId.stock %>
                                                     </p>
-                                                    
                                                 </td>
                                                 <p id="ErrorMessage" class="alert-error text-center"></p>
                                                 <td class="cart-item-quantity" style="width: 15%">
@@ -725,33 +724,33 @@
             <script src="assets/js/vendor.js"></script>
             <script src="assets/js/main.js"></script>
             <script>
-                document.querySelectorAll(".cart-item").forEach((item) => {
-                    const productId = item.getAttribute("data-product-id");
-                    const incBtn = item.querySelector(".inc-qty");
-                    const decBtn = item.querySelector(".dec-qty");
-                    const qtyInput = item.querySelector(".qty-input");
-                    const totalElement = item.querySelector(".cart-item-price");
-                    const cartStockElement = item.querySelector(".cart-item-stock");
+                document.querySelectorAll('.cart-item').forEach((item) => {
+                    const productId = item.getAttribute('data-product-id');
+                    const incBtn = item.querySelector('.inc-qty');
+                    const decBtn = item.querySelector('.dec-qty');
+                    const qtyInput = item.querySelector('.qty-input');
+                    const totalElement = item.querySelector('.cart-item-price');
+                    const cartStockElement = item.querySelector('.cart-item-stock');
                     const cartStockText = cartStockElement.innerText.trim();
-                    const cartStock = parseInt(cartStockText.replace(/\D/g, "")); // Extract numeric part
+                    const cartStock = parseInt(cartStockText.replace(/\D/g, '')); // Extract numeric part
 
-                    incBtn.addEventListener("click", () => {
+                    incBtn.addEventListener('click', () => {
                         const currentQuantity = parseInt(qtyInput.value);
                         const newQuantity = currentQuantity + 1;
                         if (newQuantity <= cartStock) {
                             qtyInput.value = newQuantity;
-                            console.log("Quantity Updated:", newQuantity);
+                            console.log('Quantity Updated:', newQuantity);
                             updateProductTotal(productId, newQuantity, totalElement);
                         } else {
-                            showErrorMessage("Not enough stock available");
+                            showErrorMessage('Not enough stock available');
                         }
                     });
 
-                    decBtn.addEventListener("click", () => {
+                    decBtn.addEventListener('click', () => {
                         const currentQuantity = parseInt(qtyInput.value);
                         if (currentQuantity > 1) {
                             qtyInput.value = currentQuantity - 1;
-                            console.log("Quantity Updated:", currentQuantity - 1);
+                            console.log('Quantity Updated:', currentQuantity - 1);
                             updateProductTotal(productId, currentQuantity - 1, totalElement);
                         }
                     });
@@ -763,34 +762,34 @@
                         newQuantity: newQuantity,
                     };
 
-                    fetch("/user/updateQuantity", {
-                        method: "POST",
+                    fetch('/user/updateQuantity', {
+                        method: 'POST',
                         headers: {
-                            "Content-Type": "application/json",
+                            'Content-Type': 'application/json',
                         },
                         body: JSON.stringify(data),
                     })
                         .then((response) => response.json())
                         .then((data) => {
                             //console.log('Server Response:', data.status);
-                            if (data.status === "success") {
-                                console.log("start");
+                            if (data.status === 'success') {
+                                console.log('start');
                                 totalElement.textContent = data.productTotal;
                                 // console.log('result:',data.productTotal);
                                 // Update the cart total
-                                const cartSubTotal = document.querySelector("#subTotal");
+                                const cartSubTotal = document.querySelector('#subTotal');
                                 cartSubTotal.innerHTML = `<i class="fa-solid fa-indian-rupee-sign fa-sm" style="color: #000000;"></i>&nbsp;${data.cartRegularPriceTotal}`;
 
-                                const cartTotal = document.querySelector("#cartTotal");
+                                const cartTotal = document.querySelector('#cartTotal');
                                 cartTotal.innerHTML = `<i class="fa-solid fa-indian-rupee-sign fa-sm" style="color: #000000;"></i>&nbsp;${data.cartTotal}`;
                                 // console.log('catTotel',cartTotal);
 
-                                const cartCount = document.querySelector("#shopping-bag");
+                                const cartCount = document.querySelector('#shopping-bag');
                                 cartCount.textContent = data.cartCount;
 
-                                const totalDiscount = document.querySelector("#cartTotalDiscount");
+                                const totalDiscount = document.querySelector('#cartTotalDiscount');
                                 totalDiscount.innerHTML = `-<i class="fa-solid fa-indian-rupee-sign fa-sm" style="color: #ff0000;"></i>&nbsp;${data.totalDiscount}`;
-                            } 
+                            }
                         })
                         .catch((error) => {
                             console.error(error);
@@ -798,41 +797,41 @@
                 }
 
                 function showErrorMessage(message) {
-                    const errorMessage = document.getElementById("ErrorMessage");
+                    const errorMessage = document.getElementById('ErrorMessage');
                     errorMessage.innerHTML = message;
                     setTimeout(() => {
-                        errorMessage.innerHTML = "";
-                    }, 3000); 
+                        errorMessage.innerHTML = '';
+                    }, 3000);
                 }
             </script>
 
             <!-- product removing -->
             <script>
                 function showModal(productId) {
-                    var modal = document.getElementById("removeModal_" + productId);
-                    modal.style.display = "block";
+                    var modal = document.getElementById('removeModal_' + productId);
+                    modal.style.display = 'block';
                 }
                 function closeModal(productId) {
-                    var modal = document.getElementById("removeModal_" + productId);
-                    modal.style.display = "none";
+                    var modal = document.getElementById('removeModal_' + productId);
+                    modal.style.display = 'none';
                 }
                 function closeModalAfterDelay(productId, delay) {
                     setTimeout(function () {
                         closeModal(productId);
                     }, delay);
                 }
-                var removeButtons = document.querySelectorAll(".product-remove");
+                var removeButtons = document.querySelectorAll('.product-remove');
                 removeButtons.forEach(function (button) {
-                    var productId = button.getAttribute("data-productId");
-                    button.addEventListener("click", function () {
+                    var productId = button.getAttribute('data-productId');
+                    button.addEventListener('click', function () {
                         showModal(productId);
                         closeModalAfterDelay(productId, 3000);
                     });
                 });
-                var closeButtons = document.querySelectorAll(".close");
+                var closeButtons = document.querySelectorAll('.close');
                 closeButtons.forEach(function (button) {
-                    var productId = button.parentElement.parentElement.getAttribute("id").split("_")[1];
-                    button.addEventListener("click", function () {
+                    var productId = button.parentElement.parentElement.getAttribute('id').split('_')[1];
+                    button.addEventListener('click', function () {
                         closeModal(productId);
                     });
                 });

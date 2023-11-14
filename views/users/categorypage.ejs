@@ -306,6 +306,12 @@
                                                 <img class="primary-img" style="height: 215px; width: 175px;"src="admin-assets/imgs/products/<%- products[i].images[1] %>"
                                                     alt="product-img">
                                             </a>
+                                            <% if(products[i].offer>0){ %>
+                                                <div class="product-badge">
+                                                    <span class="badge-label badge-percentage rounded">-<%-
+                                                            products[i].offer%>%</span>
+                                                </div>
+                                            <% } %>
                                            
                                             <div
                                                 class="product-card-action product-card-action-2 justify-content-center">
@@ -345,11 +351,16 @@
                                             <h3 class="product-card-title">
                                                 <a href=""><%- products[i].productName %></a>
                                             </h3>
-                                            <div class="product-card-price">
-                                                <span class="card-price-regular"><%- products[i].salePrice %></span>
-                                                <span
-                                                    class="card-price-compare text-decoration-line-through"><%- products[i].regularPrice %></span>
-                                            </div>
+                                            <%if(products[i].offer>0){ %>
+                                                <div class="product-card-price">
+                                                    <span class="card-price-regular"><%- products[i].salePrice %></span>
+                                                    <span class="card-price-compare text-decoration-line-through"><%- products[i].regularPrice %></span>
+                                                </div>
+                                            <% } else { %>
+                                                <div class="product-card-price">
+                                                    <span class="card-price-regular"><%- products[i].regularPrice %></span>
+                                                </div>
+                                            <% } %>
                                         </div>
                                     </div>
                                 </div>
@@ -550,6 +561,75 @@
         <script src="assets/js/vendor.js"></script>
         <script src="assets/js/main.js"></script>
         <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", async function () {
+                const addToWishlistButtons = document.querySelectorAll(".add-to-wishlist-button");
+                const addToCartButtons = document.querySelectorAll(".add-to-cart-button");
+                const searchInput = document.getElementById('searchInput');
+                const productArea = document.getElementById('productArea');
+    
+                addToWishlistButtons.forEach((button) => {
+                    button.addEventListener("click", async function (e) {
+                        e.preventDefault();
+                        const productId = e.currentTarget.getAttribute("data-productId");
+                        const response = await fetch(`/user/add-to-wishlist/?productId=${productId}`, {
+                            method: "POST",
+                        });
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            showModalMessage("Product Added to Wishlist", "wishlist-modal");
+                        } else {
+                            showModalMessage("Already Added to Wishlist", "wishlist-modal");
+                        }
+                    });
+                });
+    
+                addToCartButtons.forEach((button) => {
+                    button.addEventListener("click", async function (e) {
+                        e.preventDefault();
+                        const productId = e.currentTarget.getAttribute("data-productId");
+                        const response = await fetch(`/user/addtocart/?productId=${productId}`, {
+                            method: "POST",
+                        });
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            showModalMessage("Product Added to Cart", "cart-modal");
+                            updateCartCount(data.cartCount);
+                        } else if (data.status === 'nostock') {
+                            showModalMessage("Out of Stock", "cart-modal");
+                        } else if (data.status === 'Login') {
+                            showModalMessage("Please Login your Account", "cart-modal");
+                            console.log(data.status);
+                        }
+                    });
+                });
+                
+                function updateCartCount(count) {
+                const cartCountElement = document.getElementById('cart-count');
+                if (cartCountElement) {
+                    cartCountElement.innerText = count;
+                }
+            }
+
+                function showModalMessage(message, className) {
+                    const modal = document.createElement("div");
+                    modal.classList.add(className);
+    
+                    const modalContent = document.createElement("div");
+                    modalContent.classList.add(`${className}-content`);
+                    modalContent.innerHTML = ` ${message} `;
+    
+                    modal.appendChild(modalContent);
+                    document.body.appendChild(modal);
+    
+                    modal.style.textAlign = "center";
+                    setTimeout(() => {
+                        document.body.removeChild(modal);
+                    }, 2000);
+                }
+            });
+    
+        </script>
 </body>
 
 </html>

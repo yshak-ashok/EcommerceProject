@@ -231,7 +231,7 @@ const orderDetails = asyncHandler(async (req, res) => {
         res.render("orderDetail", { user, orderDetail });
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ error: "An error occurred" });
+       res.render("404")
     }
 });
 
