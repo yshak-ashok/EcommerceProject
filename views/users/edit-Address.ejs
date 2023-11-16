@@ -11,16 +11,28 @@
         <!-- fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" />
-        <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+        <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
         <!-- all css -->
         <style>
-                   .shadow-box {
+            .cart-icon {
+                position: relative;
+                display: inline-block;
+            }
+            .notification-badge {
+                position: absolute;
+                top: -5px;
+                right: -6px;
+                background-color: red;
+                color: white;
+                border-radius: 50%;
+                padding: 2.5px 6px;
+                font-size: 10px; 
+                line-height: 1; 
+            }
+
+            .shadow-box {
                 background-color: #ffffff;
                 padding: 20px;
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -227,7 +239,10 @@
                                     </a>
 
                                     <a class="header-action-item header-wishlist ms-4 d-none d-lg-block" href="/cart">
-                                        <span class="material-symbols-outlined"> shopping_bag </span>
+                                        <div class="cart-icon">
+                                            <span class="material-symbols-outlined">shopping_bag</span>
+                                            <span class="notification-badge"><%- cartCount %></span>
+                                        </div>
                                     </a>
 
                                     <a

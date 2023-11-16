@@ -1,9 +1,22 @@
 <!doctype html>
 <html lang="en" class="no-js">
-
 <head>
-    <style>
-        
+<style>
+.cart-icon {
+    position: relative;
+    display: inline-block;
+}
+.notification-badge {
+    position: absolute;
+    top: -5px; 
+    right: -6px; 
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2.5px 6px; 
+    font-size: 10px; 
+    line-height: 1; 
+}
 .pagination-container {
   display: flex;
   justify-content: space-between;
@@ -17,8 +30,6 @@
    font-size: larger;
   font-weight: 300
 }
-
-
 .pagination a.next {
   padding: 5px 10px;
   background-color: transparent;
@@ -27,8 +38,6 @@
   font-weight: 300
   
 }
-
-/* Hover effect for the links */
 .pagination a.prev:hover,
 .pagination a.next:hover {
   color: black;
@@ -212,9 +221,10 @@ th, td {
                             </a>
 
                             <a class="header-action-item header-wishlist ms-4 d-none d-lg-block" href="/cart">
-                                <span class="material-symbols-outlined">
-                                    shopping_bag
-                                    </span>
+                                <div class="cart-icon">
+                                <span class="material-symbols-outlined">shopping_bag</span>
+                                <span class="notification-badge"><%- cartCount %></span>
+                            </div>
                             </a>
                            
                                 <a class="header-action-item header-wishlist ms-4 d-none d-lg-block"href="/logout">

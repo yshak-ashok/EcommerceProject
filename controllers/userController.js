@@ -644,7 +644,17 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 const changePassword = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        res.render('changePassword', { user, errorMessage: '' });
+        const userCart = await Cart.findOne({ userId: user._id });
+        if (user) {
+            if (userCart) {
+                const userCartCount = userCart.products.reduce((acc, product) => {
+                    return (acc += product.quantity);
+                }, 0);
+                const cartCount = userCartCount;
+            
+            res.render('changePassword', { user,cartCount,errorMessage:"" });
+            }
+        }
     } catch (error) {
         console.error('error');
     }
@@ -778,6 +788,7 @@ const editAddress = asyncHandler(async (req, res) => {
     try {
         const addressId = req.query.addressId;
         const user = await User.findById(req.session.userId);
+        const userCart = await Cart.findOne({ userId: user._id });
         const user_Id = user._id;
         //console.log('address:',addressId);
         const userDetails = await Address.findOne({ userId: user_Id });
@@ -795,8 +806,13 @@ const editAddress = asyncHandler(async (req, res) => {
             // If userAddress is not found, render the "404" page
             return res.render('404');
         }
-
-        res.render('edit-Address', { user, Message: '', userAddress });
+        const userCartCount = userCart.products.reduce((acc, product) => {
+            return (acc += product.quantity);
+        }, 0);
+        const cartCount = userCartCount;
+        if(user){
+            res.render('edit-Address', { user, Message: '', userAddress,cartCount });
+        } 
     } catch (error) {
         res.render('404');
     }
@@ -868,11 +884,17 @@ const walletLoad = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         const user_id = user._id;
-        // Taking the wallet details from db
+        const userCart = await Cart.findOne({ userId: user._id });
         let userWallet = await Wallet.findOne({ userId: user_id });
         if (!userWallet) {
         }
-        res.render('wallet', { user, userWallet });
+        const userCartCount = userCart.products.reduce((acc, product) => {
+            return (acc += product.quantity);
+        }, 0);
+        const cartCount = userCartCount;
+        if(user){
+        res.render('wallet', { user, userWallet,cartCount });
+        }
     } catch (error) {
         console.error(error);
     }

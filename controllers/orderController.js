@@ -1,19 +1,19 @@
-const Order = require("../models/orderModel");
-const Address = require("../models/addressModel");
-const Cart = require("../models/cartModel");
-const User = require("../models/userModel");
-const Product = require("../models/productModel");
-const UsedCoupon = require("../models/usedCouponModel");
-const Wallet = require("../models/walletModel");
-const asyncHandler = require("express-async-handler");
-const RazorpayHelper = require("../razorpay/razorpay");
+const Order = require('../models/orderModel');
+const Address = require('../models/addressModel');
+const Cart = require('../models/cartModel');
+const User = require('../models/userModel');
+const Product = require('../models/productModel');
+const UsedCoupon = require('../models/usedCouponModel');
+const Wallet = require('../models/walletModel');
+const asyncHandler = require('express-async-handler');
+const RazorpayHelper = require('../razorpay/razorpay');
 // const { response } = require("../routes/userRouter");
 
 const placeOrder = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         const user_Id = user._id;
-        const cart = await Cart.findOne({ userId: user_Id }).populate("products.productId");
+        const cart = await Cart.findOne({ userId: user_Id }).populate('products.productId');
         //console.log('cartData from placeOrder:',cart);
         const { totalAmount, actualAmount, discountAmount, paymentMethod, addressId, couponId } = req.body;
         //console.log('totalamount from placeorder',totalAmount);
@@ -76,12 +76,12 @@ const placeOrder = asyncHandler(async (req, res) => {
         // console.log('address: ',address);
         // console.log('orderdetails',orderDetails);
         const placeorder = await orderDetails.save();
-        console.log("placedorder", placeorder);
-        if (placeorder.paymentMethod === "COD") {
+        console.log('placedorder', placeorder);
+        if (placeorder.paymentMethod === 'COD') {
             for (const product of orderedProducts) {
-                product.productStatus = "Order Placed";
+                product.productStatus = 'Order Placed';
             }
-            placeorder.orderStatus = "Order Placed";
+            placeorder.orderStatus = 'Order Placed';
             placeorder.products = orderedProducts;
             await placeorder.save();
             if (cart) {
@@ -92,31 +92,31 @@ const placeOrder = asyncHandler(async (req, res) => {
                 product.productId.stock -= product.quantity;
                 await product.productId.save();
             });
-            res.json({ status: "COD", placedOrderId: placeorder._id });
-        } else if (placeorder.paymentMethod === "ONLINE") {
+            res.json({ status: 'COD', placedOrderId: placeorder._id });
+        } else if (placeorder.paymentMethod === 'ONLINE') {
             const orderId = placeorder._id;
             const totalAmount = placeorder.totalAmount;
             RazorpayHelper.generateRazorpay(orderId, totalAmount).then((response) => {
-                res.json({ status: "ONLINE", response });
+                res.json({ status: 'ONLINE', response });
             });
-        } else if (placeorder.paymentMethod === "WALLET") {
-            console.log("payement method:", placeorder.paymentMethod);
+        } else if (placeorder.paymentMethod === 'WALLET') {
+            console.log('payement method:', placeorder.paymentMethod);
             const userWallet = await Wallet.findOne({ userId: user_Id });
             const userWalletAmount = userWallet.walletAmount;
             if (userWalletAmount) {
                 userWallet.walletAmount = userWalletAmount - actualAmount;
 
                 userWallet.transactionHistory.push({
-                    description: "Shopping",
+                    description: 'Shopping',
                     addedAmount: actualAmount,
-                    debitOrCredit: "Debit",
+                    debitOrCredit: 'Debit',
                 });
                 await userWallet.save();
 
                 for (const product of orderedProducts) {
-                    product.productStatus = "Order Placed";
+                    product.productStatus = 'Order Placed';
                 }
-                placeorder.orderStatus = "Order Placed";
+                placeorder.orderStatus = 'Order Placed';
                 placeorder.products = orderedProducts;
                 await placeorder.save();
                 if (cart) {
@@ -127,23 +127,21 @@ const placeOrder = asyncHandler(async (req, res) => {
                     product.productId.stock -= product.quantity;
                     await product.productId.save();
                 });
-                res.json({ status: "WALLET", placedOrderId: placeorder._id });
+                res.json({ status: 'WALLET', placedOrderId: placeorder._id });
             }
         }
     } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ error: "An error occurred" });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'An error occurred' });
     }
 });
-
-
 
 const verifyPayment = async (req, res) => {
     const user = await User.findById(req.session.userId);
     const user_Id = user._id;
-    const cart = await Cart.findOne({ userId: user_Id }).populate("products.productId");
+    const cart = await Cart.findOne({ userId: user_Id }).populate('products.productId');
     const data = req.body;
-    console.log("payement", data);
+    console.log('payement', data);
     const productData = cart.products;
     //console.log('productdata',productData);
     let orderedProducts = [];
@@ -161,7 +159,7 @@ const verifyPayment = async (req, res) => {
     let receiptId = data.order.receipt;
     RazorpayHelper.verifyOnlinePayment(data)
         .then(async () => {
-            console.log("Resolved");
+            console.log('Resolved');
             let paymentSuccess = true;
             await RazorpayHelper.updatePaymentStatus(receiptId, paymentSuccess);
 
@@ -173,10 +171,10 @@ const verifyPayment = async (req, res) => {
                 product.productId.stock -= product.quantity;
                 await product.productId.save();
             });
-            res.json({ status: "PAYMENT SUCCESS", placedOrderId: receiptId });
+            res.json({ status: 'PAYMENT SUCCESS', placedOrderId: receiptId });
         })
         .catch(async (err) => {
-            console.log("Rejected");
+            console.log('Rejected');
             if (err) {
                 console.log(err.message);
                 let paymentSuccess = false;
@@ -186,7 +184,7 @@ const verifyPayment = async (req, res) => {
                     await cart.save();
                 }
 
-                res.json({ status: "PAYMENT FAILED", placedOrderId: receiptId });
+                res.json({ status: 'PAYMENT FAILED', placedOrderId: receiptId });
             }
         });
 };
@@ -194,30 +192,31 @@ const verifyPayment = async (req, res) => {
 const orderList = asyncHandler(async (req, res) => {
     try {
         const filterValue = req.query.identify;
-        console.log("filtervalue:", filterValue);
+        console.log('filtervalue:', filterValue);
         const user = await User.findById(req.session.userId);
         user_Id = user._id;
         const page = parseInt(req.query.page) || 1;
         const perPage = 8;
-
-        // Update the query to sort by date in descending order
-        const totalOrder = await Order.find({ userId: user_Id })
-            .sort({ date: -1 }) // Sort by date in descending order (latest first)
-            .countDocuments();
-        console.log("totalorder:", totalOrder);
+        const userCart = await Cart.findOne({ userId: user._id });
+        const totalOrder = await Order.find({ userId: user_Id }).sort({ date: -1 }).countDocuments();
+        //console.log('totalorder:', totalOrder);
         const totalPages = Math.ceil(totalOrder / perPage);
-
-        // Update the query to include the sort and get the latest orders first
         const userOrders = await Order.find({ userId: user_Id })
-            .sort({ date: -1 }) // Sort by date in descending order (latest first)
+            .sort({ date: -1 })
             .skip((page - 1) * perPage)
             .limit(perPage)
-            .populate("products.productId");
-        console.log(userOrders);
-        res.render("orderList", { user, userOrders, currentPage: page, totalPages });
+            .populate('products.productId');
+        // console.log(userOrders);
+        const userCartCount = userCart.products.reduce((acc, product) => {
+            return (acc += product.quantity);
+        }, 0);
+        const cartCount = userCartCount;
+        if (user) {
+            res.render('orderList', { user, userOrders, cartCount, currentPage: page, totalPages });
+        }
     } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({ error: "An error occurred" });
+        console.error('Error:', error);
+        res.status(500).json({ error: 'An error occurred' });
     }
 });
 
@@ -226,12 +225,19 @@ const orderDetails = asyncHandler(async (req, res) => {
         const user = await User.findById(req.session.userId);
         const orderId = req.query.orderId;
         //console.log('orederID',orderId);
-        const orderDetail = await Order.findById(orderId).populate("products.productId");
-        console.log("orderDetails", orderDetail);
-        res.render("orderDetail", { user, orderDetail });
+        const orderDetail = await Order.findById(orderId).populate('products.productId');
+        const userCart = await Cart.findOne({ userId: user._id });
+        // console.log('orderDetails', orderDetail);
+        const userCartCount = userCart.products.reduce((acc, product) => {
+            return (acc += product.quantity);
+        }, 0);
+        const cartCount = userCartCount;
+        if (user) {
+            res.render('orderDetail', { user, orderDetail,cartCount });
+        }
     } catch (error) {
-        console.error("Error:", error);
-       res.render("404")
+        console.error('Error:', error);
+        res.render('404');
     }
 });
 
@@ -239,17 +245,17 @@ const cancelOrder = asyncHandler(async (req, res) => {
     try {
         const orderId = req.query.orderId;
 
-        const orderDetails = await Order.findById(orderId).populate("products.productId");
+        const orderDetails = await Order.findById(orderId).populate('products.productId');
         if (!orderDetails) {
-            return res.status(404).json({ status: "error", message: "Order not found" });
+            return res.status(404).json({ status: 'error', message: 'Order not found' });
         }
 
         // Update order status
-        orderDetails.orderStatus = "Order Cancelled";
+        orderDetails.orderStatus = 'Order Cancelled';
 
         // Update product statuses
         orderDetails.products.forEach(async (product) => {
-            product.productStatus = "Order Cancelled";
+            product.productStatus = 'Order Cancelled';
             // Assuming you may want to update other fields like stock
             const productDoc = await Product.findById(product.productId);
             if (productDoc) {
@@ -260,9 +266,9 @@ const cancelOrder = asyncHandler(async (req, res) => {
 
         await orderDetails.save();
 
-        res.json({ status: "success", message: "Order Cancelled" });
+        res.json({ status: 'success', message: 'Order Cancelled' });
     } catch (error) {
-        res.status(500).json({ status: "error", message: "Something went wrong" });
+        res.status(500).json({ status: 'error', message: 'Something went wrong' });
         console.log(error);
     }
 });
@@ -280,21 +286,21 @@ const returnItem = asyncHandler(async (req, res) => {
         //console.log('index:',productIndex);
         const productstatus = orderDetails.products[productIndex].productStatus;
         //console.log("product Status", productstatus);
-        if (productstatus === "Return Requested") {
-            res.json({ errorMessage: "Request already submitted" });
-        } else if (productstatus === "Return Approved") {
-            res.json({ errorMessage: "Your request has already been approved" });
+        if (productstatus === 'Return Requested') {
+            res.json({ errorMessage: 'Request already submitted' });
+        } else if (productstatus === 'Return Approved') {
+            res.json({ errorMessage: 'Your request has already been approved' });
         } else {
             if (productIndex !== -1) {
-                orderDetails.products[productIndex].productStatus = "Return Requested";
+                orderDetails.products[productIndex].productStatus = 'Return Requested';
                 orderDetails.products[productIndex].returnReason = selectedReason;
             }
-            orderDetails.returnOrderStatus.status = "Requested For Return";
+            orderDetails.returnOrderStatus.status = 'Requested For Return';
             orderDetails.returnOrderStatus.reason = selectedReason;
             const returnData = await orderDetails.save();
             //console.log('returnData:',returnData);
             if (returnData) {
-                res.json({ message: "Your request has been successfully submitted" });
+                res.json({ message: 'Your request has been successfully submitted' });
             }
         }
     } catch (error) {
@@ -313,13 +319,13 @@ const loadOrderList = asyncHandler(async (req, res) => {
         const orders = await Order.find()
             .skip((page - 1) * perPage)
             .limit(perPage)
-            .populate("userId");
+            .populate('userId');
         // console.log('page:', page);
         // console.log('totalOrder:', totalOrder);
         // console.log('totalPages:', totalPages);
 
-        console.log("order:", orders);
-        res.render("order-List", { orders, currentPage: page, totalPages });
+        console.log('order:', orders);
+        res.render('order-List', { orders, currentPage: page, totalPages });
     } catch (error) {
         console.error(error);
     }
@@ -332,16 +338,16 @@ const filterOrder = asyncHandler(async (req, res) => {
         let orders;
         let filterQuery = {};
 
-        if (filterValue === "delivered") {
-            filterQuery = { orderStatus: "Delivered" };
-        } else if (filterValue === "newest") {
+        if (filterValue === 'delivered') {
+            filterQuery = { orderStatus: 'Delivered' };
+        } else if (filterValue === 'newest') {
             orders = await Order.aggregate([
                 { $sort: { date: -1 } }, // Sorting by the most recent orders
             ]);
-        } else if (filterValue === "orderplaced") {
-            filterQuery = { orderStatus: "Order Placed" };
-        } else if (filterValue === "pending") {
-            filterQuery = { orderStatus: "Pending" };
+        } else if (filterValue === 'orderplaced') {
+            filterQuery = { orderStatus: 'Order Placed' };
+        } else if (filterValue === 'pending') {
+            filterQuery = { orderStatus: 'Pending' };
         } else {
             // For 'all' or any other case, fetch all orders
             orders = await Order.find({});
@@ -355,7 +361,7 @@ const filterOrder = asyncHandler(async (req, res) => {
         res.json(orders); // Sending the filtered orders as a response
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -363,9 +369,9 @@ const loadOrderDetails = asyncHandler(async (req, res) => {
     try {
         const orderId = req.query.orderId;
         //console.log('orderid:',orderId);
-        const orderDetail = await Order.findById(orderId).populate("products.productId");
-        console.log("orderDetails:", orderDetail);
-        res.render("order-Details", { orderDetail });
+        const orderDetail = await Order.findById(orderId).populate('products.productId');
+        console.log('orderDetails:', orderDetail);
+        res.render('order-Details', { orderDetail });
     } catch (error) {
         console.error(error);
     }
@@ -374,13 +380,13 @@ const loadOrderDetails = asyncHandler(async (req, res) => {
 const shipped = asyncHandler(async (req, res) => {
     try {
         const { orderId, orderStatus } = req.body;
-        console.log("orderid:", orderId);
-        console.log("orderstatus", orderStatus);
-        const orderDetails = await Order.findById(orderId).populate("products.productId");
+        console.log('orderid:', orderId);
+        console.log('orderstatus', orderStatus);
+        const orderDetails = await Order.findById(orderId).populate('products.productId');
         console.log(orderDetails);
-        if (orderStatus == "Shipped") {
+        if (orderStatus == 'Shipped') {
             orderDetails.products.map((product) => {
-                return (product.productStatus = "Shipped");
+                return (product.productStatus = 'Shipped');
             });
             orderDetails.orderStatus = orderStatus;
         } else {
@@ -389,7 +395,7 @@ const shipped = asyncHandler(async (req, res) => {
         await orderDetails.save();
         console.log(orderDetails);
 
-        res.json({ status: "success", message: "Status Updated" });
+        res.json({ status: 'success', message: 'Status Updated' });
     } catch (error) {
         console.error(error);
     }
@@ -400,11 +406,11 @@ const delivered = asyncHandler(async (req, res) => {
         const { orderId, orderStatus } = req.body;
         // console.log('orderid:',orderId);
         // console.log('orderstatus',orderStatus);
-        const orderDetails = await Order.findById(orderId).populate("products.productId");
+        const orderDetails = await Order.findById(orderId).populate('products.productId');
         console.log(orderDetails);
-        if (orderStatus == "Delivered") {
+        if (orderStatus == 'Delivered') {
             orderDetails.products.map((product) => {
-                return (product.productStatus = "Delivered");
+                return (product.productStatus = 'Delivered');
             });
             orderDetails.orderStatus = orderStatus;
         } else {
@@ -413,7 +419,7 @@ const delivered = asyncHandler(async (req, res) => {
         await orderDetails.save();
         console.log(orderDetails);
 
-        res.json({ status: "success", message: "Status Updated" });
+        res.json({ status: 'success', message: 'Status Updated' });
     } catch (error) {
         console.error(error);
     }
@@ -422,13 +428,13 @@ const delivered = asyncHandler(async (req, res) => {
 const returnApporval = asyncHandler(async (req, res) => {
     try {
         const { returnStatus, orderId } = req.body;
-        console.log("returnStatus", returnStatus);
-        console.log("returnId", orderId);
-        const orderData = await Order.findById(orderId).populate("products.productId");
-        console.log("orderdata:", orderData);
-        if (returnStatus === "Return Approved") {
+        console.log('returnStatus', returnStatus);
+        console.log('returnId', orderId);
+        const orderData = await Order.findById(orderId).populate('products.productId');
+        console.log('orderdata:', orderData);
+        if (returnStatus === 'Return Approved') {
             orderData.products.map((product) => {
-                if (product.productStatus === "Return Requested") {
+                if (product.productStatus === 'Return Requested') {
                     product.productStatus = returnStatus;
                 }
             });
@@ -437,9 +443,9 @@ const returnApporval = asyncHandler(async (req, res) => {
             // });
             orderData.returnOrderStatus.status = returnStatus;
             await orderData.save();
-            console.log("orderData", orderData);
+            console.log('orderData', orderData);
             // console.log('status:',status);
-            res.json({ status: "success", message: "Status Updated" });
+            res.json({ status: 'success', message: 'Status Updated' });
         }
     } catch (error) {
         console.error(error);
@@ -450,18 +456,18 @@ const returnConfirmed = asyncHandler(async (req, res) => {
     try {
         const { returnStatus, orderId } = req.body;
 
-        const orderData = await Order.findById(orderId).populate("products.productId");
+        const orderData = await Order.findById(orderId).populate('products.productId');
 
-        if (returnStatus === "Product Returned") {
-            const returnedProduct = orderData.products.find((product) => product.productStatus === "Return Approved");
+        if (returnStatus === 'Product Returned') {
+            const returnedProduct = orderData.products.find((product) => product.productStatus === 'Return Approved');
 
             if (returnedProduct) {
                 const productData = await Product.findById(returnedProduct.productId);
-                console.log("productdatabefore", productData);
+                console.log('productdatabefore', productData);
                 const returnQuantity = returnedProduct.quantity; // Adjust this based on your data structure
                 productData.stock += returnQuantity;
                 await productData.save();
-                console.log("productdataafter", productData);
+                console.log('productdataafter', productData);
 
                 // Update the status of the returned product in the order
                 returnedProduct.productStatus = returnStatus;
@@ -471,14 +477,14 @@ const returnConfirmed = asyncHandler(async (req, res) => {
 
                 await orderData.save();
 
-                res.json({ status: "success", message: "Status Updated and Stock Quantity Updated" });
+                res.json({ status: 'success', message: 'Status Updated and Stock Quantity Updated' });
             } else {
-                res.json({ status: "error", message: "No product with 'Return Approved' status found" });
+                res.json({ status: 'error', message: "No product with 'Return Approved' status found" });
             }
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: "error", message: "An error occurred" });
+        res.status(500).json({ status: 'error', message: 'An error occurred' });
     }
 });
 

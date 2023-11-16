@@ -91,8 +91,15 @@ const couponStatus = asyncHandler(async (req, res) => {
 const myCoupon = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
+        const userCart = await Cart.findOne({ userId: user._id });
         const couponData = await Coupon.find();
-        res.render("coupons", { user, couponData, Message: "" });
+        const userCartCount = userCart.products.reduce((acc, product) => {
+            return (acc += product.quantity);
+        }, 0);
+        const cartCount = userCartCount;
+        if(user){
+        res.render("coupons", { user, couponData,cartCount, Message: "" });
+        }
     } catch (error) {
         console.error("error");
     }
