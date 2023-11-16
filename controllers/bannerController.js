@@ -22,7 +22,7 @@ const addBanner = asyncHandler(async (req, res) => {
             endDate: expDate,
         });
 
-        res.render("add-banner", { Message: "Banner Added" });
+        res.render("add-Banner", { Message: "Banner Added" });
     } catch (error) {
         console.error(error);
     }

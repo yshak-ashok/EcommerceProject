@@ -131,7 +131,7 @@
                     <div class="row align-items-center">
                         <div class="col-lg-3 col-md-4 col-4">
                             <div class="header-logo">
-                                <img src="/assets/img/iStorelogo.png" style="width: 60px; height: 60px;" alt="">
+                                <img src="/assets/img/iStorelogo.png" alt="">
                             </div>
                         </div>
                         <div class="col-lg-6 d-lg-block d-none">
@@ -173,13 +173,13 @@
                         <div class="col-lg-3 col-md-8 col-8">
                             <div class="header-action d-flex align-items-center justify-content-end">
                                 <% if(user){ %>
-                                    <a class="header-action-item header-wishlist ms-4 d-none d-lg-block" href="/user/wishlist">
+                                    <a class="header-action-item header-wishlist ms-4 d-none d-lg-block" href="/user/wishlist" >
                                         <span class="material-symbols-outlined">
                                             favorite
                                             </span>
                                     </a>
     
-                                    <a class="header-action-item header-wishlist ms-4 d-none d-lg-block" href="/user/cart">
+                                    <a class="header-action-item header-wishlist ms-4 d-none d-lg-block" href="/user/cart" >
                                         <div class="cart-icon">
                                             <span class="material-symbols-outlined">shopping_bag</span>
                                             <span class="notification-badge"><%- cartCount %></span>
@@ -245,8 +245,6 @@
                     "slidesToScroll": 1, 
                     "dots": true,
                     "arrows": true,
-                    "autoplay": true, // Add this line to enable autoplay
-                    "autoplaySpeed": 2000, // Set the time between slides (in milliseconds)
                     "responsive": [
                         {
                             "breakpoint": 768,
@@ -260,7 +258,7 @@
                     <% for(let i=0 ; i< bannerData.length; i++){ %>
                     <div class="slide-item slide-item-bag position-relative">
                         <img class="slide-img d-none d-md-block"  src="/admin-assets/imgs/products/<%-bannerData[i].image  %>" alt="slide-1">
-                        <!-- <img class="slide-img d-md-none" src="/assets/img/banner/Banner1.jpg" alt="slide-1"> -->
+                        <img class="slide-img d-md-none" src="/admin-assets/imgs/products/<%-bannerData[i].image  %>" alt="slide-1">
                         <div class="content-absolute content-slide">
                             <div class="container height-inherit d-flex align-items-center">
                                 <div class="content-box slide-content py-4">
@@ -683,6 +681,69 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>  
         </button>
         <!-- scrollup end -->
+
+
+        <!-- drawer menu start -->
+ <div class="offcanvas offcanvas-start d-flex d-lg-none" tabindex="-1" id="drawer-menu">
+    <div class="offcanvas-wrapper">
+        <div class="offcanvas-header border-btm-black">
+            <h5 class="drawer-heading">Menu</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+            <nav class="site-navigation">
+                <ul class="main-menu list-unstyled">
+                    <li class="menu-list-item nav-item has-dropdown active">
+                        <div class="mega-menu-header">
+                            <a class="nav-link active" href="/user">
+                                Home
+                            </a>
+                        </div>  
+                    </li>
+                    <li class="menu-list-item nav-item has-megamenu">
+                        <div class="mega-menu-header">
+                            <a class="nav-link" href="/user/allProducts">
+                                Shop
+                            </a>
+                        </div>
+                    </li>
+                    <li class="menu-list-item nav-item has-megamenu">
+                        <div class="mega-menu-header">
+                            <a class="nav-link" href="">
+                                Contacts
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <ul class="utility-menu list-unstyled">
+                <li class="utilty-menu-item">
+                    <a class="header-action-item header-wishlist" href="/user/wishlist">
+                            <span class="material-symbols-outlined">favorite</span>
+                    </a>
+                </li>
+                <li class="utilty-menu-item">
+                    <a class="header-action-item header-wishlist" href="/user/cart">
+                        <div class="cart-icon">
+                            <span class="material-symbols-outlined">shopping_bag</span>
+                            <span class="notification-badge"><%- cartCount %></span>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="utilty-menu-item">
+                <a class="header-action-item header-wishlist "href="/user/logout">
+                    <span class="material-symbols-outlined">
+                        logout
+                     </span>
+                </a>
+            </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- drawer menu end -->
         
         <!-- all js -->
         <script src="assets/js/vendor.js"></script>

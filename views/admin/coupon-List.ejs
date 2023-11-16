@@ -134,7 +134,9 @@
                         <th>Expiration</th>
                         <th>Amount</th>
                         <th>Status</th>
+                        <th>Remove</th>
                         <th>Action</th>
+                        
                       </tr>
                     </thead>
                     <tbody>  
@@ -151,8 +153,9 @@
                             <% } else{ %>
                             <td class="align-middle" style="color: rgb(255, 0, 0); font-weight: bold;">Not Active</td> 
                              <%} %>
-                            <td class="align-middle"><a href="" class="btn btn-sm btn-brand rounded font-sm rounded" data-couponId="<%- coupon[i]._id %>" id="changeStatus-btn">Change Status</a></td>                                     
-                          </tr>  
+                             <td class="align-middle"><a href="" class="btn btn-brand font-xs btn-sm rounded">Remove Coupon</a></td> 
+                            <td class="align-middle"><a href="" class="btn btn-sm btn-brand font-xs rounded" data-couponId="<%- coupon[i]._id %>" id="changeStatus-btn">Change Status</a></td> 
+                        </tr>  
                           <% } %>    
                           <% }else{ %>
                             <tr>

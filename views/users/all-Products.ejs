@@ -12,12 +12,10 @@
     <!-- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- all css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <style>
         .wishlist-modal,
         .cart-modal {
@@ -155,14 +153,12 @@
         <div class="header-bottom">
             <div class="container">
                 <div class="row align-items-center">
-                    <div class="col-lg-4 col-md-4 col-4">
+                    <div class="col-lg-3 col-md-4 col-4">
                         <div class="header-logo">
-                            <a href="" class="logo-main">
-                                <img src="/assets/img/iStorelogo.png" style="width: 50px; height: 50px;" alt="bisum">
-                            </a>
+                            <img src="/assets/img/iStorelogo.png" alt="">
                         </div>
                     </div>
-                    <div class="col-lg-4 d-lg-block d-none">
+                    <div class="col-lg-5 d-lg-block d-none">
                         <nav class="site-navigation">
                             <ul class="main-menu list-unstyled justify-content-center">
                                 <li class="menu-list-item nav-item has-dropdown active">
@@ -369,7 +365,7 @@
                                                             <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
                                                             <lord-icon src="https://cdn.lordicon.com/xyboiuok.json"
                                                                 trigger="hover" colors="primary:#808080"
-                                                                style="width:30px;height:30px">
+                                                                style="width:70%;height:70%">
                                                             </lord-icon>
                                                         </a>
                                                         <a href="" class="action-card  add-to-cart-button"
@@ -377,7 +373,7 @@
                                                             <script src="https://cdn.lordicon.com/lordicon-1.2.0.js"></script>
                                                             <lord-icon src="https://cdn.lordicon.com/mfmkufkr.json"
                                                                 trigger="hover" colors="primary:#808080"
-                                                                style="width:35px;height:35px">
+                                                                style="width:70%;height:70%">
                                                             </lord-icon>
                                                         </a>
                                                     </div>
@@ -395,7 +391,7 @@
                                                     <% } %>
     
                                                     <h3 class="product-card-title">
-                                                        <a href=""><%- products[i].productName %></a>
+                                                        <p><%- products[i].productName %></p>
                                                     </h3>
     
                                                     <%if(products[i].offer>0){ %>
@@ -630,6 +626,69 @@
         </svg>
     </button>
     <!-- scrollup end -->
+
+     
+    <!-- drawer menu start -->
+        <div class="offcanvas offcanvas-start d-flex d-lg-none" tabindex="-1" id="drawer-menu">
+            <div class="offcanvas-wrapper">
+                <div class="offcanvas-header border-btm-black">
+                    <h5 class="drawer-heading">Menu</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+                    <nav class="site-navigation">
+                        <ul class="main-menu list-unstyled">
+                            <li class="menu-list-item nav-item has-dropdown active">
+                                <div class="mega-menu-header">
+                                    <a class="nav-link active" href="/user">
+                                        Home
+                                    </a>
+                                </div>  
+                            </li>
+                            <li class="menu-list-item nav-item has-megamenu">
+                                <div class="mega-menu-header">
+                                    <a class="nav-link" href="/user/allProducts">
+                                        Shop
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="menu-list-item nav-item has-megamenu">
+                                <div class="mega-menu-header">
+                                    <a class="nav-link" href="">
+                                        Contacts
+                                    </a>
+                                </div>
+                            </li>
+                        </ul>
+                    </nav>
+                    <ul class="utility-menu list-unstyled">
+                        <li class="utilty-menu-item">
+                            <a class="header-action-item header-wishlist" href="/user/wishlist">
+                                    <span class="material-symbols-outlined">favorite</span>
+                            </a>
+                        </li>
+                        <li class="utilty-menu-item">
+                            <a class="header-action-item header-wishlist" href="/user/cart">
+                                <div class="cart-icon">
+                                    <span class="material-symbols-outlined">shopping_bag</span>
+                                    <span class="notification-badge"><%- cartCount %></span>
+                                </div>
+                            </a>
+                        </li>
+        
+                        <li class="utilty-menu-item">
+                        <a class="header-action-item header-wishlist "href="/user/logout">
+                            <span class="material-symbols-outlined">
+                                logout
+                             </span>
+                        </a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- drawer menu end -->
 
     <!-- all js -->
     <script src="assets/js/vendor.js"></script>

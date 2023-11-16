@@ -606,8 +606,9 @@ button,
   padding: 20px 0; }
 
   .header-logo{
-    font-size: 30px;
-    font-weight: 800;
+    width: 25%;
+    height: 25%;
+   
   }
 .border-btm-black {
   -ms-border-bottom: 1px solid rgba(0, 0, 0, 0.1);
