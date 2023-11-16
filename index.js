@@ -45,7 +45,7 @@ app.set("views", "./views/users");
 //........ User Routes .......
 
 const userRouter=require('./routes/userRouter');
-app.use('/user',userRouter)
+app.use('/',userRouter)
 
 
 

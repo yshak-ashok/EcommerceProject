@@ -81,7 +81,7 @@ const removeWishlist = asyncHandler(async (req, res) => {
       { new: true }
     );
     
-      res.redirect('/user/wishlist')
+      res.redirect('/wishlist')
    
   } catch (error) {
     console.error(error);

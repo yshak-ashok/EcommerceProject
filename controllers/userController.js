@@ -126,7 +126,7 @@ const emailOTP = asyncHandler(async (req, res) => {
     try {
         const email = req.session.userEmail;
         if (!email) {
-            res.redirect('/user/login');
+            res.redirect('/login');
             //res.render("emailOTP", { errorMessage: "Cannot find Email." });
         } else {
             //console.log("emailotp userData", userData);
@@ -403,7 +403,7 @@ const newPassword = asyncHandler(async (req, res) => {
             const hashedPassword = await bcrypt.hash(newpass, 10);
             await User.findByIdAndUpdate(user._id, { password: hashedPassword }, { new: true });
             req.session.forgotemail = null;
-            return res.redirect('/user/login');
+            return res.redirect('/login');
         }
     } catch (error) {
         console.error(error);
@@ -592,7 +592,7 @@ const userProfile = asyncHandler(async (req, res) => {
                 }, 0);
                 const cartCount = userCartCount;
             
-            res.render('user-profile', { user,cartCount });
+            res.render('user-Profile', { user,cartCount });
             }
         }
     } catch (error) {
@@ -613,7 +613,7 @@ const editUserProfile = asyncHandler(async (req, res) => {
                 }, 0);
                 const cartCount = userCartCount;
             
-            res.render('edit-User-profile', { user,cartCount });
+            res.render('edit-User-Profile', { user,cartCount });
             }
         }
     } catch (error) {
@@ -632,7 +632,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
             $set: { username: username, email: email, mobile: mobile },
         });
         if (updateData) {
-            res.redirect('/user/userProfile');
+            res.redirect('/userProfile');
         }
     } catch (error) {
         console.error('error');
@@ -856,7 +856,7 @@ const deleteAddress = asyncHandler(async (req, res) => {
         // Remove the address from the addressID's address array
         addressID.address = addressID.address.filter((address) => address._id.toString() !== addressId);
         await addressID.save();
-        res.redirect('/user/userAddress');
+        res.redirect('/userAddress');
     } catch (error) {
         console.error('error');
     }
@@ -888,7 +888,7 @@ const userLogout = asyncHandler(async (req, res) => {
             await User.findByIdAndUpdate(userId, { isActive: false });
             req.session.userId = null;
         }
-        res.redirect('/user');
+        res.redirect('/');
     } catch (error) {
         console.error(error);
         res.render('error', { errorMessage: 'Something went wrong' });

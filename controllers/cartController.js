@@ -192,7 +192,7 @@ const removeProductCart = asyncHandler(async (req, res) => {
             { $pull: { products: { productId: productId } } },
             { new: true }
         );
-        res.redirect("/user/cart");
+        res.redirect("/cart");
     } catch (error) {
         console.error(error);
     }
