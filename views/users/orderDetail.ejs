@@ -96,13 +96,12 @@
                 text-align: left;
                 border-bottom: 1px solid #ddd;
                 border: 1px solid #ddd;
-                min-width: 100px;
+                min-width: 150px;
             }
             .label {
-                font-size: 12px;
-                color: blue; 
+                font-size: 10px;
                 display: inline-block;
-                width: 250px; 
+                width: 130px; 
             }
 
             .value {
@@ -240,7 +239,6 @@
 
         <link rel="stylesheet" href="/assets/css/vendor.css" />
         <link rel="stylesheet" href="/assets/css/style.css" />
-        <link rel="stylesheet" href="/assets/css/orderTrack.css">
     </head>
 
     <body>
@@ -451,14 +449,14 @@
                             </div>
                             <hr />
                             <div class="row">
-                                <div class="col-lg-6 col-md-10 col-10" data-aos="fade-up" data-aos-duration="700">
+                                <div class="col-lg-6 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                                     <div class="product-card">
                                         <h5>Order Info</h5>
                                         <div class="product-card-details">
                                             <ul class="list">
                                                 <li>
                                                     <a href=""
-                                                        ><span class="label">Order number</span>
+                                                        ><span class="label">Order No.</span>
                                                         <span class="value">: <%- orderDetail.ord %></span></a
                                                     >
                                                 </li>
@@ -478,7 +476,7 @@
                                                 </li>
                                                 <li>
                                                     <a href=""
-                                                        ><span class="label">Payment method</span>
+                                                        ><span class="label">Payment</span>
                                                         <span class="value">: <%- orderDetail.paymentMethod %></span></a
                                                     >
                                                 </li>
@@ -493,7 +491,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6 col-md-10 col-10" data-aos="fade-up" data-aos-duration="700">
+                                <div class="col-lg-6 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                                     <div class="product-card">
                                         <h5>Shipping Address</h5>
 
@@ -545,7 +543,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-lg-7 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
+                                <div class="col-lg-10 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                                     <div class="product-card">
                                         <table class="table">
                                             <thead>
@@ -590,7 +588,7 @@
                                                     <td><h5></h5></td>
                                                     <td><h5></h5></td>
                                                     <td>
-                                                    Coupon Discount
+                                                    Coupon
                                                     </td>
                                                    
                                                     <td>
@@ -628,30 +626,8 @@
                             <% } else if(orderDetail.orderStatus==="Delivered"){ %>
                             <a href="" class="return-btn btn-requested btn-primary" data-orderId="<%-orderDetail._id %>">
                                 RETURN ITEM</a >
-                                </div>
-
-                                <div class="col-lg-5 col-md-12 col-12 mt-48  " style="text-align: center;" data-aos="fade-up" data-aos-duration="700">
-                                   <% if( orderDetail.orderStatus == "Order Placed") { %>
-                                    <ol class="progtrckr" data-progtrckr-steps="4">
-                                    <li class="progtrckr-done">Placed</li>
-                                     <li class="progtrckr-todo">Shipped</li>
-                                     <li class="progtrckr-todo">Delivered</li>
-                                    </ol>
-                                    <% }else if (orderDetail.orderStatus == "Shipped") { %>
-                                        <ol class="progtrckr" data-progtrckr-steps="4">
-                                        <li class="progtrckr-done">Placed</li>
-                                        <li class="progtrckr-done">Shipped</li>
-                                        <li class="progtrckr-todo">Delivered</li>
-                                        </ol>
-                                    <% } else{ %>
-                                        <ol class="progtrckr" data-progtrckr-steps="4">
-                                        <li class="progtrckr-done">Placed</li>
-                                        <li class="progtrckr-done">Shipped</li>
-                                        <li class="progtrckr-done">Delivered</li>
-                                        </ol>
-                                    <% } %>
-                                </div>
-                            </div>
+                             </div>
+                        </div>
 
                             
                             <!-- Modal -->
