@@ -50,7 +50,7 @@
     border-radius: 10px;
     border: 1px solid #a8a7a8;
     text-align: center;
-    width:60%;
+    width:100%;
     margin: 0 auto;
     border-bottom: 6px solid #000;
 }
@@ -301,15 +301,13 @@
                     <div class="row flex-start">
 
                         <!-- sidebar start -->
-                        <div class="col-lg-2 col-md-12 col-12">
+                        <div class="col-lg-2 d-none d-lg-block">
                             <div class="collection-filter filter-drawer">
                                 <div class="filter-widget">
                                   <a href="/userProfile">
                                     <div class="filter-header faq-heading heading_18 d-flex align-items-center justify-content-between border-bottom"
                                         data-bs-toggle="collapse" data-bs-target="">
                                        PROFILE
-                                      
-                                       
                                     </div>
                                   </a> 
                                 </div>
@@ -353,34 +351,27 @@
                                 <a href="/myCoupons">
                                   <div class="filter-header faq-heading heading_18 d-flex align-items-center justify-content-between border-bottom"
                                       data-bs-toggle="collapse" data-bs-target="#filter-availability">
-                                    COUPON
-                                      
+                                    COUPON    
                                   </div>
                                 </a>
-                              </div>
-
-                            </div>
-                        </div>
-                    
+                                </div>
+                             </div>
+                        </div>             
                      <!-- sidebar end -->
-
-                    <!-- product area start -->
-                    <div class="col-lg-10 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
-                        <div class="filter-sort-wrapper d-flex justify-content-between flex-wrap"></div>
+                     <div class="col-lg-2 d-none d-lg-block"></div>
+                    <!-- Profile area start -->
+                    <div class="col-lg-6 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                           <div class="collection-product-container text-center">
                             <h3>My Profile</h3>
-                        </div> 
-                        <br>
-                   
-                    <div class="filter-sort-wrapper d-flex justify-content-between flex-wrap"></div>
-                      <div class="collection-product-container">
-                        <div class="shadow-box">
-                            <div style="text-align: left;">
-                                <a href="/editUserProfile">
-                                <i class="fa-solid fa-pen-to-square fa-xl" style="color: #1d2025; "></i>
-                                 </a>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="3em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#181b20}</style><path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>
+                         </div> 
+                        <div class="collection-product-container mt-48">
+                            <div class="shadow-box">
+                                <div style="text-align: left;">
+                                    <a href="/editUserProfile">
+                                    <i class="fa-solid fa-pen-to-square fa-xl" style="color: #1d2025; "></i>
+                                    </a>
+                                 </div>
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="3em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#181b20}</style><path d="M399 384.2C376.9 345.8 335.4 320 288 320H224c-47.4 0-88.9 25.8-111 64.2c35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z"/></svg>
                                
                               <br>
                               <br>
@@ -392,11 +383,11 @@
                                 <i class="cpnBtn fa-regular fa-copy fa-lg" title="copy"></i>
                                 </p>
                                 <br>
-                 
-                      </div>
-                   </div>
-                 <!-- product area end -->  
-               </div>
+                            </div>
+                        </div>
+                     </div>
+                   <!-- product area end -->  
+                   <div class="col-lg-2 d-none d-lg-block"></div>
             </div>
         </div>
      </main>
@@ -569,23 +560,53 @@
                                     </a>
                                 </div>
                             </li>
-                            
-                            <li class="menu-list-item nav-item has-megamenu">
+                            <li class="menu-list-item nav-item has-dropdown">
                                 <div class="mega-menu-header">
-                                    <a class="nav-link" href="/wishlist">
-                                        WISHLIST
+                                    <a class="nav-link active">
+                                        ACCOUNT
                                     </a>
+                                    <span class="open-submenu">
+                                        <svg class="icon icon-dropdown" xmlns="http://www.w3.org/2000/svg" width="24"
+                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            >
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </span>
                                 </div>
-                            </li>
-                            <li class="menu-list-item nav-item has-megamenu">
-                                <div class="mega-menu-header cart-icon">
-                                    <a class="nav-link" href="/cart">
-                                        CART
-                                    </a>
-                                    
-                                    <span class="notification-badge mt-2"><%- cartCount %></span>
+                                <div class="submenu-transform submenu-transform-desktop">
+                                    <div class="offcanvas-header border-btm-black">
+                                        <h5 class="drawer-heading btn-menu-back d-flex align-items-center">
+                                            <svg class="icon icon-menu-back" xmlns="http://www.w3.org/2000/svg"
+                                                width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" >
+                                                <polyline points="15 18 9 12 15 6"></polyline>
+                                            </svg>
+                                            <span class="menu-back-text">ACCOUNT</span>
+                                        </h5>
+                                    </div>
+                                    <ul class="submenu list-unstyled">
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/userProfile">PROFILE</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/changePassword">PASSWORD</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/orderList">ORDER</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/userAddress">ADDRESS</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/wallet">WALLET</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/myCoupons">COUPON</a>
+                                        </li>
+                                    </ul>
                                 </div>
-                                
                             </li>
                         </ul>
                     </nav>
@@ -593,10 +614,18 @@
                       
                             <li class="utilty-menu-item">
                                 <a class="header-action-item header-wishlist" href="/userProfile">
-                            
-                                    <span class="material-symbols-outlined">account_circle </span>
+                                    <span class="material-symbols-outlined">favorite</span>
                                 </a>
                             </li>
+                            <li class="utilty-menu-item">
+                                <a class="header-action-item header-wishlist" href="/userProfile">
+                                    <div class="cart-icon">
+                                        <span class="material-symbols-outlined">shopping_bag</span>
+                                        <span class="notification-badge"><%- cartCount %></span>
+                                    </div>                         
+                                </a>
+                            </li>
+                            
                         <li class="utilty-menu-item">
                         <a class="header-action-item header-wishlist "href="/logout">
                             <span class="material-symbols-outlined">

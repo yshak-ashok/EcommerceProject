@@ -34,7 +34,7 @@
                 line-height: 1; 
             }
             .wallet-container {
-                padding: 20px;
+                padding: 10px;
                 background-color:transparent;
                 border-bottom: 2px solid #000;
                 border-radius: 8px;
@@ -44,7 +44,7 @@
             .wallet-card {
                 background-color: #fefefe;
                 border-radius: 8px;
-                padding: 20px;
+                padding: 10px;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 margin-bottom: 20px;
 
@@ -332,7 +332,7 @@
                     <div class="container">
                         <div class="row flex-start">
                             <!-- sidebar start -->
-                            <div class="col-lg-2 col-md-12 col-12">
+                            <div class="col-lg-2 d-none d-lg-block">
                                 <div class="collection-filter filter-drawer">
                                     <div class="filter-widget">
                                         <a href="/userProfile">
@@ -398,14 +398,14 @@
                             </div>
 
                             <!-- sidebar end -->
-                            <div class="col-lg-1 col-md-12 col-12"></div>
+                            <div class="col-lg-1 d-none d-lg-block"> </div>
                             <!-- product area start -->
-                            <div class="col-lg-9 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
+                            <div class="col-lg-8 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                                 <div class="wallet-container">
                                     <div class="container">
                                         <div class="row">
                                             <!-- Left Side - Current Balance -->
-                                            <div class="col-lg-5">
+                                            <div class="col-lg-4">
                                                 <div class="wallet-card current-balance">
                                                     <h3>Balance</h3>
                                                     <p style="font-size: large">
@@ -418,7 +418,7 @@
                                             </div>
 
                                             <!-- Right Side - Transaction History -->
-                                            <div class="col-lg-7">
+                                            <div class="col-lg-8">
                                                 <div class="wallet-card transaction-history">
                                                     <h5>Transactions</h5>
                                                     <ul class="transaction-list">
@@ -426,36 +426,23 @@
                                                         <% for(let i=0; i< userWallet.transactionHistory.length; i++) { %>
                                                         <li>
                                                             <div class="transaction-details">
-                                                                <span class="description" style="width: 60%"
-                                                                    ><%-userWallet.transactionHistory[i].description
-                                                                    %></span
-                                                                >
-
+                                                                <span class="description" style="width: 50%" >
+                                                                    <%-userWallet.transactionHistory[i].description%>
+                                                                </span>
                                                                 <% if(userWallet.transactionHistory[i].debitOrCredit=="Credit"){ %>
-                                                                <span class="debit" style="color: green; width: 20%"
-                                                                    ><%-userWallet.transactionHistory[i].debitOrCredit
-                                                                    %></span
-                                                                >
-                                                                <span class="amount" style="width: 20%">
-                                                                    <i
-                                                                        class="fa-solid fa-indian-rupee-sign fa-sm"
-                                                                        style="color: #000000"></i
-                                                                    >&nbsp;<%-userWallet.transactionHistory[i].addedAmount
-                                                                    %>
+                                                                <span class="debit" style="color: green; width: 25%">
+                                                                    <%-userWallet.transactionHistory[i].debitOrCredit %>
                                                                 </span>
-                                                                <% } else {%>
-                                                                <span class="debit" style="color: red; width: 20%"
-                                                                    ><%-userWallet.transactionHistory[i].debitOrCredit
-                                                                    %></span
-                                                                >
-                                                                <span class="amount" style="width: 20%">
-                                                                    <i
-                                                                        class="fa-solid fa-indian-rupee-sign fa-sm"
-                                                                        style="color: #000000"></i
-                                                                    >&nbsp;<%-userWallet.transactionHistory[i].addedAmount
-                                                                    %>
-                                                                </span>
-                                                                <% } %>
+                                                                <% }else { %>
+                                                                    <span class="debit" style="color: red; width: 25%">
+                                                                        <%-userWallet.transactionHistory[i].debitOrCredit %>
+                                                                    </span>
+                                                                    <%} %>
+                                                                    &nbsp;
+                                                                <span class="amount" style="width: 25%">
+                                                                    <i class="fa-solid fa-indian-rupee-sign fa-sm"style="color: #000000"></i>
+                                                                <%-userWallet.transactionHistory[i].addedAmount%>
+                                                                </span>  
                                                             </div>
                                                         </li>
                                                         <% } %> 
@@ -469,6 +456,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-lg-1 d-none d-lg-block"> </div>
                         </div>
                     </div>
                 </div>
@@ -629,70 +617,108 @@
             <!-- scrollup end -->
 
             <!-- drawer menu start -->
-            <div class="offcanvas offcanvas-start d-flex d-lg-none" tabindex="-1" id="drawer-menu">
-                <div class="offcanvas-wrapper">
-                    <div class="offcanvas-header border-btm-black">
-                        <h5 class="drawer-heading">MENU</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
-                        <nav class="site-navigation">
-                            <ul class="main-menu list-unstyled">
-                                <li class="menu-list-item nav-item has-dropdown active">
-                                    <div class="mega-menu-header">
-                                        <a class="nav-link active" href="/">
-                                            HOME
-                                        </a>
-                                    </div>  
-                                </li>
-                                <li class="menu-list-item nav-item has-megamenu">
-                                    <div class="mega-menu-header">
-                                        <a class="nav-link" href="/allProducts">
-                                            SHOP
-                                        </a>
-                                    </div>
-                                </li>
-                                
-                                <li class="menu-list-item nav-item has-megamenu">
-                                    <div class="mega-menu-header">
-                                        <a class="nav-link" href="/wishlist">
-                                            WISHLIST
-                                        </a>
-                                    </div>
-                                </li>
-                                <li class="menu-list-item nav-item has-megamenu">
-                                    <div class="mega-menu-header cart-icon">
-                                        <a class="nav-link" href="/cart">
-                                            CART
-                                        </a>
-                                        
-                                        <span class="notification-badge mt-2"><%- cartCount %></span>
-                                    </div>
-                                    
-                                </li>
-                            </ul>
-                        </nav>
-                        <ul class="utility-menu list-unstyled">
-                          
-                                <li class="utilty-menu-item">
-                                    <a class="header-action-item header-wishlist" href="/userProfile">
-                                
-                                        <span class="material-symbols-outlined">account_circle </span>
+        <div class="offcanvas offcanvas-start d-flex d-lg-none" tabindex="-1" id="drawer-menu">
+            <div class="offcanvas-wrapper">
+                <div class="offcanvas-header border-btm-black">
+                    <h5 class="drawer-heading">MENU</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+                    <nav class="site-navigation">
+                        <ul class="main-menu list-unstyled">
+                            <li class="menu-list-item nav-item has-dropdown active">
+                                <div class="mega-menu-header">
+                                    <a class="nav-link active" href="/">
+                                        HOME
                                     </a>
-                                </li>
-                            <li class="utilty-menu-item">
-                            <a class="header-action-item header-wishlist "href="/logout">
-                                <span class="material-symbols-outlined">
-                                    logout
-                                </span>
-                            </a>
-                           </li>
+                                </div>  
+                            </li>
+                            <li class="menu-list-item nav-item has-megamenu">
+                                <div class="mega-menu-header">
+                                    <a class="nav-link" href="/allProducts">
+                                        SHOP
+                                    </a>
+                                </div>
+                            </li>
+                            <li class="menu-list-item nav-item has-dropdown">
+                                <div class="mega-menu-header">
+                                    <a class="nav-link active">
+                                        ACCOUNT
+                                    </a>
+                                    <span class="open-submenu">
+                                        <svg class="icon icon-dropdown" xmlns="http://www.w3.org/2000/svg" width="24"
+                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            >
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                    </span>
+                                </div>
+                                <div class="submenu-transform submenu-transform-desktop">
+                                    <div class="offcanvas-header border-btm-black">
+                                        <h5 class="drawer-heading btn-menu-back d-flex align-items-center">
+                                            <svg class="icon icon-menu-back" xmlns="http://www.w3.org/2000/svg"
+                                                width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" >
+                                                <polyline points="15 18 9 12 15 6"></polyline>
+                                            </svg>
+                                            <span class="menu-back-text">ACCOUNT</span>
+                                        </h5>
+                                    </div>
+                                    <ul class="submenu list-unstyled">
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/userProfile">PROFILE</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/changePassword">PASSWORD</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/orderList">ORDER</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/userAddress">ADDRESS</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/wallet">WALLET</a>
+                                        </li>
+                                        <li class="menu-list-item nav-item-sub">
+                                            <a class="nav-link-sub nav-text-sub" href="/myCoupons">COUPON</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
                         </ul>
-                    </div>
+                    </nav>
+                    <ul class="utility-menu list-unstyled">
+                      
+                            <li class="utilty-menu-item">
+                                <a class="header-action-item header-wishlist" href="/userProfile">
+                                    <span class="material-symbols-outlined">favorite</span>
+                                </a>
+                            </li>
+                            <li class="utilty-menu-item">
+                                <a class="header-action-item header-wishlist" href="/userProfile">
+                                    <div class="cart-icon">
+                                        <span class="material-symbols-outlined">shopping_bag</span>
+                                        <span class="notification-badge"><%- cartCount %></span>
+                                    </div>                         
+                                </a>
+                            </li>
+                            
+                        <li class="utilty-menu-item">
+                        <a class="header-action-item header-wishlist "href="/logout">
+                            <span class="material-symbols-outlined">
+                                logout
+                            </span>
+                        </a>
+                       </li>
+                    </ul>
                 </div>
             </div>
-        <!-- drawer menu end -->
+        </div>
+    <!-- drawer menu end -->
 
             <!-- all js -->
             <script src="assets/js/vendor.js"></script>

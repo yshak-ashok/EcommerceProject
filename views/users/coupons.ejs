@@ -95,7 +95,7 @@
     border-radius: 10px;
     border: 1px solid #a8a7a8;
     text-align: center;
-    width:60%;
+    width:100%;
     margin: 0 auto;
 }
 
@@ -345,7 +345,7 @@
                     <div class="row flex-start">
 
                         <!-- sidebar start -->
-                        <div class="col-lg-2 col-md-12 col-12">
+                        <div class="col-lg-2 d-none d-lg-block">
                             <div class="collection-filter filter-drawer">
                                 <div class="filter-widget">
                                 <a href="/userProfile">
@@ -406,13 +406,12 @@
                             </div>
                         </div>
 
-                        <!-- sidebar end -->
-                        <div class="col-lg-1 col-md-12 col-12"></div>
+                    <!-- sidebar end -->
+                    <div class="col-lg-1 d-none d-lg-block"></div>
                     <!-- product area start -->
                     <div class="col-lg-8 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                     <div class="filter-sort-wrapper d-flex justify-content-between flex-wrap"></div>
                       <div class="collection-product-container">
-                     <!-- Offer Start-->
                             <div class="instagram-section overflow-hidden home-section">
                               <div class="instagram-inner">
                                   <div class="container">
@@ -421,12 +420,26 @@
                                           <h2 class="section-heading">My Coupons</h2>
                                           <p class="section-subheading"></p>
                                       </div>
-                                      <div class="instagram-container position-relative mt-48">
+                                      <div class="instagram-container position-relative">
                                           <div class="common-slider" data-slick='{
                                               "slidesToShow": 2, 
                                               "slidesToScroll": 1,
                                               "dots": false,
-                                              "arrows": true
+                                              "arrows": true,
+                                              "responsive": [
+                                                {
+                                                    "breakpoint": 1281,
+                                                    "settings": {
+                                                    "slidesToShow": 2
+                                                    }
+                                                },
+                                                {
+                                                    "breakpoint": 768,
+                                                    "settings": {
+                                                    "slidesToShow": 1
+                                                    }
+                                                }
+                                                ]
                                           }'>
                                               <!-- Coupon Card -->
                                              
@@ -464,13 +477,12 @@
                                           <div class="activate-arrows show-arrows-always article-arrows arrows-white"></div>
                                       </div>
                                   </div>
-                              </div>
-                            
-                          </div>
-                                          
+                              </div> 
+                          </div>               
                           <!-- Offer End       -->
                       </div>
                  <!-- product area end -->  
+                 <div class="col-lg-1 d-none d-lg-block"></div>
                </div>
             </div>
         </div>
@@ -644,23 +656,53 @@
                             </a>
                         </div>
                     </li>
-                    
-                    <li class="menu-list-item nav-item has-megamenu">
+                    <li class="menu-list-item nav-item has-dropdown">
                         <div class="mega-menu-header">
-                            <a class="nav-link" href="/wishlist">
-                                WISHLIST
+                            <a class="nav-link active">
+                                ACCOUNT
                             </a>
+                            <span class="open-submenu">
+                                <svg class="icon icon-dropdown" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    >
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
                         </div>
-                    </li>
-                    <li class="menu-list-item nav-item has-megamenu">
-                        <div class="mega-menu-header cart-icon">
-                            <a class="nav-link" href="/cart">
-                                CART
-                            </a>
-                            
-                            <span class="notification-badge mt-2"><%- cartCount %></span>
+                        <div class="submenu-transform submenu-transform-desktop">
+                            <div class="offcanvas-header border-btm-black">
+                                <h5 class="drawer-heading btn-menu-back d-flex align-items-center">
+                                    <svg class="icon icon-menu-back" xmlns="http://www.w3.org/2000/svg"
+                                        width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" >
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    <span class="menu-back-text">ACCOUNT</span>
+                                </h5>
+                            </div>
+                            <ul class="submenu list-unstyled">
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/userProfile">PROFILE</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/changePassword">PASSWORD</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/orderList">ORDER</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/userAddress">ADDRESS</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/wallet">WALLET</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/myCoupons">COUPON</a>
+                                </li>
+                            </ul>
                         </div>
-                        
                     </li>
                 </ul>
             </nav>
@@ -668,10 +710,18 @@
               
                     <li class="utilty-menu-item">
                         <a class="header-action-item header-wishlist" href="/userProfile">
-                    
-                            <span class="material-symbols-outlined">account_circle </span>
+                            <span class="material-symbols-outlined">favorite</span>
                         </a>
                     </li>
+                    <li class="utilty-menu-item">
+                        <a class="header-action-item header-wishlist" href="/userProfile">
+                            <div class="cart-icon">
+                                <span class="material-symbols-outlined">shopping_bag</span>
+                                <span class="notification-badge"><%- cartCount %></span>
+                            </div>                         
+                        </a>
+                    </li>
+                    
                 <li class="utilty-menu-item">
                 <a class="header-action-item header-wishlist "href="/logout">
                     <span class="material-symbols-outlined">
