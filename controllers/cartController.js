@@ -250,9 +250,17 @@ const loadConfirmation = asyncHandler(async (req, res) => {
         const orderId = req.query.orderId;
         console.log("orderid", orderId);
         const user = await User.findById(req.session.userId);
+        let cart = await Cart.findOne({ userId: user._id });
         const orderDetails = await Order.findById(orderId).populate("products.productId");
-        console.log("orderdetails", orderDetails);
-        res.render("confirmation", { user, orderDetails });
+        //console.log("orderdetails", orderDetails);
+        const userCartCount = cart.products.reduce((acc, product) => {
+            return acc + product.quantity;
+        }, 0);
+
+        const cartCount = userCartCount;
+        if(user){
+        res.render("confirmation", { user, orderDetails,cartCount });
+        }
     } catch (error) {
         console.error("Error:", error);
         res.status(500).json({ error: "An error occurred" });
