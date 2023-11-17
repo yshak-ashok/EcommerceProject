@@ -74,9 +74,11 @@ const placeOrder = asyncHandler(async (req, res) => {
             address: address,
         });
         // console.log('address: ',address);
-        // console.log('orderdetails',orderDetails);
+        //console.log('orderdetails',orderDetails);
         const placeorder = await orderDetails.save();
-        console.log('placedorder', placeorder);
+        console.log("total checking :",orderDetails.totalAmount);
+        //console.log('placedorder', placeorder);
+    if(orderDetails.totalAmount){
         if (placeorder.paymentMethod === 'COD') {
             for (const product of orderedProducts) {
                 product.productStatus = 'Order Placed';
@@ -130,6 +132,9 @@ const placeOrder = asyncHandler(async (req, res) => {
                 res.json({ status: 'WALLET', placedOrderId: placeorder._id });
             }
         }
+    }else{
+        res.json({status:"cart-issue",placedOrderId: placeorder._id})
+    }
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'An error occurred' });

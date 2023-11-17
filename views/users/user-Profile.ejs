@@ -535,109 +535,150 @@
         </button>
         <!-- scrollup end -->
         
-        <!-- drawer menu start -->
-        <div class="offcanvas offcanvas-start d-flex d-lg-none" tabindex="-1" id="drawer-menu">
-            <div class="offcanvas-wrapper">
-                <div class="offcanvas-header border-btm-black">
-                    <h5 class="drawer-heading">MENU</h5>
-                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                        aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
-                    <nav class="site-navigation">
-                        <ul class="main-menu list-unstyled">
-                            <li class="menu-list-item nav-item has-dropdown active">
-                                <div class="mega-menu-header">
-                                    <a class="nav-link active" href="/">
-                                        HOME
-                                    </a>
-                                </div>  
-                            </li>
-                            <li class="menu-list-item nav-item has-megamenu">
-                                <div class="mega-menu-header">
-                                    <a class="nav-link" href="/allProducts">
-                                        SHOP
-                                    </a>
-                                </div>
-                            </li>
-                            <li class="menu-list-item nav-item has-dropdown">
-                                <div class="mega-menu-header">
-                                    <a class="nav-link active">
-                                        ACCOUNT
-                                    </a>
-                                    <span class="open-submenu">
-                                        <svg class="icon icon-dropdown" xmlns="http://www.w3.org/2000/svg" width="24"
-                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            >
-                                            <polyline points="9 18 15 12 9 6"></polyline>
-                                        </svg>
-                                    </span>
-                                </div>
-                                <div class="submenu-transform submenu-transform-desktop">
-                                    <div class="offcanvas-header border-btm-black">
-                                        <h5 class="drawer-heading btn-menu-back d-flex align-items-center">
-                                            <svg class="icon icon-menu-back" xmlns="http://www.w3.org/2000/svg"
-                                                width="40" height="40" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" >
-                                                <polyline points="15 18 9 12 15 6"></polyline>
-                                            </svg>
-                                            <span class="menu-back-text">ACCOUNT</span>
-                                        </h5>
-                                    </div>
-                                    <ul class="submenu list-unstyled">
-                                        <li class="menu-list-item nav-item-sub">
-                                            <a class="nav-link-sub nav-text-sub" href="/userProfile">PROFILE</a>
-                                        </li>
-                                        <li class="menu-list-item nav-item-sub">
-                                            <a class="nav-link-sub nav-text-sub" href="/changePassword">PASSWORD</a>
-                                        </li>
-                                        <li class="menu-list-item nav-item-sub">
-                                            <a class="nav-link-sub nav-text-sub" href="/orderList">ORDER</a>
-                                        </li>
-                                        <li class="menu-list-item nav-item-sub">
-                                            <a class="nav-link-sub nav-text-sub" href="/userAddress">ADDRESS</a>
-                                        </li>
-                                        <li class="menu-list-item nav-item-sub">
-                                            <a class="nav-link-sub nav-text-sub" href="/wallet">WALLET</a>
-                                        </li>
-                                        <li class="menu-list-item nav-item-sub">
-                                            <a class="nav-link-sub nav-text-sub" href="/myCoupons">COUPON</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </nav>
-                    <ul class="utility-menu list-unstyled">
-                      
-                            <li class="utilty-menu-item">
-                                <a class="header-action-item header-wishlist" href="/wishlist">
-                                    <span class="material-symbols-outlined">favorite</span>
-                                </a>
-                            </li>
-                            <li class="utilty-menu-item">
-                                <a class="header-action-item header-wishlist" href="/cart">
-                                    <div class="cart-icon">
-                                        <span class="material-symbols-outlined">shopping_bag</span>
-                                        <span class="notification-badge"><%- cartCount %></span>
-                                    </div>                         
-                                </a>
-                            </li>
-                            
-                        <li class="utilty-menu-item">
-                        <a class="header-action-item header-wishlist "href="/logout">
-                            <span class="material-symbols-outlined">
-                                logout
-                            </span>
-                        </a>
-                       </li>
-                    </ul>
-                </div>
-            </div>
+       <!-- drawer menu start -->
+   <div class="offcanvas offcanvas-start d-flex d-lg-none" tabindex="-1" id="drawer-menu">
+    <div class="offcanvas-wrapper">
+        <div class="offcanvas-header border-btm-black">
+            <h5 class="drawer-heading">MENU</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                aria-label="Close"></button>
         </div>
-    <!-- drawer menu end -->
+        <div class="offcanvas-body p-0 d-flex flex-column justify-content-between">
+            <nav class="site-navigation">
+                <ul class="main-menu list-unstyled">
+                    <li class="menu-list-item nav-item has-dropdown active">
+                        <div class="mega-menu-header">
+                            <a class="nav-link active" href="/">
+                                HOME
+                            </a>
+                        </div>  
+                    </li>
+                    <li class="menu-list-item nav-item has-dropdown active">
+                        <div class="mega-menu-header">
+                            <a class="nav-link active" href="/allProducts">
+                                SHOP
+                            </a>
+                        </div>  
+                    </li>
+                    <li class="menu-list-item nav-item has-dropdown">
+                        <div class="mega-menu-header">
+                            <a class="nav-link active">
+                                CATEGORY
+                            </a>
+                            <span class="open-submenu">
+                                <svg class="icon icon-dropdown" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    >
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="submenu-transform submenu-transform-desktop">
+                            <div class="offcanvas-header border-btm-black">
+                                <h5 class="drawer-heading btn-menu-back d-flex align-items-center">
+                                    <svg class="icon icon-menu-back" xmlns="http://www.w3.org/2000/svg"
+                                        width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" >
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    <span class="menu-back-text">CATEGORY</span>
+                                </h5>
+                            </div>
+                            <ul class="filter-lists list-unstyled mb-0">
+                                <% if(category.length){ %>
+                                    <% for(let i=0; i<category.length;i++){%>
+                                        <li class="menu-list-item nav-item-sub">
+                                             <a class="nav-link-sub nav-text-sub" href="/filter-Category?id=<%-category[i]._id%>"><%-category[i].name%></a>
+                                        </li>
+                                    <%} %>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </li>
+                    <% if(user){ %>
+                    <li class="menu-list-item nav-item has-dropdown">
+                        <div class="mega-menu-header">
+                            <a class="nav-link active">
+                                ACCOUNT
+                            </a>
+                            <span class="open-submenu">
+                                <svg class="icon icon-dropdown" xmlns="http://www.w3.org/2000/svg" width="24"
+                                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    >
+                                    <polyline points="9 18 15 12 9 6"></polyline>
+                                </svg>
+                            </span>
+                        </div>
+                        <div class="submenu-transform submenu-transform-desktop">
+                            <div class="offcanvas-header border-btm-black">
+                                <h5 class="drawer-heading btn-menu-back d-flex align-items-center">
+                                    <svg class="icon icon-menu-back" xmlns="http://www.w3.org/2000/svg"
+                                        width="40" height="40" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" >
+                                        <polyline points="15 18 9 12 15 6"></polyline>
+                                    </svg>
+                                    <span class="menu-back-text">ACCOUNT</span>
+                                </h5>
+                            </div>
+                            <ul class="submenu list-unstyled">
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/userProfile">PROFILE</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/changePassword">PASSWORD</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/orderList">ORDER</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/userAddress">ADDRESS</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/wallet">WALLET</a>
+                                </li>
+                                <li class="menu-list-item nav-item-sub">
+                                    <a class="nav-link-sub nav-text-sub" href="/myCoupons">COUPON</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <% } %>
+                </ul>
+            </nav>
+            <% if(user){ %>
+            <ul class="utility-menu list-unstyled">
+              
+                    <li class="utilty-menu-item">
+                        <a class="header-action-item header-wishlist" href="/wishlist">
+                            <span class="material-symbols-outlined">favorite</span>
+                        </a>
+                    </li>
+                    <li class="utilty-menu-item">
+                        <a class="header-action-item header-wishlist" href="/cart">
+                            <div class="cart-icon">
+                                <span class="material-symbols-outlined">shopping_bag</span>
+                                <span class="notification-badge"><%- cartCount %></span>
+                            </div>                         
+                        </a>
+                    </li>
+                    
+                <li class="utilty-menu-item">
+                <a class="header-action-item header-wishlist "href="/logout">
+                    <span class="material-symbols-outlined">
+                        logout
+                    </span>
+                </a>
+               </li>
+            </ul>
+            <%} %>
+        </div>
+    </div>
+</div>
+<!-- drawer menu end -->
 
         <!-- all js -->
         <script src="assets/js/vendor.js"></script>

@@ -225,7 +225,7 @@ const loadCheckout = asyncHandler(async (req, res) => {
         const cartRegularPriceTotal = cart.products.reduce((total, product) => {
             return total + product.regularprice;
         }, 0);
-
+        console.log("cart");
         const totalDiscountAmount = cartRegularPriceTotal - cart.total;
 
         res.render("checkout", {
