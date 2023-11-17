@@ -17,7 +17,7 @@ const home = asyncHandler(async (req, res) => {
     try {
         const productData = await Product.find({ is_listed: true }).populate('category').sort({ date: -1 }).limit(4);
         const allProductData = await Category.find({ status: true });
-
+        const category = await Category.find();
         const user = await User.findById(req.session.userId);
         const bannerData = await Banner.find({ isActive: true }); // Query only active banners
         console.log('banner:', bannerData);
@@ -35,6 +35,7 @@ const home = asyncHandler(async (req, res) => {
                     allProducts: allProductData,
                     cartCount: userCartCount,
                     bannerData,
+                    category
                 });
             } else {
                 res.render('home', {
@@ -43,6 +44,7 @@ const home = asyncHandler(async (req, res) => {
                     allProducts: allProductData,
                     cartCount: 0,
                     bannerData,
+                    category
                 });
             }
         } else {
@@ -56,6 +58,7 @@ const home = asyncHandler(async (req, res) => {
                 allProducts: allProductData,
                 cartCount: 0,
                 bannerData,
+                category
             });
         }
     } catch (error) {
@@ -418,7 +421,7 @@ const viewProduct = asyncHandler(async (req, res) => {
     try {
         const productid = req.query.id;
         const user = await User.findById(req.session.userId);
-
+        const category = await Category.find();
         const productData = await Product.findById(productid).populate('category');
         const categoryId = productData.category._id;
         const similarProducts = await Product.find({ category: categoryId });
@@ -436,13 +439,15 @@ const viewProduct = asyncHandler(async (req, res) => {
                     products: productData,
                     similarProducts: similarProducts,
                     cartCount: userCartCount,
+                    category
                 });
             } else {
                 res.render('view-Product', {
                     user: user,
                     products: productData,
                     similarProducts: similarProducts,
-                    cartCount: 0, // Set the cartCount to 0 if the user's cart is empty
+                    cartCount: 0,
+                    category // Set the cartCount to 0 if the user's cart is empty
                 });
             }
         } else {
@@ -455,6 +460,7 @@ const viewProduct = asyncHandler(async (req, res) => {
                 products: productData,
                 similarProducts: similarProducts,
                 cartCount: 0, // Set the cartCount to 0 if the user is not valid
+                category
             });
         }
     } catch (error) {
