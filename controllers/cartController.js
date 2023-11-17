@@ -14,6 +14,7 @@ const loadCart = asyncHandler(async (req, res) => {
         const user = await User.findById(req.session.userId);
         const user_Id = user._id;
         const userCart = await Cart.findOne({ userId: user_Id });
+        const category = await Category.find();
         if (userCart && userCart.products && userCart.products.length > 0) {
             const userCartCount = userCart.products.reduce((acc, product) => {
                 return (acc += product.quantity);
@@ -42,10 +43,11 @@ const loadCart = asyncHandler(async (req, res) => {
                 cartRegularPriceTotal,
                 totalDiscount,
                 message: "",
+                category
             });
         } else {
             // If the user cart doesn't exist or is empty, render the cart page without products
-            res.render("cart", { user, cart: [], cartTotal: 0, cartCount: 0, message: "Cart is empty" });
+            res.render("cart", { user, cart: [], cartTotal: 0, cartCount: 0, message: "Cart is empty",category });
         }
     } catch (error) {
         console.error(error);
@@ -204,6 +206,7 @@ const loadCheckout = asyncHandler(async (req, res) => {
         const user_id = user._id;
         let userAddress = await Address.findOne({ userId: user_id });
         const userCart = await Cart.findOne({ userId: user_id });
+        const category = await Category.find();
         if (!userAddress) {
             userAddress = new Address({ userId: user_id, address: [] });
             await userAddress.save();
@@ -237,6 +240,7 @@ const loadCheckout = asyncHandler(async (req, res) => {
             userWallet,
             cartRegularPriceTotal,
             totalDiscountAmount,
+            category
         });
     } catch (error) {
         console.error(error);
@@ -251,6 +255,7 @@ const loadConfirmation = asyncHandler(async (req, res) => {
         //console.log("orderid", orderId);
         const user = await User.findById(req.session.userId);
         let cart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         const orderDetails = await Order.findById(orderId).populate("products.productId");
         //console.log("orderdetails", orderDetails);
         const userCartCount = cart.products.reduce((acc, product) => {
@@ -259,7 +264,7 @@ const loadConfirmation = asyncHandler(async (req, res) => {
 
         const cartCount = userCartCount;
         if(user){
-        res.render("confirmation", { user, orderDetails, cartCount });
+        res.render("confirmation", { user, orderDetails, cartCount,category });
         }
     } catch (error) {
         console.error("Error:", error);

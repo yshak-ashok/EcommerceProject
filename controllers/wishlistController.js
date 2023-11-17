@@ -14,13 +14,14 @@ const wishlist = asyncHandler(async (req, res) => {
     const user = await User.findById(req.session.userId);
     const user_Id = user._id;
     const userCart = await Cart.findOne({ userId: user_Id });
+    const category = await Category.find();
     const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
     let wishlist = await Wishlist.findOne({ userId: user_Id }).populate('products.productId');
     if (!wishlist || !wishlist.products || wishlist.products.length === 0) {
       wishlist = new Wishlist({ userId: user_Id, products: [] });
       await wishlist.save();
     }
-    res.render('wishlist', { user, wishlist: wishlist.products, cartCount: userCartCount });
+    res.render('wishlist', { user, wishlist: wishlist.products, cartCount: userCartCount,category });
 
   } catch (error) {
     console.error(error);

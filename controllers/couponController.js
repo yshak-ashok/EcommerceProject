@@ -2,6 +2,7 @@ const Coupon = require("../models/couponModel");
 const UsedCoupon = require("../models/usedCouponModel");
 const User = require("../models/userModel");
 const Cart = require("../models/cartModel");
+const Category=require("../models/categoryModel")
 const asyncHandler = require("express-async-handler");
 
 //=================admin Management======================
@@ -93,12 +94,13 @@ const myCoupon = asyncHandler(async (req, res) => {
         const user = await User.findById(req.session.userId);
         const userCart = await Cart.findOne({ userId: user._id });
         const couponData = await Coupon.find();
+        const category = await Category.find();
         const userCartCount = userCart.products.reduce((acc, product) => {
             return (acc += product.quantity);
         }, 0);
         const cartCount = userCartCount;
         if(user){
-        res.render("coupons", { user, couponData,cartCount, Message: "" });
+        res.render("coupons", { user, couponData,cartCount, Message: "" ,category});
         }
     } catch (error) {
         console.error("error");

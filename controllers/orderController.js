@@ -5,6 +5,7 @@ const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const UsedCoupon = require('../models/usedCouponModel');
 const Wallet = require('../models/walletModel');
+const Category=require("../models/categoryModel")
 const asyncHandler = require('express-async-handler');
 const RazorpayHelper = require('../razorpay/razorpay');
 // const { response } = require("../routes/userRouter");
@@ -203,6 +204,7 @@ const orderList = asyncHandler(async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const perPage = 8;
         const userCart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         const totalOrder = await Order.find({ userId: user_Id }).sort({ date: -1 }).countDocuments();
         //console.log('totalorder:', totalOrder);
         const totalPages = Math.ceil(totalOrder / perPage);
@@ -217,7 +219,7 @@ const orderList = asyncHandler(async (req, res) => {
         }, 0);
         const cartCount = userCartCount;
         if (user) {
-            res.render('orderList', { user, userOrders, cartCount, currentPage: page, totalPages });
+            res.render('orderList', { user, userOrders, cartCount, currentPage: page, totalPages,category });
         }
     } catch (error) {
         console.error('Error:', error);
@@ -232,13 +234,14 @@ const orderDetails = asyncHandler(async (req, res) => {
         //console.log('orederID',orderId);
         const orderDetail = await Order.findById(orderId).populate('products.productId');
         const userCart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         // console.log('orderDetails', orderDetail);
         const userCartCount = userCart.products.reduce((acc, product) => {
             return (acc += product.quantity);
         }, 0);
         const cartCount = userCartCount;
         if (user) {
-            res.render('orderDetail', { user, orderDetail,cartCount });
+            res.render('orderDetail', { user, orderDetail,cartCount,category });
         }
     } catch (error) {
         console.error('Error:', error);
@@ -320,6 +323,7 @@ const loadOrderList = asyncHandler(async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const perPage = 10;
         const totalOrder = await Order.countDocuments();
+        const category = await Category.find();
         const totalPages = Math.ceil(totalOrder / perPage);
         const orders = await Order.find()
             .skip((page - 1) * perPage)
@@ -330,7 +334,7 @@ const loadOrderList = asyncHandler(async (req, res) => {
         // console.log('totalPages:', totalPages);
 
         console.log('order:', orders);
-        res.render('order-List', { orders, currentPage: page, totalPages });
+        res.render('order-List', { orders, currentPage: page, totalPages,category });
     } catch (error) {
         console.error(error);
     }
@@ -373,10 +377,11 @@ const filterOrder = asyncHandler(async (req, res) => {
 const loadOrderDetails = asyncHandler(async (req, res) => {
     try {
         const orderId = req.query.orderId;
+        const category = await Category.find();
         //console.log('orderid:',orderId);
         const orderDetail = await Order.findById(orderId).populate('products.productId');
-        console.log('orderDetails:', orderDetail);
-        res.render('order-Details', { orderDetail });
+        //console.log('orderDetails:', orderDetail);
+        res.render('order-Details', { orderDetail ,category});
     } catch (error) {
         console.error(error);
     }
@@ -385,10 +390,10 @@ const loadOrderDetails = asyncHandler(async (req, res) => {
 const shipped = asyncHandler(async (req, res) => {
     try {
         const { orderId, orderStatus } = req.body;
-        console.log('orderid:', orderId);
-        console.log('orderstatus', orderStatus);
+        // console.log('orderid:', orderId);
+        // console.log('orderstatus', orderStatus);
         const orderDetails = await Order.findById(orderId).populate('products.productId');
-        console.log(orderDetails);
+        // console.log(orderDetails);
         if (orderStatus == 'Shipped') {
             orderDetails.products.map((product) => {
                 return (product.productStatus = 'Shipped');

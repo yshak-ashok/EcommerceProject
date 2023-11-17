@@ -591,6 +591,7 @@ const userProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         const userCart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         if (user) {
             if (userCart) {
                 const userCartCount = userCart.products.reduce((acc, product) => {
@@ -598,7 +599,7 @@ const userProfile = asyncHandler(async (req, res) => {
                 }, 0);
                 const cartCount = userCartCount;
             
-            res.render('user-Profile', { user,cartCount });
+            res.render('user-Profile', { user,cartCount,category });
             }
         }
     } catch (error) {
@@ -612,6 +613,7 @@ const editUserProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         const userCart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         if (user) {
             if (userCart) {
                 const userCartCount = userCart.products.reduce((acc, product) => {
@@ -619,7 +621,7 @@ const editUserProfile = asyncHandler(async (req, res) => {
                 }, 0);
                 const cartCount = userCartCount;
             
-            res.render('edit-User-Profile', { user,cartCount });
+            res.render('edit-User-Profile', { user,cartCount,category });
             }
         }
     } catch (error) {
@@ -651,6 +653,7 @@ const changePassword = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         const userCart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         if (user) {
             if (userCart) {
                 const userCartCount = userCart.products.reduce((acc, product) => {
@@ -658,7 +661,7 @@ const changePassword = asyncHandler(async (req, res) => {
                 }, 0);
                 const cartCount = userCartCount;
             
-            res.render('changePassword', { user,cartCount,errorMessage:"" });
+            res.render('changePassword', { user,cartCount,errorMessage:"" ,category});
             }
         }
     } catch (error) {
@@ -671,9 +674,8 @@ const changePassword = asyncHandler(async (req, res) => {
 const updatePassword = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        console.log('start');
         const { oldpass, newpass, confirmpass } = req.body;
-        console.log('oldpassword', oldpass);
+        //console.log('oldpassword', oldpass);
         const finduser = await User.findById(user);
 
         if (!finduser) {
@@ -708,6 +710,7 @@ const userAddress = asyncHandler(async (req, res) => {
         let userDetail = await Address.findOne({ userId: user._id });
         const user_Id = user._id;
         const userCart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         if(user){
         if (!userDetail) {
             userDetail = new Address({ userId: user_Id, address: [] });
@@ -720,7 +723,7 @@ const userAddress = asyncHandler(async (req, res) => {
             return (acc += product.quantity);
         }, 0);
         const cartCount = userCartCount;
-        res.render('user-Address', { user, userAddress: userDetail.address, Message: '' ,cartCount});
+        res.render('user-Address', { user, userAddress: userDetail.address, Message: '' ,cartCount,category});
     }
     } catch (error) {
         console.error('error');
@@ -730,12 +733,13 @@ const loadAddAddress = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         const userCart = await Cart.findOne({ userId: user._id });
+        const category = await Category.find();
         if(user){
         const userCartCount = userCart.products.reduce((acc, product) => {
             return (acc += product.quantity);
         }, 0);
         const cartCount = userCartCount;
-        res.render('add-Address', { user, Message: '',cartCount });
+        res.render('add-Address', { user, Message: '',cartCount,category });
     }
     } catch (error) {
         console.error('error');
@@ -798,6 +802,7 @@ const editAddress = asyncHandler(async (req, res) => {
         const user_Id = user._id;
         //console.log('address:',addressId);
         const userDetails = await Address.findOne({ userId: user_Id });
+        const category = await Category.find();
 
         if (!userDetails) {
             // If userDetails is not found, render the "404" page
@@ -817,7 +822,7 @@ const editAddress = asyncHandler(async (req, res) => {
         }, 0);
         const cartCount = userCartCount;
         if(user){
-            res.render('edit-Address', { user, Message: '', userAddress,cartCount });
+            res.render('edit-Address', { user, Message: '', userAddress,cartCount,category });
         } 
     } catch (error) {
         res.render('404');
@@ -863,17 +868,18 @@ const deleteAddress = asyncHandler(async (req, res) => {
         const user = await User.findById(req.session.userId);
         const user_Id = user._id;
         const addressID = await Address.findOne({ userId: user_Id });
+        const category = await Category.find();
         //console.log('address id:',addressID);
         if (!addressID) {
-            return res.render('user-Address', { user, userAddress: addressID.address, Message: '' });
+            return res.render('user-Address', { user, userAddress: addressID.address, Message: '' ,category});
         }
         const addressToDelete = addressID.address.find((address) => address._id.toString() === addressId);
 
         if (!addressToDelete) {
-            return res.render('user-Address', { user, userAddress: addressID.address, Message: '' }); // Address not found, handle this case
+            return res.render('user-Address', { user, userAddress: addressID.address, Message: '',category }); // Address not found, handle this case
         }
         if (addressToDelete.isDefault) {
-            return res.render('user-Address', { user, userAddress: addressID.address, Message: '' }); // Default address cannot be deleted
+            return res.render('user-Address', { user, userAddress: addressID.address, Message: '', category }); // Default address cannot be deleted
         }
         // Remove the address from the addressID's address array
         addressID.address = addressID.address.filter((address) => address._id.toString() !== addressId);
@@ -892,6 +898,7 @@ const walletLoad = asyncHandler(async (req, res) => {
         const user_id = user._id;
         const userCart = await Cart.findOne({ userId: user._id });
         let userWallet = await Wallet.findOne({ userId: user_id });
+        const category = await Category.find();
         if (!userWallet) {
         }
         const userCartCount = userCart.products.reduce((acc, product) => {
@@ -899,7 +906,7 @@ const walletLoad = asyncHandler(async (req, res) => {
         }, 0);
         const cartCount = userCartCount;
         if(user){
-        res.render('wallet', { user, userWallet,cartCount });
+        res.render('wallet', { user, userWallet,cartCount,category });
         }
     } catch (error) {
         console.error(error);
