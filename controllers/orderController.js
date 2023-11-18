@@ -333,7 +333,7 @@ const loadOrderList = asyncHandler(async (req, res) => {
         // console.log('totalOrder:', totalOrder);
         // console.log('totalPages:', totalPages);
 
-        console.log('order:', orders);
+        //console.log('order:', orders);
         res.render('order-List', { orders, currentPage: page, totalPages,category });
     } catch (error) {
         console.error(error);
@@ -403,7 +403,7 @@ const shipped = asyncHandler(async (req, res) => {
             orderDetails.orderStatus = orderStatus;
         }
         await orderDetails.save();
-        console.log(orderDetails);
+        //console.log(orderDetails);
 
         res.json({ status: 'success', message: 'Status Updated' });
     } catch (error) {
@@ -427,7 +427,7 @@ const delivered = asyncHandler(async (req, res) => {
             orderDetails.orderStatus = orderStatus;
         }
         await orderDetails.save();
-        console.log(orderDetails);
+        //console.log(orderDetails);
 
         res.json({ status: 'success', message: 'Status Updated' });
     } catch (error) {
@@ -467,6 +467,9 @@ const returnConfirmed = asyncHandler(async (req, res) => {
         const { returnStatus, orderId } = req.body;
 
         const orderData = await Order.findById(orderId).populate('products.productId');
+       // console.log("orderdata:",orderData);
+        const userId=orderData.userId
+        console.log("UserID..",userId);
 
         if (returnStatus === 'Product Returned') {
             const returnedProduct = orderData.products.find((product) => product.productStatus === 'Return Approved');
@@ -477,17 +480,28 @@ const returnConfirmed = asyncHandler(async (req, res) => {
                 const returnQuantity = returnedProduct.quantity; // Adjust this based on your data structure
                 productData.stock += returnQuantity;
                 await productData.save();
-                console.log('productdataafter', productData);
-
+                //console.log('productdataafter', productData);
                 // Update the status of the returned product in the order
                 returnedProduct.productStatus = returnStatus;
-
                 // Update the return order status
                 orderData.returnOrderStatus.status = returnStatus;
-
                 await orderData.save();
-
                 res.json({ status: 'success', message: 'Status Updated and Stock Quantity Updated' });
+                if(userId){
+                    const userWallet=await Wallet.findOne({userId:userId})
+                    if (userWallet) {
+                        console.log("refund amount",orderData.actualTotalAmount);
+                        const refundAmount = orderData.actualTotalAmount;
+                        userWallet.walletAmount += refundAmount;
+                        userWallet.transactionHistory.push({
+                            description: 'Product Refund',
+                            addedAmount: refundAmount,
+                            debitOrCredit: 'Credit',
+                        });
+                        await userWallet.save();
+                    }
+
+                }
             } else {
                 res.json({ status: 'error', message: "No product with 'Return Approved' status found" });
             }
