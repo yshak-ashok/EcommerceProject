@@ -100,9 +100,11 @@ const loadEditProduct = asyncHandler(async (req, res) => {
         if (productData) {
             const categories = await Category.find();
             res.render('edit-Product', { productData, categories, Message: '' });
+        }else{
+
         }
     } catch (error) {
-        console.error('error');
+        res.render("404")
     }
 });
 

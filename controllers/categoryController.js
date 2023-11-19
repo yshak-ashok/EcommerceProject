@@ -80,7 +80,7 @@ const editCategory = asyncHandler(async (req, res) => {
         const categoryData = await Category.findById(categoryId);
         res.render("edit-Category", { categoryData, Message: "" });
     } catch (error) {
-        console.error("error");
+        res.render("404")
     }
 });
 

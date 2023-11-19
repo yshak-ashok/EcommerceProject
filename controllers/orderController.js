@@ -379,7 +379,7 @@ const loadOrderDetails = asyncHandler(async (req, res) => {
         //console.log('orderDetails:', orderDetail);
         res.render('order-Details', { orderDetail ,category});
     } catch (error) {
-        console.error(error);
+        res.render("404")
     }
 });
 
