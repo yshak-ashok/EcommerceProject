@@ -19,6 +19,7 @@ const home = asyncHandler(async (req, res) => {
         const allProductData = await Category.find({ status: true });
         const category = await Category.find();
         const user = await User.findById(req.session.userId);
+        //console.log("user",user);
         const bannerData = await Banner.find({ isActive: true }); // Query only active banners
         console.log('banner:', bannerData);
         if (user && !user.isBlocked) {
@@ -590,21 +591,21 @@ const searchProducts = async (req, res) => {
 const userProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        const userCart = await Cart.findOne({ userId: user._id });
+        const userID=user._id
+         const userCart = await Cart.findOne({ userId: userID });
         const category = await Category.find();
         if (user) {
-            if (userCart) {
-                const userCartCount = userCart.products.reduce((acc, product) => {
-                    return (acc += product.quantity);
-                }, 0);
-                const cartCount = userCartCount;
-            
-            res.render('user-Profile', { user,cartCount,category });
-            }
+           
+            const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
+            const cartCount = userCartCount;
+            res.render('userProfile', { user,cartCount,category });
+           
         }
     } catch (error) {
-        console.error('error');
+        console.error(error);
+        res.status(500).send('Internal Server Error'); // You might want to send an appropriate error response to the client
     }
+    
 });
 
 //user edit profile
@@ -615,14 +616,11 @@ const editUserProfile = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user._id });
         const category = await Category.find();
         if (user) {
-            if (userCart) {
-                const userCartCount = userCart.products.reduce((acc, product) => {
-                    return (acc += product.quantity);
-                }, 0);
+            const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
                 const cartCount = userCartCount;
             
             res.render('edit-User-Profile', { user,cartCount,category });
-            }
+      
         }
     } catch (error) {
         console.error('error');
@@ -655,14 +653,11 @@ const changePassword = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user._id });
         const category = await Category.find();
         if (user) {
-            if (userCart) {
-                const userCartCount = userCart.products.reduce((acc, product) => {
-                    return (acc += product.quantity);
-                }, 0);
+            const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
                 const cartCount = userCartCount;
             
             res.render('changePassword', { user,cartCount,errorMessage:"" ,category});
-            }
+            
         }
     } catch (error) {
         console.error('error');
@@ -719,9 +714,7 @@ const userAddress = asyncHandler(async (req, res) => {
         //const userAddress=userDetail.address
         //console.log('useraddress:',userAddress.address);
         //console.log(userAddress[0].name);
-        const userCartCount = userCart.products.reduce((acc, product) => {
-            return (acc += product.quantity);
-        }, 0);
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         res.render('user-Address', { user, userAddress: userDetail.address, Message: '' ,cartCount,category});
     }
@@ -735,9 +728,7 @@ const loadAddAddress = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user._id });
         const category = await Category.find();
         if(user){
-        const userCartCount = userCart.products.reduce((acc, product) => {
-            return (acc += product.quantity);
-        }, 0);
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         res.render('add-Address', { user, Message: '',cartCount,category });
     }
@@ -817,9 +808,7 @@ const editAddress = asyncHandler(async (req, res) => {
             // If userAddress is not found, render the "404" page
             return res.render('404');
         }
-        const userCartCount = userCart.products.reduce((acc, product) => {
-            return (acc += product.quantity);
-        }, 0);
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         if(user){
             res.render('edit-Address', { user, Message: '', userAddress,cartCount,category });
@@ -901,9 +890,7 @@ const walletLoad = asyncHandler(async (req, res) => {
         const category = await Category.find();
         if (!userWallet) {
         }
-        const userCartCount = userCart.products.reduce((acc, product) => {
-            return (acc += product.quantity);
-        }, 0);
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         if(user){
         res.render('wallet', { user, userWallet,cartCount,category });

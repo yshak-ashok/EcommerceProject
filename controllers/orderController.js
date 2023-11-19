@@ -214,9 +214,7 @@ const orderList = asyncHandler(async (req, res) => {
             .limit(perPage)
             .populate('products.productId');
         // console.log(userOrders);
-        const userCartCount = userCart.products.reduce((acc, product) => {
-            return (acc += product.quantity);
-        }, 0);
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         if (user) {
             res.render('orderList', { user, userOrders, cartCount, currentPage: page, totalPages,category });
@@ -236,9 +234,7 @@ const orderDetails = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user._id });
         const category = await Category.find();
         // console.log('orderDetails', orderDetail);
-        const userCartCount = userCart.products.reduce((acc, product) => {
-            return (acc += product.quantity);
-        }, 0);
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         if (user) {
             res.render('orderDetail', { user, orderDetail,cartCount,category });

@@ -95,9 +95,7 @@ const myCoupon = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user._id });
         const couponData = await Coupon.find();
         const category = await Category.find();
-        const userCartCount = userCart.products.reduce((acc, product) => {
-            return (acc += product.quantity);
-        }, 0);
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         if(user){
         res.render("coupons", { user, couponData,cartCount, Message: "" ,category});
