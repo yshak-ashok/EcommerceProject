@@ -136,7 +136,7 @@ const { wishlist,
 
 userRouter.get("/wishlist", isLogin, wishlist);
 
-userRouter.post("/add-to-wishlist", isLogin, addtowishlist);
+userRouter.post("/add-to-wishlist", addtowishlist);
 
 userRouter.get("/remove-wishlist", removeWishlist);
 
@@ -152,7 +152,7 @@ const {
 } = require("../controllers/cartController");
 
 userRouter.get("/cart", isLogin, loadCart);
-userRouter.post("/addtocart", isLogin, addtocart);
+userRouter.post("/addtocart", addtocart);
 userRouter.post("/updateQuantity", isLogin, updateQuantity);
 userRouter.get("/remove-product-cart", isLogin, removeProductCart);
 userRouter.post("/checkout", isLogin, loadCheckout);

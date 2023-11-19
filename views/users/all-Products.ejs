@@ -756,7 +756,12 @@
                     const data = await response.json();
                     if (data.status === 'success') {
                         showModalMessage("Product Added to Wishlist", "wishlist-modal");
-                    } else {
+                    } else if(data.status === "nouser"){
+                        showModalMessage("Your account must be logged in", "wishlist-modal");
+                        setTimeout(()=>{
+                            location.href="/login"
+                        },2000)
+                    }else {
                         showModalMessage("Already Added to Wishlist", "wishlist-modal");
                     }
                 });
@@ -766,6 +771,7 @@
                 button.addEventListener("click", async function (e) {
                     e.preventDefault();
                     const productId = e.currentTarget.getAttribute("data-productId");
+                    console.log("idddd",productId);
                     const response = await fetch(`/addtocart/?productId=${productId}`, {
                         method: "POST",
                     });
@@ -775,7 +781,13 @@
                         updateCartCount(data.cartCount);
                     } else if (data.status === 'nostock') {
                         showModalMessage("Out of Stock", "cart-modal");
-                    } else if (data.status === 'Login') {
+                    } else if(data.status === "nouser"){
+                        showModalMessage("Your account must be logged in", "cart-modal");
+                        setTimeout(()=>{
+                            location.href="/login"
+                        },2000)
+
+                    }else if (data.status === 'Login') {
                         showModalMessage("Please Login your Account", "cart-modal");
                         console.log(data.status);
                     }

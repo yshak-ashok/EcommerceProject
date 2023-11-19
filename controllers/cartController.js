@@ -59,20 +59,21 @@ const addtocart = asyncHandler(async (req, res) => {
     try {
         const productid = req.query.productId;
         const user = await User.findById(req.session.userId);
+        if(!user){
+            return res.json({status:"nouser"})
+        }
         const user_Id = user._id;
         let cart = await Cart.findOne({ userId: user_Id });
-
         if (!cart) {
             let newCart = new Cart({ userId: user_Id, products: [] });
             await newCart.save();
             cart = newCart;
         }
-
         const product = await Product.findById(productid).lean();
 
         if (product.stock === 0) {
             return res.json({ status: "nostock" });
-        } else {
+        } else{
             const productIndex = cart.products.findIndex((product) => {
                 return product.productId.toString() === productid;
             });
