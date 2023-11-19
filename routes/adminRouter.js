@@ -32,7 +32,8 @@ const {
     userManagement,
     loadSalesReport,
     filterSales,
-    generatePdf
+    generatePdf,
+    dateWiseSales
 } = require("../controllers/adminController");
 
 
@@ -64,6 +65,7 @@ adminRouter.get("/logout", adminLogout);
 adminRouter.get('/salesReport',isLogin,loadSalesReport)
 adminRouter.get('/filterSales',isLogin,filterSales)
 adminRouter.post("/generate-pdf",isLogin,generatePdf)
+adminRouter.post("/datewise-filter",dateWiseSales)
 
 
 //------------admin category management

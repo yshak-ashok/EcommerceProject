@@ -24,27 +24,15 @@ const adminDashboard = asyncHandler(async (req, res) => {
         const totalProducts = await Product.countDocuments();
         const totalOrders = await Order.countDocuments();
 
-        const totalAmountOfDeliveredProducts = await Order.aggregate([
-            {
-                $unwind: "$products",
-            },
-            {
-                $match: {
-                    "products.productStatus": "Delivered",
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    actualTotalAmount: { $sum: "$actualTotalAmount" },
-                },
-            },
+        const deliveredProducts = await Order.aggregate([
+            { $match: { orderStatus: "Delivered", "products.productStatus": "Delivered" } },
+            { $sort: { date: -1 } },
         ]);
-
+        console.log("delivered Products", deliveredProducts);
         let totalAmount = 0;
-        if (totalAmountOfDeliveredProducts.length > 0) {
-            totalAmount = totalAmountOfDeliveredProducts[0].actualTotalAmount;
-        }
+        deliveredProducts.forEach((product) => {
+            totalAmount += product.actualTotalAmount;
+        });
 
         const totalDelivered = await Order.countDocuments({ "products.productStatus": "Delivered" });
         const totalOrderPlaced = await Order.countDocuments({ orderStatus: "Order Placed" });
@@ -275,17 +263,12 @@ const loadSalesReport = async (req, res) => {
             { $sort: { date: -1 } },
         ]);
         console.log("delivered Products", deliveredProducts);
-        const totalAmountOfDeliveredProducts = await Order.aggregate([
-            { $unwind: "$products" },
-            { $match: { "products.productStatus": "Delivered" } },
-            { $group: { _id: null, actualTotalAmount: { $sum: "$actualTotalAmount" } } },
-        ]);
         let totalAmount = 0;
-        if (totalAmountOfDeliveredProducts.length > 0) {
-            totalAmount = totalAmountOfDeliveredProducts[0].actualTotalAmount;
-        }
+        deliveredProducts.forEach((product) => {
+            totalAmount += product.actualTotalAmount;
+        });
 
-        //console.log("Delivered Products:", deliveredProducts);
+    
         res.render("salesReport", { deliveredProducts, totalAmount });
     } catch (error) {
         console.error(error);
@@ -346,21 +329,30 @@ const filterSales = asyncHandler(async (req, res) => {
                 $match: filter,
             },
             {
+                $group: {
+                    _id: {
+                        orderId: "$_id",
+                        orderDate: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                        orderNo: "$ord",
+                    },
+                    productId: { $first: "$products.productId" },
+                    total: { $sum: "$products.total" },
+                    couponDiscountAmount: { $first: "$couponDiscountAmount" },
+                },
+            },
+            {
                 $project: {
                     _id: 0,
-                    orderId: "$_id",
-                    orderDate: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                    productId: "$products.productId",
-                    quantity: "$products.quantity",
-                    orderNo: "$ord",
-                    salePrice: "$products.salePrice",
-                    total: "$products.total",
-                    productStatus: "$products.productStatus",
-                    returnReason: "$products.returnReason",
-                    // Add more fields as needed
+                    orderId: "$_id.orderId",
+                    orderDate: "$_id.orderDate",
+                    orderNo: "$_id.orderNo",
+                    productId: 1,
+                    total: { $subtract: ["$total", "$couponDiscountAmount"] },
                 },
             },
         ]);
+        
+        
 
         res.json({ orders });
     } catch (error) {
@@ -381,26 +373,29 @@ const generatePdf = asyncHandler(async (req, res) => {
                 $unwind: "$products",
             },
             {
-                $match: {
-                    "products.productStatus": "Delivered",
+                $group: {
+                    _id: {
+                        orderId: "$_id",
+                        orderDate: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                        orderNo: "$ord",
+                    },
+                    productId: { $first: "$products.productId" },
+                    total: { $sum: "$products.total" },
+                    couponDiscountAmount: { $first: "$couponDiscountAmount" },
                 },
             },
             {
                 $project: {
                     _id: 0,
-                    orderId: "$_id",
-                    orderDate: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-                    productId: "$products.productId",
-                    orderNo: "$ord",
-                    quantity: "$products.quantity",
-                    salePrice: "$products.salePrice",
-                    total: "$products.total",
-                    paymentMethod: "$paymentMethod",
-                    productStatus: "$products.productStatus",
-                    returnReason: "$products.returnReason",
-                    // Add more fields as needed
+                    orderId: "$_id.orderId",
+                    orderDate: "$_id.orderDate",
+                    orderNo: "$_id.orderNo",
+                    productId: 1,
+                    total: { $subtract: ["$total", "$couponDiscountAmount"] },
                 },
             },
+           
+           
         ]);
 
         const PDFDocument = require("pdfkit");
@@ -471,6 +466,64 @@ const generatePdf = asyncHandler(async (req, res) => {
     }
 });
 
+const dateWiseSales = async (req, res) => {
+    try {
+        let { startingDate, endingDate } = req.body;
+
+        startingDate = new Date(startingDate);
+        endingDate = new Date(endingDate);
+
+        const filter = {
+            $and: [
+                { "products.productStatus": "Delivered" },
+                { date: { $gte: startingDate } },
+                { date: { $lte: endingDate } }
+            ]
+        };
+
+        const orders = await Order.aggregate([
+            {
+                $unwind: "$products", // Assuming "products" is an array within the Order collection
+            },
+            {
+                $match: filter,
+            },
+            {
+                $group: {
+                    _id: {
+                        orderId: "$_id",
+                        orderDate: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+                        orderNo: "$ord",
+                    },
+                    productId: { $first: "$products.productId" },
+                    total: { $sum: "$products.total" },
+                    couponDiscountAmount: { $first: "$couponDiscountAmount" },
+                },
+            },
+            {
+                $project: {
+                    _id: 0,
+                    orderId: "$_id.orderId",
+                    orderDate: "$_id.orderDate",
+                    orderNo: "$_id.orderNo",
+                    productId: 1,
+                    total: { $subtract: ["$total", "$couponDiscountAmount"] },
+                },
+            },
+        ]);
+
+        console.log("report:", orders);
+        res.json({ orders });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+
+
+
+
 module.exports = {
     adminLogin,
     adminVerifyLogin,
@@ -482,4 +535,5 @@ module.exports = {
     loadSalesReport,
     filterSales,
     generatePdf,
+    dateWiseSales
 };

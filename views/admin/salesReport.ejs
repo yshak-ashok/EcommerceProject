@@ -125,17 +125,18 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-lg-5">
+                    <!-- <div class="col-lg-3">
                         <div class="card card-body ">
                             <div class="datetime-container">
-                                <span id="date"><i class="fa-regular fa-calendar fa-lg"></i> &nbsp;</span>
+                                
+                                <span id="date"></span>
                                 <br>
                                 <br>
-                                <span id="time"><i class="fa-regular fa-clock fa-lg "></i> &nbsp;</span>
+                                <span id="time"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-4">
+                    </div> -->
+                    <div class="col-lg-3">
                         <div class="card card-body ">
                             <article class="icontext">
                                 <span class="icon icon-sm rounded-circle bg-primary-light"><i
@@ -148,11 +149,32 @@
                             </article>
                         </div>
                     </div>
+                    <div class="col-lg-7">
+                        <div class="card card-body ">
+                            <div class="row">
+                                <p class="text-center" style="color: rgb(175, 21, 21);" id="dateError"></p>
+                                <div class="col-lg-4">
+                                <p class="text-center text-info">START DATE</p>
+                                <input type="date" value="" id="startingDate" class="form-control">
+                                </div>
+                                <div class="col-lg-4">
+                                <p class="text-center text-info">END DATE</p>
+                                <input type="date" value="" id="endingDate" class="form-control">
+                                </div>
+                                <div class="col-lg-4">
+                                    <p style="margin-top: 29px;"></p>
+                                    <button class="btn btn-primary" id="dateWiseFilterBtn">Filter</button>
+                                </div>
 
-                    <div class="col-lg-3">
+                            </div>
+                          
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2">
                         <div class="card card-body ">
                             <select class="form-select" onchange="filter(this.value)">
-                                <option value="all">All Report</option>
+                                <option value="all">All</option>
                                 <option value="today">Today</option>
                                 <option value="weekly">Weekly</option>
                                 <option value="monthly">Monthly</option>
@@ -274,7 +296,6 @@
 
     </script>
 
-
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const dateElement = document.getElementById('date');
@@ -289,8 +310,8 @@
                     day: 'numeric'
                 });
                 const time = now.toLocaleTimeString();
-                const dateString = `<i class="fa-regular fa-calendar fa-lg"></i> &nbsp; ${date}`;
-                const timeString = `<i class="fa-regular fa-clock fa-lg"></i> &nbsp; ${time}`;
+                const dateString = ` ${date}`;
+                const timeString = ` ${time}`;
                 dateElement.innerHTML = dateString;
                 timeElement.innerHTML = timeString;
             }
@@ -332,7 +353,102 @@
 
     </script>
 
+<script>
+    document.getElementById('startingDate').valueAsDate = new Date();
+</script>
 
+<script>
+ document.getElementById('dateWiseFilterBtn').addEventListener('click', async (event) => {
+     event.preventDefault();
+     const isValid = validateInputDate();
+
+if (isValid) {
+    const startingDate = document.getElementById('startingDate').value;
+    const endingDate = document.getElementById('endingDate').value;
+    // console.log(startingDate)
+    // console.log(endingDate)
+
+    const response = await fetch('/admin/datewise-filter', {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ startingDate, endingDate })
+    })
+                    const data = await response.json();
+                    const orders = data.orders;
+                    console.log('orderlist:',orders);
+                    const orderListDiv = document.getElementById('orderList');
+                    if (!orderListDiv) {
+                        console.error("Element with ID 'orderList' not found in HTML");
+                        return;
+                    }
+
+                    const orderListHTML = `
+                               <div class="card-body" id="orderList">
+                                  <table class="custom-table">
+                                      <thead class="table-head">
+                                        <tr>
+                                            <th>ORDER ID</th>
+                                            <th> ORDER NO </td>
+                                            <th>DATE</th>
+                                            <th>TOTAL</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${orders.length > 0 ?
+                            orders.map(order => `
+                                                <tr>
+                                                    <td> ${order.orderId}</td>
+                                                    <td> ${order.orderNo}</td>
+                                                    <td>${order.orderDate}</td>
+                                                    <td>${order.total}</td>
+                                                </tr>
+                                            `).join('') :
+                            '<tr><td colspan="4" class="text-center"><h2>NOT DATA FOUND</h2></td></tr>'
+                        }
+                                </tbody>
+                            </table>   
+                        </div>
+                 
+                    `;
+                    orderListDiv.innerHTML = orderListHTML;
+                } else {
+                console.log('Not proper data')
+            }
+ })
+
+ // Date form validation
+ function validateInputDate() {
+            const startingDate = document.getElementById('startingDate').value;
+            const endingDate = document.getElementById('endingDate').value;
+
+            let isValid = true;
+
+            // Checking the start and end logic
+
+            if (dateValidate(startingDate, endingDate) === false) {
+                document.getElementById('dateError').textContent = 'Check your dates'
+                document.getElementById('startingDate').style.borderColor = 'red'
+                document.getElementById('endingDate').style.borderColor = 'red'
+                setTimeout(() => {
+                    document.getElementById('dateError').textContent = ''
+                    document.getElementById('startingDate').style.borderColor = ''
+                    document.getElementById('endingDate').style.borderColor = ''
+                }, 5000)
+                isValid = false;
+            }
+
+
+
+            return isValid;
+        }
+        function dateValidate(startingDate, endingDate) {
+            const created = new Date(startingDate);
+            const expire = new Date(endingDate);
+            return created <= expire;
+        }
+</script>
 
 </body>
 
