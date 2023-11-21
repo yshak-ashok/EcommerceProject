@@ -542,6 +542,50 @@ const filterCategory = asyncHandler(async (req, res) => {
     }
 });
 
+const sortProducts = asyncHandler(async (req, res) => {
+    try {
+        const sortValue = req.query.sort;
+        const categoryId = req.query.id;
+        const page = parseInt(req.query.page) || 1;
+        const perPage = 6;
+        const totalProducts = await Product.countDocuments({ is_listed: true });
+        const totalPages = Math.ceil(totalProducts / perPage);
+        const category = await Category.find();
+        //console.log("category",category);
+        const user = await User.findById(req.session.userId);
+        const userCart = await Cart.findOne({ userId: user ? user._id : null });
+        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
+        const cartCount = userCartCount;
+
+        let sortOption = {};
+
+        if (sortValue) {
+            if (sortValue === "High") {
+                sortOption = { regularPrice: -1 }; // Sort high to low
+            } else if (sortValue === "Low") {
+                sortOption = { regularPrice: 1 }; // Sort low to high
+            }
+        }
+
+        const products = await Product.find({ is_listed: true }).sort(sortOption).skip((page - 1) * perPage)
+        .limit(perPage);
+        res.render('all-Products', {
+            user,
+            products,
+            currentPage: page,
+            totalPages,
+            cartCount,
+            category,
+            categoryId,
+        });
+
+    } catch (error) {
+        // Handle error appropriately
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 const categoryPage = asyncHandler(async (req, res) => {
     try {
         const selectedCategory = req.query.id;
@@ -950,4 +994,5 @@ module.exports = {
     categoryPage,
     walletLoad,
     filterCategory,
+    sortProducts
 };

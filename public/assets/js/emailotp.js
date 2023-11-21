@@ -42,19 +42,26 @@ window.addEventListener('load', function () {
 
  //--------OTP Timer code
 
-  let countdown = 60;
-  function updateTimer() {
-    const timerElement = document.getElementById('otp-timer');
+ let countdown = 60;
 
-    if (countdown === 0) {
-      timerElement.textContent = 'OTP has expired';
-   
-    } else {
-      const remainingTime = countdown === 1 ? '1 second' : countdown + ' seconds';
-      timerElement.textContent = ' OTP Expire in:' + remainingTime;
-      countdown--;
-      setTimeout(updateTimer, 1000); 
-    }
-  }
+ function updateTimer() {
+   const timerElement = document.getElementById('otp-timer');
+   const resendButton = document.getElementById('resend-otp');
+ 
+   if (countdown === 0) {
+     timerElement.textContent = 'OTP has expired';
+     resendButton.removeAttribute('disabled'); // Enable the Resend OTP button
+   } else {
+     const remainingTime = countdown === 1 ? '1 second' : countdown + ' seconds';
+     timerElement.textContent = ' OTP Expire in: ' + remainingTime;
+     countdown--;
+     setTimeout(updateTimer, 1000);
+   }
+ }
+ 
+ updateTimer();
+ 
+ // Disable the Resend OTP button initially
+ document.getElementById('resend-otp').setAttribute('disabled', 'true');
+ 
 
-  updateTimer();

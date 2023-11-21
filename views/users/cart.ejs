@@ -336,7 +336,8 @@
 
                                         <tbody>
                                             <tr class="cart-item" data-product-id="<%- cart[i].productId._id %>">
-                                                <td class="cart-item-media" style="width: 15%">
+                                             
+                                                <td class="cart-item-media">
                                                     <div class="mini-img-wrapper">
                                                         <img
                                                             class="mini-img"
@@ -344,7 +345,9 @@
                                                             alt="img" />
                                                     </div>
                                                 </td>
-                                                <td class="cart-item-details" style="width: 55%">
+                                        
+                                               
+                                                <td class="cart-item-details" >
                                                     <h2 class="product-title">
                                                         <a href=""><%- cart[i].productId.productName %></a>
                                                     </h2>
@@ -352,8 +355,10 @@
                                                         In Stock: <%- cart[i].productId.stock %>
                                                     </p>
                                                 </td>
+                                        
                                                 <p id="ErrorMessage" class="alert-error text-center"></p>
-                                                <td class="cart-item-quantity" style="width: 15%">
+                                               
+                                                <td class="cart-item-quantity" >
                                                     <div class="quantity d-flex align-items-center justify-content-between">
                                                         <button class="qty-btn dec-qty">
                                                             <img src="assets/img/icon/minus.svg" alt="minus" />
@@ -363,7 +368,8 @@
                                                             type="number"
                                                             name="qty"
                                                             value="<%-cart[i].quantity %>"
-                                                            min="1" />
+                                                            min="1"
+                                                            disabled />
                                                         <button class="qty-btn inc-qty">
                                                             <img src="assets/img/icon/plus.svg" alt="plus" />
                                                         </button>
@@ -375,7 +381,9 @@
                                                         >Remove</a
                                                     >
                                                 </td>
-                                                <td class="cart-item-price text-end" style="width: 15%">
+                                             
+                                              
+                                                <td class="cart-item-price text-end" >
                                                     <div class="product-price">
                                                         <i
                                                             class="fa-solid fa-indian-rupee-sign fa-sm"
@@ -383,6 +391,7 @@
                                                         >&nbsp;<%- cart[i].total %>
                                                     </div>
                                                 </td>
+                                             
                                             </tr>
                                             <!-- remove wishlist Modal -->
                                             <div id="removeModal_<%= cart[i].productId._id %>" class="modal">

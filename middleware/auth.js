@@ -12,8 +12,6 @@ const User=require("../models/userModel")
     if (!user || user.isBlocked) {
       return res.redirect('/logout');
     }
-  
-    console.log("userauth", req.session.userId);
     next();
   });
   

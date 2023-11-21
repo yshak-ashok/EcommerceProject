@@ -46,7 +46,8 @@ const {
     emailOTP,
     categoryPage,
     walletLoad,
-    filterCategory
+    filterCategory,
+    sortProducts
 } = require("../controllers/userController");
 
 //-------user athuentication----
@@ -92,6 +93,8 @@ userRouter.get("/viewProduct", viewProduct);
 userRouter.get("/allProducts", allProducts);
 
 userRouter.get("/filter-Category",filterCategory)
+
+userRouter.get("/sortProducts",sortProducts)
 
 userRouter.post("/search", searchProducts);
 

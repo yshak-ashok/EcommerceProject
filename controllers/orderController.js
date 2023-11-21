@@ -248,12 +248,33 @@ const orderDetails = asyncHandler(async (req, res) => {
 const cancelOrder = asyncHandler(async (req, res) => {
     try {
         const orderId = req.query.orderId;
-
         const orderDetails = await Order.findById(orderId).populate('products.productId');
+        const user = await User.findById(req.session.userId);
+        const userId=user._id
         if (!orderDetails) {
             return res.status(404).json({ status: 'error', message: 'Order not found' });
         }
+        const paymentMethod=orderDetails.paymentMethod
+        //console.log("payment in cancel",paymentMethod);
+        if(paymentMethod==="ONLINE"){
+            const orderAmount=orderDetails.actualTotalAmount
+            if(orderAmount>0){
+               // console.log("need to refund");
+               const userWallet=await Wallet.findOne({userId:userId})
+                    if (userWallet) {
+                        console.log("refund amount",orderDetails.actualTotalAmount);
+                        const refundAmount = orderDetails.actualTotalAmount;
+                        userWallet.walletAmount += refundAmount;
+                        userWallet.transactionHistory.push({
+                            description: 'Product Refund',
+                            addedAmount: refundAmount,
+                            debitOrCredit: 'Credit',
+                        });
+                        await userWallet.save();
+                    }
 
+            }
+         }
         // Update order status
         orderDetails.orderStatus = 'Order Cancelled';
 
@@ -436,20 +457,20 @@ const returnApporval = asyncHandler(async (req, res) => {
         const { returnStatus, orderId } = req.body;
         console.log('returnStatus', returnStatus);
         console.log('returnId', orderId);
-        const orderData = await Order.findById(orderId).populate('products.productId');
-        console.log('orderdata:', orderData);
+        const orderDetails = await Order.findById(orderId).populate('products.productId');
+        console.log('orderdata:', orderDetails);
         if (returnStatus === 'Return Approved') {
-            orderData.products.map((product) => {
+            orderDetails.products.map((product) => {
                 if (product.productStatus === 'Return Requested') {
                     product.productStatus = returnStatus;
                 }
             });
-            // const status = orderData.products.filter(product => {
+            // const status = orderDetails.products.filter(product => {
             //     return (product.productStatus !== 'Return Request Processing' && product.productStatus !== 'Return Approved');
             // });
-            orderData.returnOrderStatus.status = returnStatus;
-            await orderData.save();
-            console.log('orderData', orderData);
+            orderDetails.returnOrderStatus.status = returnStatus;
+            await orderDetails.save();
+            console.log('orderDetails', orderDetails);
             // console.log('status:',status);
             res.json({ status: 'success', message: 'Status Updated' });
         }
@@ -462,13 +483,13 @@ const returnConfirmed = asyncHandler(async (req, res) => {
     try {
         const { returnStatus, orderId } = req.body;
 
-        const orderData = await Order.findById(orderId).populate('products.productId');
-       // console.log("orderdata:",orderData);
-        const userId=orderData.userId
+        const orderDetails = await Order.findById(orderId).populate('products.productId');
+       // console.log("orderdata:",orderDetails);
+        const userId=orderDetails.userId
         console.log("UserID..",userId);
 
         if (returnStatus === 'Product Returned') {
-            const returnedProduct = orderData.products.find((product) => product.productStatus === 'Return Approved');
+            const returnedProduct = orderDetails.products.find((product) => product.productStatus === 'Return Approved');
 
             if (returnedProduct) {
                 const productData = await Product.findById(returnedProduct.productId);
@@ -480,14 +501,14 @@ const returnConfirmed = asyncHandler(async (req, res) => {
                 // Update the status of the returned product in the order
                 returnedProduct.productStatus = returnStatus;
                 // Update the return order status
-                orderData.returnOrderStatus.status = returnStatus;
-                await orderData.save();
+                orderDetails.returnOrderStatus.status = returnStatus;
+                await orderDetails.save();
                 res.json({ status: 'success', message: 'Status Updated and Stock Quantity Updated' });
                 if(userId){
                     const userWallet=await Wallet.findOne({userId:userId})
                     if (userWallet) {
-                        console.log("refund amount",orderData.actualTotalAmount);
-                        const refundAmount = orderData.actualTotalAmount;
+                        console.log("refund amount",orderDetails.actualTotalAmount);
+                        const refundAmount = orderDetails.actualTotalAmount;
                         userWallet.walletAmount += refundAmount;
                         userWallet.transactionHistory.push({
                             description: 'Product Refund',
