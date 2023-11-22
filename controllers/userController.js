@@ -21,7 +21,7 @@ const home = asyncHandler(async (req, res) => {
         const user = await User.findById(req.session.userId);
         //console.log("user",user);
         const bannerData = await Banner.find({ isActive: true }); // Query only active banners
-        console.log('banner:', bannerData);
+        //console.log('banner:', bannerData);
         if (user && !user.isBlocked) {
             const userCart = await Cart.findOne({ userId: user._id });
 
@@ -423,7 +423,7 @@ const viewProduct = asyncHandler(async (req, res) => {
         const productid = req.query.id;
         const user = await User.findById(req.session.userId);
         const category = await Category.find();
-        const productData = await Product.findById(productid).populate('category');
+        const productData = await Product.findById({_id:productid}).populate('category');
         const categoryId = productData.category._id;
         const similarProducts = await Product.find({ category: categoryId });
 
@@ -465,7 +465,7 @@ const viewProduct = asyncHandler(async (req, res) => {
             });
         }
     } catch (error) {
-        console.error(error);
+        console.error('Error in viewProduct route:', error);
         res.render('404');
     }
 });

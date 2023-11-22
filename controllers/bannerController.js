@@ -13,7 +13,7 @@ const addBanner = asyncHandler(async (req, res) => {
     try {
         const { title, description, expDate } = req.body;
         const image = req.file.filename; // Assuming a single image is uploaded
-        console.log(image);
+        //console.log(image);
         const bannerData = await Banner.create({
             title: title,
             image: image,
