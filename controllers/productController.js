@@ -3,7 +3,7 @@ const Category = require('../models/categoryModel');
 const asyncHandler = require('express-async-handler');
 const fs = require('fs');
 const path = require('path');
-
+const { image } = require('pdfkit');
 
 const loadAddProduct = asyncHandler(async (req, res) => {
     try {
@@ -58,7 +58,7 @@ const productList = asyncHandler(async (req, res) => {
             .skip((page - 1) * perPage)
             .limit(perPage)
             .populate('category');
-        console.log(products);
+        // console.log(products);
         res.render('product-List', { products, currentPage: page, totalPages });
     } catch (error) {
         console.error(error); // Log the actual error for debugging
@@ -99,70 +99,91 @@ const loadEditProduct = asyncHandler(async (req, res) => {
         //console.log(productData);
         if (productData) {
             const categories = await Category.find();
-            res.render('edit-Product', { productData, categories, Message: '' });
-        }else{
-
+            res.render('edit-Product', { productData, categories, message: '' });
+        } else {
         }
     } catch (error) {
-        res.render("404")
+        res.render('404');
     }
 });
 
 const updateProduct = async (req, res) => {
     try {
         const { productName, description, regularPrice, stock, size, categoryId, id } = req.body;
-        const images = [];
+        let images = [];
 
         if (req.files && req.files.length > 0) {
             for (let i = 0; i < req.files.length; i++) {
-                images.unshift(req.files[i].filename);
+                images.push(req.files[i].filename);
             }
-        } else {
-            const product = await Product.findById(id);
-            images.push(...product.images); // Use spread syntax to append existing images
         }
 
         const product = await Product.findById(id);
 
-        if (images.length <= 1) {
+        if (images.length) {
+            const existingImage = product.images.length;
+            const uploadingImage = images.length;
+            if (existingImage <= 4) {
+                const totalImages = existingImage + uploadingImage;
+                if (totalImages > 4) {
+                    const productData = await Product.findById(id).populate('category');
+                    const categories = await Category.find();
+                    return res.render('edit-Product', {
+                        productData,
+                        categories,
+                        message: 'Maximum four images are allowed',
+                    });
+                }
+            }
+        }
+        // Only update images if new images exist
+        if (images.length > 0) {
+            images = [...product.images, ...images];
+        } else {
+            images = product.images;
+        }
+        const existingImage = product.images.length;
+        if (existingImage < 2 && images.length < 2) {
             const productData = await Product.findById(id).populate('category');
             const categories = await Category.find();
-            return res.render('edit-Product', { productData, categories, message: 'Set at least Two Images' });
-        }
-
-        const updateFields = {
-            productName,
-            description,
-            regularPrice,
-            salePrice: regularPrice, // Default sale price is set to regular price
-            stock,
-            size,
-            category: categoryId,
-            images: images.length > 0 ? images : product.images, // Update images only if new images exist
-        };
-
-        // Update the product
-        const UpdatedData = await Product.findByIdAndUpdate(id, { $set: updateFields });
-
-        // Check and update sale price if offer exists
-        if (product.offer && product.offer > 0) {
-            const updatedSalePrice = regularPrice - regularPrice * (product.offer / 100);
-            updateFields.salePrice = updatedSalePrice;
-            await Product.findByIdAndUpdate(id, { $set: { salePrice: updatedSalePrice } });
-        }
-
-        if (UpdatedData) {
-            res.redirect('/admin/productList');
+            return res.render('edit-Product', {
+                productData,
+                categories,
+                message: 'Atleast two images required',
+            });
         } else {
-            // Handle scenario if the update fails
+            const updateFields = {
+                productName,
+                description,
+                regularPrice,
+                salePrice: regularPrice,
+                stock,
+                size,
+                category: categoryId,
+                images,
+            };
+
+            // Update the product
+            const updatedData = await Product.findByIdAndUpdate(id, { $set: updateFields });
+
+            // Check and update sale price if offer exists
+            if (product.offer && product.offer > 0) {
+                const updatedSalePrice = regularPrice - regularPrice * (product.offer / 100);
+                updateFields.salePrice = updatedSalePrice;
+                await Product.findByIdAndUpdate(id, { $set: { salePrice: updatedSalePrice } });
+            }
+
+            if (updatedData) {
+                res.redirect('/admin/productList');
+            } else {
+                // Handle scenario if the update fails
+            }
         }
     } catch (error) {
         console.error(error.message);
         res.status(500).json({ error: 'An error occurred' });
     }
 };
-
-
 
 const deleteImage = async (req, res) => {
     try {
@@ -178,7 +199,7 @@ const deleteImage = async (req, res) => {
             const imageNameToRemove = product.images[indexToRemove];
 
             // Delete the image file from local storage
-            const imagePath = path.join('public/admin-assets/imgs/products',imageNameToRemove);
+            const imagePath = path.join('public/admin-assets/imgs/products', imageNameToRemove);
             fs.unlinkSync(imagePath);
 
             // Update the database by pulling the image name from the array

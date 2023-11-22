@@ -321,38 +321,43 @@
         });
     </script>
 
-    <script>
-        function generatePDF() {
-            // AJAX call to the server to generate the PDF
-            fetch('/admin/generate-pdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({}) // No need to send any specific data here
+<script>
+    function generatePDF() {
+        // Get the starting and ending dates from your HTML elements
+        const startingDate = document.getElementById('startingDate').value;
+        const endingDate = document.getElementById('endingDate').value;
+
+        // AJAX call to the server to generate the PDF
+        fetch('/admin/generate-pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                startingDate: startingDate,
+                endingDate: endingDate
             })
-                .then(response => {
-                    if (response.ok) {
-                        return response.blob();
-                    }
-                    throw new Error('Network response was not ok.');
-                })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'sales_report.pdf';
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
-
-    </script>
-
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob();
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sales_report.pdf';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
 <script>
     document.getElementById('startingDate').valueAsDate = new Date();
 </script>

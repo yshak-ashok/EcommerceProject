@@ -40,28 +40,30 @@ window.addEventListener('load', function () {
 
 
 
- //--------OTP Timer code
+//  //--------OTP Timer code
+//  let countdown = 60;
 
- let countdown = 60;
+//   function updateTimer() {
+//     const timerElement = document.getElementById('otp-timer');
+//     const resendButton = document.getElementById('resend-button');
 
- function updateTimer() {
-   const timerElement = document.getElementById('otp-timer');
-   const resendButton = document.getElementById('resend-otp');
- 
-   if (countdown === 0) {
-     timerElement.textContent = 'OTP has expired';
-     resendButton.removeAttribute('disabled'); // Enable the Resend OTP button
-   } else {
-     const remainingTime = countdown === 1 ? '1 second' : countdown + ' seconds';
-     timerElement.textContent = ' OTP Expire in: ' + remainingTime;
-     countdown--;
-     setTimeout(updateTimer, 1000);
-   }
- }
- 
- updateTimer();
- 
- // Disable the Resend OTP button initially
- document.getElementById('resend-otp').setAttribute('disabled', 'true');
- 
+//     if (countdown === 0) {
+//       timerElement.textContent = 'OTP has expired';
+//       resendButton.removeAttribute('disabled'); // Enable the button when the timer expires
+//     } else {
+//       const remainingTime = countdown === 1 ? '1 second' : countdown + ' seconds';
+//       timerElement.textContent = ' OTP Expire in:' + remainingTime;
+//       countdown--;
+//       setTimeout(updateTimer, 1000);
+//     }
+//   }
 
+//   function resendOtp() {
+//     // Add logic here to resend the OTP
+//     // For example, you can make an AJAX request to the server to resend the OTP
+//     // After resending, you can restart the timer by calling updateTimer() again
+//     countdown = 60;
+//     updateTimer();
+//   }
+
+//   updateTimer();

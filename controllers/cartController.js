@@ -213,7 +213,8 @@ const loadCheckout = asyncHandler(async (req, res) => {
             await userAddress.save();
         }
         const userWallet = await Wallet.findOne({ userId: user_id });
-
+        const userCoupon=await Coupon.find()
+        console.log("userCoupon",userCoupon);
         const cart = await Cart.findOne({ userId: user_id }).populate("products.productId");
         const cartDetails = cart.products;
         const grandTotal = cart.products.reduce((total, product) => total + product.total, 0);
@@ -229,7 +230,7 @@ const loadCheckout = asyncHandler(async (req, res) => {
         const cartRegularPriceTotal = cart.products.reduce((total, product) => {
             return total + product.regularprice;
         }, 0);
-        console.log("cart");
+        //console.log("cart");
         const totalDiscountAmount = cartRegularPriceTotal - cart.total;
 
         res.render("checkout", {
@@ -241,7 +242,8 @@ const loadCheckout = asyncHandler(async (req, res) => {
             userWallet,
             cartRegularPriceTotal,
             totalDiscountAmount,
-            category
+            category,
+            userCoupon
         });
     } catch (error) {
         console.error(error);

@@ -784,12 +784,12 @@ const loadAddAddress = asyncHandler(async (req, res) => {
 const addNewAddress = asyncHandler(async (req, res) => {
     try {
         const { name, mobile, homeAddress, city, street, postalCode } = req.body;
-        // console.log(name);
-        // console.log(postalCode);
-        // console.log(homeAddress);
-        // console.log(mobile);
-        // console.log(city);
-        // console.log(street);
+         console.log(name);
+        console.log(postalCode);
+        console.log(homeAddress);
+        console.log(mobile);
+        console.log(city);
+        console.log(street);
         const userAddress = {
             name: name,
             mobile: mobile,

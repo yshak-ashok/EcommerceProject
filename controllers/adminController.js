@@ -363,14 +363,33 @@ const filterSales = asyncHandler(async (req, res) => {
 
 const generatePdf = asyncHandler(async (req, res) => {
     try {
+        let { startingDate, endingDate } = req.body || {};
+
+        // Check if startingDate and endingDate are provided
+        const dateFilterExists = startingDate && endingDate;
+
+        console.log("startddate", startingDate);
+        console.log("enddate", endingDate);
+
+        // Fetch date-wise sales data using your existing function
+        let filter = { "products.productStatus": "Delivered" };
+
+        if (dateFilterExists) {
+            startingDate = new Date(startingDate);
+            endingDate = new Date(endingDate);
+
+            filter.$and = [
+                { date: { $gte: startingDate } },
+                { date: { $lte: endingDate } }
+            ];
+        }
+
         const orders = await Order.aggregate([
             {
-                $match: {
-                    "products.productStatus": "Delivered",
-                },
+                $unwind: "$products", // Assuming "products" is an array within the Order collection
             },
             {
-                $unwind: "$products",
+                $match: filter,
             },
             {
                 $group: {
@@ -394,8 +413,6 @@ const generatePdf = asyncHandler(async (req, res) => {
                     total: { $subtract: ["$total", "$couponDiscountAmount"] },
                 },
             },
-           
-           
         ]);
 
         const PDFDocument = require("pdfkit");
@@ -465,6 +482,8 @@ const generatePdf = asyncHandler(async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
+
 
 const dateWiseSales = async (req, res) => {
     try {

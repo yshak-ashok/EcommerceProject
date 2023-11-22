@@ -31,12 +31,12 @@
             --btn-primary-font-weight: 500;
 
             --btn-secondary-border-radius: 0.25rem;
-            --btn-secondary-color: #00234D;
+            --btn-secondary-color: #000;
             --btn-secondary-background-color: transparent;
-            --btn-secondary-border-color: #00234D;
-            --btn-secondary-hover-color: #fff;
-            --btn-secondary-background-hover-color: #00234D;
-            --btn-secondary-border-hover-color: #00234D;
+            --btn-secondary-border-color: #000;
+            --btn-secondary-hover-color: #000;
+            --btn-secondary-background-hover-color:transparent;
+            --btn-secondary-border-hover-color: #000;
             --btn-secondary-font-weight: 500;
 
             --heading-color: #000;
@@ -207,7 +207,8 @@
         <main id="MainContent" class="content-for-layout">
             <div class="login-page mt-100">
                 <div class="container">
-                    <form action="/emailVerified" class="login-form common-form mx-auto" method="post" id="verifyEmail">
+                    <div class="login-form common-form mx-auto">  
+                    <form action="/emailVerified"  method="post" id="verifyEmail">
                         <div class="section-header mb-3">
                             <h2 class="text-center">Enter OTP</h2>
                             <p class="text-center">A code has been sent to Email</p>
@@ -228,19 +229,16 @@
                         </div>
                        
                         <button type="submit" class="btn-primary d-block mt-4 btn-signin">Verify OTP</button>
+                    </form>
                         <div class="row">
                             <div class="col-5 mt-30">
-                                <a href="/resendOtp" id="resend-otp" class="btn-resend">
-                                   Resend OTP
-                                  </a>
-                                  
+                                <button style="background-color: transparent;" id="resend-button" onclick="resendOtp()" disabled>Resend OTP</button>
                             </div>
                             <div class="col-7">
                                 <div id="otp-timer" class="text-center mt-30" style="color: #c81818;">OTP Timer 1 minute</div>
                             </div>
                         </div>
-                        
-                    </form>
+                    </div>
                 </div>                
                 </div>
             </div> 
@@ -427,66 +425,90 @@
         <script src="assets/js/vendor.js"></script>
         <script src="assets/js/main.js"></script>
         <script src="assets/js/emailotp.js"></script>
-          <script>
-        document.getElementById('verifyEmail').addEventListener('submit', async (event) => {event.preventDefault()
-            const num1 = document.getElementById("first").value;
-            const num2 = document.getElementById("second").value;
-            const num3 = document.getElementById("third").value;
-            const num4 = document.getElementById("fourth").value;
-            const errorMessageElement = document.getElementById("ErrorMessage");
-            
-            // Make an AJAX request to the server
-            fetch("/emailVerified", {
-                method: "POST",
-                body: JSON.stringify({ num1,num2,num3,num4 }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    if (data.message) {
-                       
-                        showModalMessage(data.message)
-                        setTimeout(()=>{
-                            location.href = '/login';
-                        },2000)
+        <script>
+                document.getElementById('verifyEmail').addEventListener('submit', async (event) => {event.preventDefault()
+                    const num1 = document.getElementById("first").value;
+                    const num2 = document.getElementById("second").value;
+                    const num3 = document.getElementById("third").value;
+                    const num4 = document.getElementById("fourth").value;
+                    const errorMessageElement = document.getElementById("ErrorMessage");
                     
-                    }else if(data.errorMessage){
-                        errorMessageElement.textContent = data.errorMessage;
-                        setTimeout(()=>{
-                            errorMessageElement.textContent=""
-                        },2000)
-                    }
-                
+                    // Make an AJAX request to the server
+                    fetch("/emailVerified", {
+                        method: "POST",
+                        body: JSON.stringify({ num1,num2,num3,num4 }),
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.message) {
+                            
+                                showModalMessage(data.message)
+                                setTimeout(()=>{
+                                    location.href = '/login';
+                                },2000)
+                            
+                            }else if(data.errorMessage){
+                                errorMessageElement.textContent = data.errorMessage;
+                                setTimeout(()=>{
+                                    errorMessageElement.textContent=""
+                                },2000)
+                            }
+                        
+                        })
+                        .catch((error) => {
+                            console.error("Error:", error);
+                        });
+
                 })
-                .catch((error) => {
-                    console.error("Error:", error);
-                });
 
-        })
-
-        function showModalMessage(message) {
-        // Create a modal element with the message and the specified icon
-        const modal = document.createElement("div");
-        modal.classList.add("order-modal"); // Apply appropriate styling through CSS
-        const modalContent = document.createElement("div");
-        modalContent.classList.add("order-modal-content");
-        modalContent.innerHTML = `<i class="fa-regular fa-circle-check fa-beat-fade fa-2xl pb-20" style="color: #25519d;"></i> <br>${message}`;
-    
-        modal.appendChild(modalContent);
-        document.body.appendChild(modal);
-        // Center the icon and message vertically and horizontally
-        modal.style.textAlign = "center";
-        // Remove the modal after a few seconds (you can customize the timing)
-        setTimeout(() => {
-          document.body.removeChild(modal);
-        }, 2000); // 3 seconds in this example
-      }
+                function showModalMessage(message) {
+                // Create a modal element with the message and the specified icon
+                const modal = document.createElement("div");
+                modal.classList.add("order-modal"); // Apply appropriate styling through CSS
+                const modalContent = document.createElement("div");
+                modalContent.classList.add("order-modal-content");
+                modalContent.innerHTML = `<i class="fa-regular fa-circle-check fa-beat-fade fa-2xl pb-20" style="color: #25519d;"></i> <br>${message}`;
+            
+                modal.appendChild(modalContent);
+                document.body.appendChild(modal);
+                // Center the icon and message vertically and horizontally
+                modal.style.textAlign = "center";
+                // Remove the modal after a few seconds (you can customize the timing)
+                setTimeout(() => {
+                document.body.removeChild(modal);
+                }, 2000); // 3 seconds in this example
+            }
 
 
-    </script>
-          
+        </script>  
+      <script>
+        let countdown = 60;
+      
+        function updateTimer() {
+          const timerElement = document.getElementById('otp-timer');
+          const resendButton = document.getElementById('resend-button');
+      
+          if (countdown === 0) {
+            timerElement.textContent = 'OTP has expired';
+            resendButton.removeAttribute('disabled'); // Enable the button when the timer expires
+          } else {
+            const remainingTime = countdown === 1 ? '1 sec' : countdown + ' sec';
+            timerElement.textContent = ' OTP Expire in: ' + remainingTime;
+            countdown--;
+            setTimeout(updateTimer, 1000);
+          }
+        }
+      
+        function resendOtp() {
+          // Redirect to /resendOtp
+          window.location.href = '/resendOtp';
+        }
+      
+        updateTimer();
+      </script>  
     </div>
 </body>
 

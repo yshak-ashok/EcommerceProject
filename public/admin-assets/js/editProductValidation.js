@@ -1,136 +1,80 @@
+function editProductvalidate() {
+   const productName = document.getElementById('productName');
+   const description = document.getElementById('description');
+   const regularPrice = document.getElementById('regularPrice');
+   const images = document.getElementById('images');
+   const stock = document.getElementById('stock');
+   const size = document.getElementById('size');
+   const errorMessage = document.getElementById('ErrorMessage');
 
+   errorMessage.textContent = '';
+   let isValid = true;
 
-function editProductvalidate(){
+   if (productName.value.trim() === '') {
+       showError('Product name is required');
+       return false;
+   } else if (productName.value.length > 25) {
+       showError('Limit exceeded (max = 25 characters)');
+       return false;
+   }
 
-  // Data
-  const productName = document.getElementById('productName').value;
-  const description = document.getElementById('description').value;
-  const regularPrice = document.getElementById('regularPrice').value;
-  const salePrice = document.getElementById('salePrice').value;
-  const images = document.getElementById('images');
-  const stock = document.getElementById('stock').value;
-  const size = document.getElementById('size').value;
- 
-  // Error feilds
-  document.getElementById('ErrorMessage').textContent = '';
+   if (description.value.trim() === '') {
+       showError('Description is required');
+       return false;
+   }
 
- 
- 
-  let isValid = true;
- // Feild checking
- if(productName.trim() === ''){
-   document.getElementById('ErrorMessage').textContent = 'Product name is required';
-   setTimeout(()=>{
-      document.getElementById('ErrorMessage').textContent = '';
-   },5000);
-   isValid = false
+   if (regularPrice.value.trim() === '') {
+       showError('Regular Price is Required');
+       return false;
+   } else if (!validatePrice(regularPrice.value)) {
+       showError('Regular Price should be a positive number');
+       return false;
+   }
+
+   if (stock.value.trim() === '') {
+       showError('Stock is Required');
+       return false;
+   } else if (!validatePrice(stock.value)) {
+       showError('Stock should be a positive number');
+       return false;
+   }
+
+   if (size.value.trim() === '') {
+       showError('Size is required');
+       return false;
+   }
+
+   // Validate image formats
+   const allowedImageFormats = /\.(jpg|jpeg|png)$/i;
+   for (const file of images.files) {
+       if (!allowedImageFormats.test(file.name)) {
+           showError('Only JPG, JPEG, and PNG image formats are allowed');
+           return false;
+       }
+   }
+
+   if (images.files.length > 4) {
+       showError('Maximum four images are allowed');
+       return false;
+   }
+
+   return isValid;
 }
 
- // Letter character strength
-  if(productName.length > 26){
-     document.getElementById('ErrorMessage').textContent = 'Limit exceeded (max = 25 char)';
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
+function showError(message) {
+   const errorMessage = document.getElementById('ErrorMessage');
+   errorMessage.textContent = message;
+   setTimeout(() => {
+       errorMessage.textContent = '';
+   }, 5000);
+}
 
- 
- 
-  // Description feild
-  if(description.trim() === ''){
-     document.getElementById('ErrorMessage').textContent = 'Description is required';
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
- // Stock validation
-  if(!validatePrice(stock)){
-     document.getElementById('ErrorMessage').textContent = 'Stock should be a positive number';
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
- 
-  // Stock feild empty
-  if(stock.trim === ''){
-     document.getElementById('ErrorMessage').textContent = 'Stock is required';
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
-  // Regular price valid price
- 
-  if(!validatePrice(regularPrice)){
-     document.getElementById('ErrorMessage').textContent = 'Price should be a positive number';
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
- 
-  // Regular price feild validate
-  if(regularPrice.trim()=== ''){
-     document.getElementById('ErrorMessage').textContent = 'Regular Price is required';
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
- 
-  // Sale price valid number
-  if(!validatePrice(salePrice)){
-     document.getElementById('ErrorMessage').textContent = 'Price should be a positive number';
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
- 
-  //Sale price validation
-  if(salePrice.trim() === ''){
-     document.getElementById('ErrorMessage').textContent = 'Sale Price is required'
-     setTimeout(()=>{
-        document.getElementById('ErrorMessage').textContent = '';
-     },5000);
-     isValid = false
-  }
+function validatePrice(price) {
+   const pricePattern = /^[0-9]*\.?[0-9]+$/;
+   return pricePattern.test(price);
+}
 
-  //size vlidation
-
-  if(size.trim() === ''){
-    document.getElementById('ErrorMessage').textContent = 'Size is required'
-    setTimeout(()=>{
-       document.getElementById('ErrorMessage').textContent = '';
-    },5000);
-    isValid = false
- }
-
- 
-  // Images
-  // if(images.files.length < 2){
-  //    document.getElementById('ErrorMessage').textContent = 'At least two Image is required'
-  //    setTimeout(()=>{
-  //       document.getElementById('ErrorMessage').textContent = '';
-  //    },5000);
-  //    isValid = false
-  // }
- 
- 
-  return isValid;
- 
- }
- 
- // Validateproduct name
- function validateName(name) {
+function validateName(name) {
    const namePattern = /^[A-Z][a-zA-Z0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\/|\-=\s]*$/;
    return namePattern.test(name);
- }
- 
- function validatePrice(price){
-   const pricePattern = /^[0-9]*\.?[0-9]+$/
-   return pricePattern.test(price);
- }
+}

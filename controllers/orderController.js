@@ -98,7 +98,7 @@ const placeOrder = asyncHandler(async (req, res) => {
             res.json({ status: 'COD', placedOrderId: placeorder._id });
         } else if (placeorder.paymentMethod === 'ONLINE') {
             const orderId = placeorder._id;
-            const totalAmount = placeorder.totalAmount;
+            const totalAmount = placeorder.actualTotalAmount;
             RazorpayHelper.generateRazorpay(orderId, totalAmount).then((response) => {
                 res.json({ status: 'ONLINE', response });
             });
