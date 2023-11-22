@@ -116,7 +116,7 @@ const applyCoupon = asyncHandler(async (req, res) => {
         const couponCode = req.query.couponCode.trim();
         //console.log("couponCode", couponCode);
         const cart = await Cart.find({ userId: user_id }).populate("products.productId");
-        console.log("cart", cart);
+       // console.log("cart", cart);
         let grandTotal = 0;
         cart.forEach((cartItem) => {
             cartItem.products.forEach((product) => {
@@ -173,4 +173,31 @@ const applyCoupon = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { loadCoupon, couponForm, addCoupon, couponStatus,myCoupon,applyCoupon };
+const removeCoupon = asyncHandler(async (req, res) => {
+    try {
+        const user = await User.findById(req.session.userId);
+        const user_id = user._id;
+        const couponCode = req.query.couponCode.trim();
+        const couponData = await Coupon.findOne({ code: couponCode });
+        //console.log("coupondata in remove",couponData);
+        const cart = await Cart.find({ userId: user_id }).populate("products.productId");
+        let grandTotal = 0;
+        cart.forEach((cartItem) => {
+            cartItem.products.forEach((product) => {
+                grandTotal += product.total;
+            });
+        });
+        if(couponData){ 
+   
+        res.json({ status: "success", message: "Coupon Removed" ,actualValue:grandTotal});
+        }else{
+            res.json({status:"error",message:"Cpupon not found"})
+        }
+        
+    } catch (error) {
+        console.error(error);
+        res.json({ status: "error", message: "Internal Server Error" });
+    }
+});
+
+module.exports = { loadCoupon, couponForm, addCoupon, couponStatus,myCoupon,applyCoupon ,removeCoupon};

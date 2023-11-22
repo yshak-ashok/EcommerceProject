@@ -22,6 +22,10 @@
 
 
     <style>
+        .alert-message{
+            text-align: center;
+            color: #ff0000;
+        }
         /* Style for the message container */
         .message-container {
             display: flex;
@@ -354,7 +358,7 @@
                                         <div class="shipping-address-area billing-area">
                                              <div class="minicart-btn-area d-flex align-items-center justify-content-between flex-wrap">
                                              <a href="/cart" class="checkout-page-btn minicart-btn btn-primary">BACK TO CART</a>
-                                             <a  class="checkout-page-btn minicart-btn btn-secondary" data-toggle="modal" data-target="#exampleModal">Add Address</a>
+                                             <a href="" class="checkout-page-btn minicart-btn btn-secondary" data-toggle="modal" data-target="#exampleModal">Add Address</a>
                                              <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Open modal for @mdo</button> -->
                                             </div>
                                         </div>
@@ -372,7 +376,7 @@
                                         </div>
                                          <form action="/addNewAddress" method="post" id="userAddress">
                                         <div class="modal-body">
-                                           
+                                            <p id="errorMessage" class="alert-message"></p>
                                             <div class="form-group">
                                               <label for="recipient-name" class="col-form-label">Name:</label>
                                               <input type="text" class="form-control" id="name" name="name">
@@ -465,12 +469,17 @@
                                             <div >
                                                 <input type="text" name="couponCode" id="couponCode" style="width: 200px; height: 40px; border: 1px solid #000; margin-right: 10px; border-radius: 5px;" placeholder="&nbsp; Coupon Code">
                                                 <input type="text"  id="couponId" hidden />                                             
-                                                <a href=""  class="btn-primary" id="applyCouponBtn"> Apply </a>
+                                                <!-- <a href=""  class="btn-primary" id="applyCouponBtn"> Apply </a> -->
+                                
+                                                <button class="btn-primary" id="applyCouponBtn">Apply</button>
+                                                <button class="btn-primary" id="removeCouponBtn"  hidden >Remove</button>
                                                 <p id="couponCodeError" style="color: #ff0000"></p>
+
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#couponModal">
                                                    View Coupon
-                                                </button>
+                                                </button>                
+                                                
                                             </div>
 
 
@@ -488,9 +497,11 @@
                                                            
                                                             <% for(let i=0;i < userCoupon.length;i++){%>
                                                         <div class="modal-body">
-                                                            <span style="border: 1px solid #000; cursor: pointer;" title="Copy" onclick="copyToClipboard('<%-userCoupon[i].code %>')">
+                                                            <!-- <span  style="border: 1px solid #000; cursor: pointer;"  onclick="copyToClipboard('<%-userCoupon[i].code %>')">
                                                                 &nbsp;<%-userCoupon[i].code %>&nbsp;
-                                                            </span>
+                                                            </span> -->
+                                                            <span class="cpnCode" style="font-weight: bold;"><%- userCoupon[i].code %></span>
+                                                            <span class="cpnBtn" style="cursor: pointer;">COPY</span>
                                                             <p class="mt-3"><%-userCoupon[i].description %></p>
                                                             <p><span>Valid Till: </span><%- (new Date(userCoupon[i].expirationDate)).toLocaleDateString('en-GB').split('/').join('.') %></p>
                                                             <hr>
@@ -856,6 +867,34 @@
         <script src="assets/js/vendor.js"></script>
         <script src="assets/js/main.js"></script>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="assets/js/addressValidation.js"></script>
+
+        <script>
+            document.getElementById("removeCouponBtn").addEventListener("click", async (event) => {
+            event.preventDefault();
+            const couponCode = document.getElementById("couponCode").value;
+            try {
+                const response = await fetch(`/removeCoupon?couponCode=${couponCode}`);
+
+                const result = await response.json();
+                if (result.status === "success") {
+                    showModalMessage(result.message);
+                    document.getElementById("discountAmount").innerHTML =  "0.00";
+                    document.getElementById("total").innerHTML = result.actualValue;
+                    document.getElementById("couponCode").value = "";
+                    document.getElementById("couponId").value = "";
+                    document.getElementById("applyCouponBtn").hidden = false;
+                    document.getElementById("removeCouponBtn").hidden= true;
+                } else {
+                    showModalMessage("Failed to remove coupon");
+                }
+            } catch (error) {
+                console.error(error);
+                showModalMessage("An error occurred");
+            }
+        });
+
+        </script>
 
         <script>
             document.getElementById('saveAddressLink').addEventListener('click', async (event) => {
@@ -866,7 +905,8 @@
                 const city = document.getElementById('city').value;    ;
                 const street = document.getElementById('street').value;   
                 const postalCode = document.getElementById('postalCode').value;
-                
+                const isValid = addressValidation();
+                    if (isValid) {
                     fetch('/addNewAddress', {
                         method: 'POST',
                         body: JSON.stringify({ name, mobile, homeAddress, city, street, postalCode }),
@@ -888,6 +928,7 @@
                         .catch((error) => {
                             console.error('Error:', error);
                         });
+                    }
                 
             });
 
@@ -919,8 +960,7 @@
                     const couponCode = document.getElementById("couponCode").value;
                     //const totalAmount = "<%- grandTotal %>";
                    // console.log(totalAmount);
-                    console.log(couponCode);
-
+                    //console.log(couponCode);
                     const response = await fetch(`/applyCoupon?couponCode=${couponCode}`);
                     const result = await response.json();
 
@@ -929,7 +969,8 @@
                         document.getElementById("discountAmount").innerHTML =  result.discountAmount;
                         document.getElementById("total").innerHTML = result.actualValue;
                         document.getElementById("couponId").value = result.couponId;
-                        console.log('couponId',result.couponId);
+                        document.getElementById("applyCouponBtn").hidden = true;
+                        document.getElementById("removeCouponBtn").hidden = false;
                     } else if(result.status === "error" ){
                         showModalMessage(result.message)
                     }else {
@@ -1145,14 +1186,22 @@
         
         </script>
 
-         <script>
-            function copyToClipboard(text) {
-                navigator.clipboard.writeText(text).then(function () {
-                   
-                }).catch(function (err) {
-                    console.error('Unable to copy to clipboard: ', err);
-                });
-            }
+        <script>
+            // Get all elements with class name cpnBtn
+            var cpnBtns = document.querySelectorAll(".cpnBtn");
+            var cpnCodes = document.querySelectorAll(".cpnCode");
+
+            // Iterate through each button and add the copy functionality
+            cpnBtns.forEach(function(btn, index) {
+                btn.onclick = function() {
+                    navigator.clipboard.writeText(cpnCodes[index].innerHTML);
+                    btn.innerHTML = "COPIED";
+                    setTimeout(function() {
+                        btn.innerHTML = "COPY";
+                    }, 3000);
+                };
+            });
+
         </script>
     </div>
 </body>

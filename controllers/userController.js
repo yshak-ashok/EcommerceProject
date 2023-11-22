@@ -420,12 +420,10 @@ const newPassword = asyncHandler(async (req, res) => {
 
 const viewProduct = asyncHandler(async (req, res) => {
     try {
-        const productID = req.query.id;
-        const productid = productID.toString();
+        const productid = req.query.id;
         const user = await User.findById(req.session.userId);
-        const category = await Category.find();
         const productData = await Product.findById(productid).populate('category')
-        console.log("productData",productData);
+        const categoryData = await Category.find()
         const categoryId = productData.category._id;
         const similarProducts = await Product.find({ category: categoryId });
 
@@ -442,7 +440,7 @@ const viewProduct = asyncHandler(async (req, res) => {
                     products: productData,
                     similarProducts: similarProducts,
                     cartCount: userCartCount,
-                    category
+                    category:categoryData
                 });
             } else {
                 res.render('view-Product', {
@@ -450,7 +448,7 @@ const viewProduct = asyncHandler(async (req, res) => {
                     products: productData,
                     similarProducts: similarProducts,
                     cartCount: 0,
-                    category // Set the cartCount to 0 if the user's cart is empty
+                    category:categoryData // Set the cartCount to 0 if the user's cart is empty
                 });
             }
         } else {
@@ -463,7 +461,7 @@ const viewProduct = asyncHandler(async (req, res) => {
                 products: productData,
                 similarProducts: similarProducts,
                 cartCount: 0, // Set the cartCount to 0 if the user is not valid
-                category
+                category:categoryData
             });
         }
     } catch (error) {

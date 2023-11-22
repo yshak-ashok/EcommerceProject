@@ -184,10 +184,12 @@ userRouter.post("/returnItem", isLogin, returnItem);
 
 const { 
     applyCoupon,
-     myCoupon 
+     myCoupon,
+     removeCoupon 
     } = require("../controllers/couponController");
 
 userRouter.get("/applyCoupon", applyCoupon);
 userRouter.get("/myCoupons", isLogin, myCoupon);
+userRouter.get("/removeCoupon",removeCoupon)
 
 module.exports = userRouter;
