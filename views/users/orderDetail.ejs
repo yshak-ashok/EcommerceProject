@@ -37,17 +37,18 @@
         .cancel-modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 150px;
             width: 100%;
             height: 100%;
             z-index: 1;
+            text-align: center;
         }
 
         .cancel-modal-content {
             background-color: #fff;
-            width: 30%;
-            margin: 20% auto;
+            width: 80%;
+            max-width: 400px;
+            margin: 0 auto;
             padding: 20px;
             text-align: center;
             border-radius: 5px;
@@ -129,81 +130,70 @@
             }
            
             .modal {
-    display: none; 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); 
-    z-index: 1;
-}
+                    display: none; 
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.7); 
+                    z-index: 1;
+                }
 
-.modal-content {
-    background-color: #fff;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    max-width: 100%; 
-    overflow-x: auto;
-    display: block;
-}
+                .modal-content {
+                    background-color: #fff;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    padding: 20px;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                    max-width: 100%; 
+                    overflow-x: auto;
+                    display: block;
+                }
 
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
-}
+                .close {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    font-size: 20px;
+                    cursor: pointer;
+                }
 
-.form-group {
-    margin-bottom: 15px;
-}
+                .form-group {
+                    margin-bottom: 15px;
+                }
 
-select,
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
+                select,
+                textarea {
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    font-size: 16px;
+                }
+                /* Hover effect for the Confirm button */
+                .btn-dark:hover {
+                    background-color: #292e32;
+                }
 
-/* Confirm Button */
-.btn-dark {
-    background-color: #343a40;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
+                /* Media query for mobile view */
+                @media only screen and (max-width: 600px) {
+                    .modal-content {
+                        width: 100%;
+                        max-width: 100%;
+                    }
+                }
 
-/* Hover effect for the Confirm button */
-.btn-dark:hover {
-    background-color: #292e32;
-}
-
-/* Media query for mobile view */
-@media only screen and (max-width: 600px) {
-    .modal-content {
-        width: 100%;
-        max-width: 100%;
-    }
-}
-
-/* Media query for desktop view */
-@media only screen and (min-width: 601px) {
-    .modal-content {
-        width: 40%;
-        max-width: 40%;
-    }
-}
+                /* Media query for desktop view */
+                @media only screen and (min-width: 601px) {
+                    .modal-content {
+                        width: 40%;
+                        max-width: 40%;
+                    }
+                }
 
 
             :root {
@@ -224,7 +214,7 @@ textarea {
                 --btn-secondary-background-color: transparent;
                 --btn-secondary-border-color: #000;
                 --btn-secondary-hover-color: #fff;
-                --btn-secondary-background-hover-color: #0a66c2;
+                --btn-secondary-background-hover-color: #000;
                 --btn-secondary-border-hover-color: #0a66c2;
                 --btn-secondary-font-weight: 500;
 
@@ -462,13 +452,13 @@ textarea {
                     <div class="wishlist-page-inner">
                         <div class="container">
                             <div class="section-header d-flex align-items-center justify-content-between flex-wrap">
-                                <h3>Order Details</h3>
+                                <h3>ORDER DETAILS</h3>
                             </div>
                             <hr />
                             <div class="row">
                                 <div class="col-lg-6 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                                     <div class="product-card">
-                                        <h5>Order Info</h5>
+                                        <h5>ORDER INFO</h5>
                                         <div class="product-card-details">
                                             <ul class="list">
                                                 <li>
@@ -510,7 +500,7 @@ textarea {
 
                                 <div class="col-lg-6 col-md-12 col-12" data-aos="fade-up" data-aos-duration="700">
                                     <div class="product-card">
-                                        <h5>Shipping Address</h5>
+                                        <h5>SHIPPING ADDRESS</h5>
 
                                         <div class="product-card-details">
                                             <ul class="list">
@@ -637,7 +627,7 @@ textarea {
                                     <div class="cancel-modal-content">
                                         <span class="close">&times;</span>
                                         <p>Are you sure you want to cancel this order?</p>
-                                        <button type="button" class="btn btn-dark" id="confirmCancelOrder">Confirm</button>
+                                        <button type="button" class="btn btn-secondary" id="confirmCancelOrder">Confirm</button>
                                     </div>
                                 </div>
                             <% } else if(orderDetail.orderStatus==="Delivered"){ %>

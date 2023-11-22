@@ -18,96 +18,91 @@
    
      <!-- all css -->
     <style>
- .cart-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 100;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.cart-modal-content{
-  background-color: #000;
-  color: #fff;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  max-width: 500px;
-}
-.cart-icon {
-    position: relative;
-    display: inline-block;
-}
+                .cart-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 100;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                }
+                .cart-modal-content{
+                background-color: #000;
+                color: #fff;
+                padding: 1rem;
+                border-radius: 0.5rem;
+                max-width: 500px;
+                }
+                .cart-icon {
+                    position: relative;
+                    display: inline-block;
+                }
 
-.modal {
-  display: none;
-  position: fixed;
-  top: 150px;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  align-items: center; 
-}
+                .modal {
+                display: none;
+                position: fixed;
+                top: 150px;
+                width: 100%;
+                height: 100%;
+                z-index: 1;
+                align-items: center; 
+                }
 
-.modal-content {
-  width: 80%;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border-radius: 5px;
-  position: relative;
-  text-align: center;
-}
+                .modal-content {
+                width: 80%;
+                max-width: 400px;
+                margin: 0 auto;
+                padding: 20px;
+                border-radius: 5px;
+                position: relative;
+                text-align: center;
+                }
 
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 20px;
-  cursor: pointer;
-}
-.close:hover {
-  color: #f00;
-}
-.btn-remove{
-    background-color: #fff;
-    border-radius: 2px;
-    width: 40px;
-    height: 40px;     
- }
-.cart-icon {
-    position: relative;
-    display: inline-block;
-}
+                .close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                font-size: 20px;
+                cursor: pointer;
+                }
+                .close:hover {
+                color: #f00;
+                }
+               
+                .cart-icon {
+                    position: relative;
+                    display: inline-block;
+                }
 
-.notification-badge {
-    position: absolute;
-    top: -5px; /* Adjust the top position as needed */
-    right: -6px; /* Adjust the right position as needed */
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    padding: 2.5px 6px; /* Adjust the padding to make the badge smaller */
-    font-size: 10px; /* Adjust the font size to make the text smaller */
-    line-height: 1; /* Center the text vertically */
-} 
-.primary-img{
-    height: 175px;
-    width: 125x;
-    border-radius: 10%;
-   
-}    
+                .notification-badge {
+                    position: absolute;
+                    top: -5px; /* Adjust the top position as needed */
+                    right: -6px; /* Adjust the right position as needed */
+                    background-color: red;
+                    color: white;
+                    border-radius: 50%;
+                    padding: 2.5px 6px; /* Adjust the padding to make the badge smaller */
+                    font-size: 10px; /* Adjust the font size to make the text smaller */
+                    line-height: 1; /* Center the text vertically */
+                } 
+                .primary-img{
+                    height: 175px;
+                    width: 125x;
+                    border-radius: 10%;
+                
+                }    
      
            :root {
             --primary-color: #000;
             --secondary-color: #0a66c2;
 
             --btn-primary-border-radius: 0.25rem;
-            --btn-primary-color: #000;
-            --btn-primary-background-color:#ffffff;
+            --btn-primary-color: #fff;
+            --btn-primary-background-color:#000;
             --btn-primary-border-color: #000;
             --btn-primary-hover-color: #fff;
             --btn-primary-background-hover-color: #000;
@@ -378,7 +373,7 @@
                                     <span class="close">&times;</span>
                                     <p>Are you sure you want to remove this Product?</p>
                                     <a href="/remove-wishlist/?productId=<%- wishlist[i].productId._id %>">
-                                      <button type="button" class="btn btn-dark">Confirm</button>
+                                      <button type="button" class="btn btn-primary">Confirm</button>
                                     </a>
                                 </div>
                               </div>
