@@ -420,10 +420,12 @@ const newPassword = asyncHandler(async (req, res) => {
 
 const viewProduct = asyncHandler(async (req, res) => {
     try {
-        const productid = req.query.id;
+        const productID = req.query.id;
+        const productid = productID.toString();
         const user = await User.findById(req.session.userId);
         const category = await Category.find();
-        const productData = await Product.findById({_id:productid}).populate('category');
+        const productData = await Product.findById(productid).populate('category')
+        console.log("productData",productData);
         const categoryId = productData.category._id;
         const similarProducts = await Product.find({ category: categoryId });
 
