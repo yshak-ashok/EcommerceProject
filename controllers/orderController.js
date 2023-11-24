@@ -5,7 +5,7 @@ const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const UsedCoupon = require('../models/usedCouponModel');
 const Wallet = require('../models/walletModel');
-const Category=require("../models/categoryModel")
+const Category = require('../models/categoryModel');
 const asyncHandler = require('express-async-handler');
 const RazorpayHelper = require('../razorpay/razorpay');
 // const { response } = require("../routes/userRouter");
@@ -77,45 +77,10 @@ const placeOrder = asyncHandler(async (req, res) => {
         // console.log('address: ',address);
         //console.log('orderdetails',orderDetails);
         const placeorder = await orderDetails.save();
-        console.log("total checking :",orderDetails.totalAmount);
+        console.log('total checking :', orderDetails.totalAmount);
         //console.log('placedorder', placeorder);
-    if(orderDetails.totalAmount){
-        if (placeorder.paymentMethod === 'COD') {
-            for (const product of orderedProducts) {
-                product.productStatus = 'Order Placed';
-            }
-            placeorder.orderStatus = 'Order Placed';
-            placeorder.products = orderedProducts;
-            await placeorder.save();
-            if (cart) {
-                cart.products = [];
-                await cart.save();
-            }
-            productData.forEach(async (product) => {
-                product.productId.stock -= product.quantity;
-                await product.productId.save();
-            });
-            res.json({ status: 'COD', placedOrderId: placeorder._id });
-        } else if (placeorder.paymentMethod === 'ONLINE') {
-            const orderId = placeorder._id;
-            const totalAmount = placeorder.actualTotalAmount;
-            RazorpayHelper.generateRazorpay(orderId, totalAmount).then((response) => {
-                res.json({ status: 'ONLINE', response });
-            });
-        } else if (placeorder.paymentMethod === 'WALLET') {
-            console.log('payement method:', placeorder.paymentMethod);
-            const userWallet = await Wallet.findOne({ userId: user_Id });
-            const userWalletAmount = userWallet.walletAmount;
-            if (userWalletAmount) {
-                userWallet.walletAmount = userWalletAmount - actualAmount;
-
-                userWallet.transactionHistory.push({
-                    description: 'Shopping',
-                    addedAmount: actualAmount,
-                    debitOrCredit: 'Debit',
-                });
-                await userWallet.save();
-
+        if (orderDetails.totalAmount) {
+            if (placeorder.paymentMethod === 'COD') {
                 for (const product of orderedProducts) {
                     product.productStatus = 'Order Placed';
                 }
@@ -130,12 +95,47 @@ const placeOrder = asyncHandler(async (req, res) => {
                     product.productId.stock -= product.quantity;
                     await product.productId.save();
                 });
-                res.json({ status: 'WALLET', placedOrderId: placeorder._id });
+                res.json({ status: 'COD', placedOrderId: placeorder._id });
+            } else if (placeorder.paymentMethod === 'ONLINE') {
+                const orderId = placeorder._id;
+                const totalAmount = placeorder.actualTotalAmount;
+                RazorpayHelper.generateRazorpay(orderId, totalAmount).then((response) => {
+                    res.json({ status: 'ONLINE', response });
+                });
+            } else if (placeorder.paymentMethod === 'WALLET') {
+                console.log('payement method:', placeorder.paymentMethod);
+                const userWallet = await Wallet.findOne({ userId: user_Id });
+                const userWalletAmount = userWallet.walletAmount;
+                if (userWalletAmount) {
+                    userWallet.walletAmount = userWalletAmount - actualAmount;
+
+                    userWallet.transactionHistory.push({
+                        description: 'Shopping',
+                        addedAmount: actualAmount,
+                        debitOrCredit: 'Debit',
+                    });
+                    await userWallet.save();
+
+                    for (const product of orderedProducts) {
+                        product.productStatus = 'Order Placed';
+                    }
+                    placeorder.orderStatus = 'Order Placed';
+                    placeorder.products = orderedProducts;
+                    await placeorder.save();
+                    if (cart) {
+                        cart.products = [];
+                        await cart.save();
+                    }
+                    productData.forEach(async (product) => {
+                        product.productId.stock -= product.quantity;
+                        await product.productId.save();
+                    });
+                    res.json({ status: 'WALLET', placedOrderId: placeorder._id });
+                }
             }
+        } else {
+            res.json({ status: 'cart-issue', placedOrderId: placeorder._id });
         }
-    }else{
-        res.json({status:"cart-issue",placedOrderId: placeorder._id})
-    }
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'An error occurred' });
@@ -217,7 +217,7 @@ const orderList = asyncHandler(async (req, res) => {
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         if (user) {
-            res.render('orderList', { user, userOrders, cartCount, currentPage: page, totalPages,category });
+            res.render('orderList', { user, userOrders, cartCount, currentPage: page, totalPages, category });
         }
     } catch (error) {
         console.error('Error:', error);
@@ -237,7 +237,7 @@ const orderDetails = asyncHandler(async (req, res) => {
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
         if (user) {
-            res.render('orderDetail', { user, orderDetail,cartCount,category });
+            res.render('orderDetail', { user, orderDetail, cartCount, category });
         }
     } catch (error) {
         console.error('Error:', error);
@@ -250,31 +250,30 @@ const cancelOrder = asyncHandler(async (req, res) => {
         const orderId = req.query.orderId;
         const orderDetails = await Order.findById(orderId).populate('products.productId');
         const user = await User.findById(req.session.userId);
-        const userId=user._id
+        const userId = user._id;
         if (!orderDetails) {
             return res.status(404).json({ status: 'error', message: 'Order not found' });
         }
-        const paymentMethod=orderDetails.paymentMethod
+        const paymentMethod = orderDetails.paymentMethod;
         //console.log("payment in cancel",paymentMethod);
-        if(paymentMethod==="ONLINE"){
-            const orderAmount=orderDetails.actualTotalAmount
-            if(orderAmount>0){
-               // console.log("need to refund");
-               const userWallet=await Wallet.findOne({userId:userId})
-                    if (userWallet) {
-                        console.log("refund amount",orderDetails.actualTotalAmount);
-                        const refundAmount = orderDetails.actualTotalAmount;
-                        userWallet.walletAmount += refundAmount;
-                        userWallet.transactionHistory.push({
-                            description: 'Product Refund',
-                            addedAmount: refundAmount,
-                            debitOrCredit: 'Credit',
-                        });
-                        await userWallet.save();
-                    }
-
+        if (paymentMethod === 'ONLINE') {
+            const orderAmount = orderDetails.actualTotalAmount;
+            if (orderAmount > 0) {
+                // console.log("need to refund");
+                const userWallet = await Wallet.findOne({ userId: userId });
+                if (userWallet) {
+                    console.log('refund amount', orderDetails.actualTotalAmount);
+                    const refundAmount = orderDetails.actualTotalAmount;
+                    userWallet.walletAmount += refundAmount;
+                    userWallet.transactionHistory.push({
+                        description: 'Product Refund',
+                        addedAmount: refundAmount,
+                        debitOrCredit: 'Credit',
+                    });
+                    await userWallet.save();
+                }
             }
-         }
+        }
         // Update order status
         orderDetails.orderStatus = 'Order Cancelled';
 
@@ -315,6 +314,8 @@ const returnItem = asyncHandler(async (req, res) => {
             res.json({ errorMessage: 'Request already submitted' });
         } else if (productstatus === 'Return Approved') {
             res.json({ errorMessage: 'Your request has already been approved' });
+        } else if (productstatus === 'Product Returned') {
+            res.json({ errorMessage: 'The product has already been returned' });
         } else {
             if (productIndex !== -1) {
                 orderDetails.products[productIndex].productStatus = 'Return Requested';
@@ -351,7 +352,7 @@ const loadOrderList = asyncHandler(async (req, res) => {
         // console.log('totalPages:', totalPages);
 
         //console.log('order:', orders);
-        res.render('order-List', { orders, currentPage: page, totalPages,category });
+        res.render('order-List', { orders, currentPage: page, totalPages, category });
     } catch (error) {
         console.error(error);
     }
@@ -398,9 +399,9 @@ const loadOrderDetails = asyncHandler(async (req, res) => {
         //console.log('orderid:',orderId);
         const orderDetail = await Order.findById(orderId).populate('products.productId');
         //console.log('orderDetails:', orderDetail);
-        res.render('order-Details', { orderDetail ,category});
+        res.render('order-Details', { orderDetail, category });
     } catch (error) {
-        res.render("404")
+        res.render('404');
     }
 });
 
@@ -484,12 +485,13 @@ const returnConfirmed = asyncHandler(async (req, res) => {
         const { returnStatus, orderId } = req.body;
 
         const orderDetails = await Order.findById(orderId).populate('products.productId');
-       // console.log("orderdata:",orderDetails);
-        const userId=orderDetails.userId
-        console.log("UserID..",userId);
+        console.log('orderdata from admin:', orderDetails);
+        const userId = orderDetails.userId;
+        console.log('UserID..', userId);
 
         if (returnStatus === 'Product Returned') {
             const returnedProduct = orderDetails.products.find((product) => product.productStatus === 'Return Approved');
+            console.log('return product form admin', returnedProduct);
 
             if (returnedProduct) {
                 const productData = await Product.findById(returnedProduct.productId);
@@ -502,23 +504,44 @@ const returnConfirmed = asyncHandler(async (req, res) => {
                 returnedProduct.productStatus = returnStatus;
                 // Update the return order status
                 orderDetails.returnOrderStatus.status = returnStatus;
+                orderDetails.totalAmount = orderDetails.totalAmount - returnedProduct.salePrice;
+                orderDetails.actualTotalAmount =
+                    orderDetails.actualTotalAmount - (returnedProduct.salePrice - orderDetails.couponDiscountAmount);
                 await orderDetails.save();
                 res.json({ status: 'success', message: 'Status Updated and Stock Quantity Updated' });
-                if(userId){
-                    const userWallet=await Wallet.findOne({userId:userId})
+                if (userId) {
+                    const userWallet = await Wallet.findOne({ userId: userId });
                     if (userWallet) {
-                        console.log("refund amount",orderDetails.actualTotalAmount);
-                        const refundAmount = orderDetails.actualTotalAmount;
+                        // console.log("refund amount",orderDetails.actualTotalAmount);
+                        const refundAmount = returnedProduct.salePrice;
+                        //console.log("refund amount",refundAmount);
                         userWallet.walletAmount += refundAmount;
                         userWallet.transactionHistory.push({
                             description: 'Product Refund',
                             addedAmount: refundAmount,
                             debitOrCredit: 'Credit',
                         });
+                        if (orderDetails.couponDiscountAmount > 0) {
+                            const discountAmount = orderDetails.couponDiscountAmount;
+                            userWallet.walletAmount -= discountAmount;
+                            userWallet.transactionHistory.push({
+                                description: 'Coupon Amount',
+                                addedAmount: discountAmount,
+                                debitOrCredit: 'Debit',
+                            });
+                        }
                         await userWallet.save();
                     }
-
                 }
+                const allProductsReturned = orderDetails.products.every(
+                    (product) => product.productStatus === 'Product Returned',
+                );
+                if (allProductsReturned) {
+                    // Update the order status to 'Returned' when all products are returned
+                    orderDetails.orderStatus = 'Returned';
+                }
+                orderDetails.couponDiscountAmount = 0;
+                await orderDetails.save();
             } else {
                 res.json({ status: 'error', message: "No product with 'Return Approved' status found" });
             }

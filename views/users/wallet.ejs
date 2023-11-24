@@ -16,6 +16,32 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
         <!-- all css -->
         <style>
+             .transaction-history {
+                 max-height: 300px; 
+                 overflow-y: auto; 
+                    }
+             .transaction-list {
+                 padding: 0; 
+                 list-style: none;
+                 }
+
+            .transaction-details {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #ccc; 
+                    }
+
+            .debit {
+                color: green;
+                }
+
+            .credit {
+              color: red;
+                 } 
+                              
+
             .cart-icon {
                 position: relative;
                 display: inline-block;
@@ -431,11 +457,11 @@
                                                                     <%-userWallet.transactionHistory[i].description%>
                                                                 </span>
                                                                 <% if(userWallet.transactionHistory[i].debitOrCredit=="Credit"){ %>
-                                                                <span class="debit" style="color: green; width: 25%">
+                                                                <span class="debit" style="width: 25%">
                                                                     <%-userWallet.transactionHistory[i].debitOrCredit %>
                                                                 </span>
                                                                 <% }else { %>
-                                                                    <span class="debit" style="color: red; width: 25%">
+                                                                    <span class="debit" style="width: 25%">
                                                                         <%-userWallet.transactionHistory[i].debitOrCredit %>
                                                                     </span>
                                                                     <%} %>
