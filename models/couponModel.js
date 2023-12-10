@@ -5,35 +5,34 @@ const couponSchema = new Schema({
     code: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
     },
     description: {
         type: String,
-        required: true
+        required: true,
     },
     discount: {
         type: Number,
-        required: true
+        required: true,
     },
     minOrderAmount: {
         type: Number,
-        required: true
+        required: true,
     },
     createdOn: {
         type: Date,
         required: true,
-        default: Date.now 
+        default: Date.now,
     },
     expirationDate: {
         type: Date,
-        required: true
+        required: true,
     },
     isActive: {
         type: Boolean,
         default: true,
-        required: true
-    }
-   
+        required: true,
+    },
 });
 
 module.exports = mongoose.model('Coupon', couponSchema);

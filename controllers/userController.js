@@ -12,7 +12,6 @@ const nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
 
 //------user home page------
-
 const home = asyncHandler(async (req, res) => {
     try {
         const productData = await Product.find({ is_listed: true }).populate('category').sort({ date: -1 }).limit(4);
@@ -24,19 +23,17 @@ const home = asyncHandler(async (req, res) => {
         //console.log('banner:', bannerData);
         if (user && !user.isBlocked) {
             const userCart = await Cart.findOne({ userId: user._id });
-
             if (userCart) {
                 const userCartCount = userCart.products.reduce((acc, product) => {
                     return (acc += product.quantity);
                 }, 0);
-
                 res.render('home', {
                     user: user,
                     products: productData,
                     allProducts: allProductData,
                     cartCount: userCartCount,
                     bannerData,
-                    category
+                    category,
                 });
             } else {
                 res.render('home', {
@@ -45,7 +42,7 @@ const home = asyncHandler(async (req, res) => {
                     allProducts: allProductData,
                     cartCount: 0,
                     bannerData,
-                    category
+                    category,
                 });
             }
         } else {
@@ -59,7 +56,7 @@ const home = asyncHandler(async (req, res) => {
                 allProducts: allProductData,
                 cartCount: 0,
                 bannerData,
-                category
+                category,
             });
         }
     } catch (error) {
@@ -174,20 +171,17 @@ function generateReferralCode() {
 }
 
 // Update createNewUser to handle OTP resend
-
 const createNewUser = asyncHandler(async (req, res) => {
     const { username, email, mobile, password, refferal } = req.body;
     let validReferral = true; // Boolean to track the validity of the referral code
     const existingUser = await User.findOne({ email });
-
     if (existingUser) {
         res.render('register', { errorMessage: 'User already exists' });
     } else {
         if (refferal) {
             // Check if referral code is provided
             const findRefferal = await User.findOne({ refferalCode: refferal });
-            console.log('refferal', refferal);
-
+            //console.log('refferal', refferal);
             if (findRefferal) {
                 try {
                     req.session.refferalUerId = findRefferal._id;
@@ -215,7 +209,6 @@ const createNewUser = asyncHandler(async (req, res) => {
                 });
                 await userData.save();
                 req.session.userEmail = userData.email;
-
                 // Attempt to send the email
                 try {
                     await sendOtpEmail(req, email);
@@ -255,7 +248,6 @@ async function sendOtpEmail(req, email) {
         };
         req.session.emailOTP = otp;
         req.session.otpExpirationTime = Date.now() + 60000; // OTP expires in 1 minute
-
         await transporter.sendMail(mailOptions);
     } catch (emailError) {
         throw new Error('Email sending error: ' + emailError.message);
@@ -263,71 +255,56 @@ async function sendOtpEmail(req, email) {
 }
 
 // after otp generate email verified(from 'emailOTP')
-
 const emailVerified = asyncHandler(async (req, res) => {
     try {
         const emailOTP = req.session.emailOTP;
         const otpExpirationTime = req.session.otpExpirationTime;
-
         // Check if OTP has expired
         if (Date.now() > otpExpirationTime) {
             return res.json({ errorMessage: 'OTP has expired. Please request a new OTP.' });
         }
-
         const { num1, num2, num3, num4 } = req.body;
         const userOTP = num1 + num2 + num3 + num4;
         console.log('useremail:', req.session.userEmail);
         if (userOTP == emailOTP) {
             const findUser = await User.findOne({ email: req.session.userEmail });
-
             if (!findUser) {
                 return res.json({ errorMessage: 'Cannot find user. Please Register Again' });
             }
-
             if (findUser.isVerified) {
                 return res.json({ errorMessage: 'Email already Verified' });
             }
-
             if (findUser && !findUser.isVerified) {
                 const user_id = findUser._id;
-
                 let userWallet = await Wallet.findOne({ userId: user_id });
                 if (!userWallet) {
                     userWallet = new Wallet({ userId: user_id });
                     await userWallet.save();
                 }
-
                 if (req.session.refferalUerId) {
                     let refferalUserWallet = await Wallet.findOne({ userId: req.session.refferalUerId });
-
                     if (refferalUserWallet && userWallet) {
                         const referralAmount = 50;
-
                         refferalUserWallet.walletAmount += referralAmount;
                         userWallet.walletAmount += referralAmount;
-
                         refferalUserWallet.transactionHistory.push({
                             description: 'Referral amount',
                             addedAmount: referralAmount,
                             debitOrCredit: 'Credit',
                         });
-
                         userWallet.transactionHistory.push({
                             description: 'Referral amount',
                             addedAmount: referralAmount,
                             debitOrCredit: 'Credit',
                         });
-
                         await refferalUserWallet.save();
                         await userWallet.save();
                     }
                 }
 
                 await User.findByIdAndUpdate(findUser._id, { isVerified: true });
-
                 req.session.userEmail = null;
                 req.session.refferalUerId = null;
-
                 return res.json({ message: 'OTP verified, Registration Successful' });
             }
         } else {
@@ -340,17 +317,14 @@ const emailVerified = asyncHandler(async (req, res) => {
 });
 
 //------forgotpassword-----
-
 const forgotPassword = asyncHandler(async (req, res) => {
     res.render('verifyEmail', { errorMessage: '' });
 });
-
 const loadNewPassword = asyncHandler(async (req, res) => {
     res.render('newPassword', { errorMessage: '' });
 });
 
 //------verify email for forgot password---
-
 const verifyEmail = asyncHandler(async (req, res) => {
     const { email } = req.body;
     const findUser = await User.findOne({ email });
@@ -360,7 +334,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
     req.session.forgotemail = req.body.email;
     //console.log(req.session.forgotemail);
     await sendOtpEmail(req, email);
-
     res.render('forgotOTP', { errorMessage: '' });
 });
 
@@ -411,36 +384,30 @@ const newPassword = asyncHandler(async (req, res) => {
         }
     } catch (error) {
         console.error(error);
-
         return res.render('newPassword', { errorMessage: 'Something went wrong' });
     }
 });
-
-//----------view product---------
 
 const viewProduct = asyncHandler(async (req, res) => {
     try {
         const productid = req.query.id;
         const user = await User.findById(req.session.userId);
-        const productData = await Product.findById(productid).populate('category')
-        const categoryData = await Category.find()
+        const productData = await Product.findById(productid).populate('category');
+        const categoryData = await Category.find();
         const categoryId = productData.category._id;
         const similarProducts = await Product.find({ category: categoryId });
-
         if (productData && user && !user.isBlocked) {
             const userCart = await Cart.findOne({ userId: user._id });
-
             if (userCart) {
                 const userCartCount = userCart.products.reduce((acc, product) => {
                     return (acc += product.quantity);
                 }, 0);
-
                 res.render('view-Product', {
                     user: user,
                     products: productData,
                     similarProducts: similarProducts,
                     cartCount: userCartCount,
-                    category:categoryData
+                    category: categoryData,
                 });
             } else {
                 res.render('view-Product', {
@@ -448,7 +415,7 @@ const viewProduct = asyncHandler(async (req, res) => {
                     products: productData,
                     similarProducts: similarProducts,
                     cartCount: 0,
-                    category:categoryData // Set the cartCount to 0 if the user's cart is empty
+                    category: categoryData, // Set the cartCount to 0 if the user's cart is empty
                 });
             }
         } else {
@@ -461,7 +428,7 @@ const viewProduct = asyncHandler(async (req, res) => {
                 products: productData,
                 similarProducts: similarProducts,
                 cartCount: 0, // Set the cartCount to 0 if the user is not valid
-                category:categoryData
+                category: categoryData,
             });
         }
     } catch (error) {
@@ -484,13 +451,10 @@ const allProducts = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user ? user._id : null });
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
-
         const products = await Product.find({ is_listed: true })
             .skip((page - 1) * perPage)
             .limit(perPage);
-
         //console.log("products", products);
-
         res.render('all-Products', {
             user,
             products,
@@ -511,7 +475,6 @@ const filterCategory = asyncHandler(async (req, res) => {
         const categoryId = req.query.id;
         const page = parseInt(req.query.page) || 1;
         const perPage = 6;
-
         const totalProducts = await Product.countDocuments({ is_listed: true, category: categoryId });
         const totalPages = Math.ceil(totalProducts / perPage);
         const category = await Category.find();
@@ -519,7 +482,6 @@ const filterCategory = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user ? user._id : null });
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
-
         const products = await Product.find({ is_listed: true, category: categoryId })
             .skip((page - 1) * perPage)
             .limit(perPage);
@@ -556,19 +518,18 @@ const sortProducts = asyncHandler(async (req, res) => {
         const userCart = await Cart.findOne({ userId: user ? user._id : null });
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
-
         let sortOption = {};
-
         if (sortValue) {
-            if (sortValue === "High") {
+            if (sortValue === 'High') {
                 sortOption = { regularPrice: -1 }; // Sort high to low
-            } else if (sortValue === "Low") {
+            } else if (sortValue === 'Low') {
                 sortOption = { regularPrice: 1 }; // Sort low to high
             }
         }
-
-        const products = await Product.find({ is_listed: true }).sort(sortOption).skip((page - 1) * perPage)
-        .limit(perPage);
+        const products = await Product.find({ is_listed: true })
+            .sort(sortOption)
+            .skip((page - 1) * perPage)
+            .limit(perPage);
         res.render('all-Products', {
             user,
             products,
@@ -578,13 +539,11 @@ const sortProducts = asyncHandler(async (req, res) => {
             category,
             categoryId,
         });
-
     } catch (error) {
         // Handle error appropriately
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
 
 const categoryPage = asyncHandler(async (req, res) => {
     try {
@@ -596,16 +555,13 @@ const categoryPage = asyncHandler(async (req, res) => {
             category: selectedCategory,
             is_listed: true,
         });
-
         if (user && !user.isBlocked) {
             const userCart = await Cart.findOne({ userId: user._id });
-
             if (userCart) {
                 const userCartCount = userCart.products.reduce((acc, product) => {
                     return (acc += product.quantity);
                 }, 0);
                 const cartCount = userCartCount;
-
                 res.render('categorypage', { user, category: category, products: productsByCategory, cartCount });
             } else {
                 res.render('categorypage', { user: '', category: category, products: productsByCategory, cartCount: 0 });
@@ -631,29 +587,24 @@ const searchProducts = async (req, res) => {
 };
 
 //user profile
-
 const userProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
-        const userID=user._id
-         const userCart = await Cart.findOne({ userId: userID });
+        const userID = user._id;
+        const userCart = await Cart.findOne({ userId: userID });
         const category = await Category.find();
         if (user) {
-           
             const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
             const cartCount = userCartCount;
-            res.render('userProfile', { user,cartCount,category });
-           
+            res.render('userProfile', { user, cartCount, category });
         }
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error'); // You might want to send an appropriate error response to the client
     }
-    
 });
 
 //user edit profile
-
 const editUserProfile = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
@@ -661,10 +612,8 @@ const editUserProfile = asyncHandler(async (req, res) => {
         const category = await Category.find();
         if (user) {
             const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
-                const cartCount = userCartCount;
-            
-            res.render('edit-User-Profile', { user,cartCount,category });
-      
+            const cartCount = userCartCount;
+            res.render('edit-User-Profile', { user, cartCount, category });
         }
     } catch (error) {
         console.error('error');
@@ -672,7 +621,6 @@ const editUserProfile = asyncHandler(async (req, res) => {
 });
 
 //user update profile
-
 const updateUserProfile = asyncHandler(async (req, res) => {
     try {
         const { username, email, mobile } = req.body;
@@ -690,7 +638,6 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 //user change password
-
 const changePassword = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
@@ -698,10 +645,8 @@ const changePassword = asyncHandler(async (req, res) => {
         const category = await Category.find();
         if (user) {
             const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
-                const cartCount = userCartCount;
-            
-            res.render('changePassword', { user,cartCount,errorMessage:"" ,category});
-            
+            const cartCount = userCartCount;
+            res.render('changePassword', { user, cartCount, errorMessage: '', category });
         }
     } catch (error) {
         console.error('error');
@@ -709,14 +654,12 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 
 //user passwordupdate
-
 const updatePassword = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
         const { oldpass, newpass, confirmpass } = req.body;
         //console.log('oldpassword', oldpass);
         const finduser = await User.findById(user);
-
         if (!finduser) {
             return res.json({ errorMessage: 'User not found' });
         }
@@ -750,18 +693,18 @@ const userAddress = asyncHandler(async (req, res) => {
         const user_Id = user._id;
         const userCart = await Cart.findOne({ userId: user._id });
         const category = await Category.find();
-        if(user){
-        if (!userDetail) {
-            userDetail = new Address({ userId: user_Id, address: [] });
-            await userDetail.save();
+        if (user) {
+            if (!userDetail) {
+                userDetail = new Address({ userId: user_Id, address: [] });
+                await userDetail.save();
+            }
+            //const userAddress=userDetail.address
+            //console.log('useraddress:',userAddress.address);
+            //console.log(userAddress[0].name);
+            const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
+            const cartCount = userCartCount;
+            res.render('user-Address', { user, userAddress: userDetail.address, Message: '', cartCount, category });
         }
-        //const userAddress=userDetail.address
-        //console.log('useraddress:',userAddress.address);
-        //console.log(userAddress[0].name);
-        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
-        const cartCount = userCartCount;
-        res.render('user-Address', { user, userAddress: userDetail.address, Message: '' ,cartCount,category});
-    }
     } catch (error) {
         console.error('error');
     }
@@ -771,11 +714,11 @@ const loadAddAddress = asyncHandler(async (req, res) => {
         const user = await User.findById(req.session.userId);
         const userCart = await Cart.findOne({ userId: user._id });
         const category = await Category.find();
-        if(user){
-        const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
-        const cartCount = userCartCount;
-        res.render('add-Address', { user, Message: '',cartCount,category });
-    }
+        if (user) {
+            const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
+            const cartCount = userCartCount;
+            res.render('add-Address', { user, Message: '', cartCount, category });
+        }
     } catch (error) {
         console.error('error');
     }
@@ -784,12 +727,6 @@ const loadAddAddress = asyncHandler(async (req, res) => {
 const addNewAddress = asyncHandler(async (req, res) => {
     try {
         const { name, mobile, homeAddress, city, street, postalCode } = req.body;
-         console.log(name);
-        console.log(postalCode);
-        console.log(homeAddress);
-        console.log(mobile);
-        console.log(city);
-        console.log(street);
         const userAddress = {
             name: name,
             mobile: mobile,
@@ -812,12 +749,10 @@ const addNewAddress = asyncHandler(async (req, res) => {
             //console.log(addressID);
         } else {
             addressID.address.push(userAddress);
-
             if (addressID.address.length === 1) {
                 addressID.address[0].isDefault = true;
             }
         }
-
         await addressID.save();
         // console.log(userAddress);
         // res.render("user-Address", { user, userAddress: addressID.address, Message: "" });
@@ -828,7 +763,6 @@ const addNewAddress = asyncHandler(async (req, res) => {
 });
 
 //edit address
-
 const editAddress = asyncHandler(async (req, res) => {
     try {
         const addressId = req.query.addressId;
@@ -838,32 +772,28 @@ const editAddress = asyncHandler(async (req, res) => {
         //console.log('address:',addressId);
         const userDetails = await Address.findOne({ userId: user_Id });
         const category = await Category.find();
-
         if (!userDetails) {
             // If userDetails is not found, render the "404" page
             return res.render('404');
         }
-
         const userAddress = userDetails.address.find((address) => {
             return address._id.toString() === addressId;
         });
-
         if (!userAddress) {
             // If userAddress is not found, render the "404" page
             return res.render('404');
         }
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
-        if(user){
-            res.render('edit-Address', { user, Message: '', userAddress,cartCount,category });
-        } 
+        if (user) {
+            res.render('edit-Address', { user, Message: '', userAddress, cartCount, category });
+        }
     } catch (error) {
         res.render('404');
     }
 });
 
 //===============address update==================
-
 const updateAddress = asyncHandler(async (req, res) => {
     try {
         const { name, mobile, homeAddress, city, street, postalCode, addressId } = req.body;
@@ -893,7 +823,6 @@ const updateAddress = asyncHandler(async (req, res) => {
 });
 
 //==============delete Address==================
-
 const deleteAddress = asyncHandler(async (req, res) => {
     try {
         const addressId = req.query.addressId;
@@ -904,12 +833,11 @@ const deleteAddress = asyncHandler(async (req, res) => {
         const category = await Category.find();
         //console.log('address id:',addressID);
         if (!addressID) {
-            return res.render('user-Address', { user, userAddress: addressID.address, Message: '' ,category});
+            return res.render('user-Address', { user, userAddress: addressID.address, Message: '', category });
         }
         const addressToDelete = addressID.address.find((address) => address._id.toString() === addressId);
-
         if (!addressToDelete) {
-            return res.render('user-Address', { user, userAddress: addressID.address, Message: '',category }); // Address not found, handle this case
+            return res.render('user-Address', { user, userAddress: addressID.address, Message: '', category }); // Address not found, handle this case
         }
         if (addressToDelete.isDefault) {
             return res.render('user-Address', { user, userAddress: addressID.address, Message: '', category }); // Default address cannot be deleted
@@ -923,8 +851,7 @@ const deleteAddress = asyncHandler(async (req, res) => {
     }
 });
 
-//============uer Wallet=======================
-
+//=========User Wallet=============
 const walletLoad = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
@@ -936,8 +863,8 @@ const walletLoad = asyncHandler(async (req, res) => {
         }
         const userCartCount = userCart ? userCart.products.reduce((acc, product) => acc + product.quantity, 0) : 0;
         const cartCount = userCartCount;
-        if(user){
-        res.render('wallet', { user, userWallet,cartCount,category });
+        if (user) {
+            res.render('wallet', { user, userWallet, cartCount, category });
         }
     } catch (error) {
         console.error(error);
@@ -945,7 +872,6 @@ const walletLoad = asyncHandler(async (req, res) => {
 });
 
 //-----user Logout------
-
 const userLogout = asyncHandler(async (req, res) => {
     try {
         const userId = req.session.userId;
@@ -994,5 +920,5 @@ module.exports = {
     categoryPage,
     walletLoad,
     filterCategory,
-    sortProducts
+    sortProducts,
 };

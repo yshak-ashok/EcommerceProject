@@ -7,7 +7,6 @@ const Wishlist = require('../models/wishlistModel');
 const asyncHandler = require('express-async-handler');
 
 //load wishlist
-
 const wishlist = asyncHandler(async (req, res) => {
     try {
         const user = await User.findById(req.session.userId);
@@ -36,7 +35,6 @@ const addtowishlist = asyncHandler(async (req, res) => {
             const productId = req.query.productId;
             const user_Id = user._id;
             let wishlist = await Wishlist.findOne({ userId: user_Id });
-
             if (!wishlist) {
                 wishlist = new Wishlist({ userId: user_Id, products: [] });
                 await wishlist.save();
@@ -61,7 +59,6 @@ const addtowishlist = asyncHandler(async (req, res) => {
 });
 
 //remove item from wishlist
-
 const removeWishlist = asyncHandler(async (req, res) => {
     try {
         const productId = req.query.productId;
@@ -72,7 +69,6 @@ const removeWishlist = asyncHandler(async (req, res) => {
             { $pull: { products: { productId: productId } } },
             { new: true },
         );
-
         res.redirect('/wishlist');
     } catch (error) {
         console.error(error);

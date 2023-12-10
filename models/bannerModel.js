@@ -3,32 +3,32 @@ const mongoose = require('mongoose');
 const bannerSchema = new mongoose.Schema({
     title: {
         type: String,
-        required: true
+        required: true,
     },
     image: {
         type: String,
-        required: true
+        required: true,
     },
     description: {
         type: String,
-        required: true
+        required: true,
     },
     isActive: {
         type: Boolean,
-        default: true
+        default: true,
     },
     startDate: {
         type: Date,
-        required: true
+        required: true,
     },
     endDate: {
         type: Date,
-        required: true
+        required: true,
     },
     created_at: {
         type: Date,
-        default: Date.now
-    }
+        default: Date.now,
+    },
 });
 
 const Banner = mongoose.model('Banner', bannerSchema);

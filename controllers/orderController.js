@@ -21,7 +21,6 @@ const placeOrder = asyncHandler(async (req, res) => {
         //console.log("paymentMethod", paymentMethod);
         //console.log('addressid',addressId);
         //console.log('Couponid from checkout:',couponId);
-        //=== Coupon Mangement=====
         if (couponId) {
             const usedCoupons = await UsedCoupon.findOne({ userId: user_Id });
             //console.log('userdCoupnsbefore',usedCoupons);
@@ -36,7 +35,6 @@ const placeOrder = asyncHandler(async (req, res) => {
             await usedCoupons.save();
             //console.log('userdCoupnsafter',usedCoupons);
         }
-
         const productData = cart.products;
         //console.log('productdata',productData);
         let orderedProducts = [];
@@ -108,7 +106,6 @@ const placeOrder = asyncHandler(async (req, res) => {
                 const userWalletAmount = userWallet.walletAmount;
                 if (userWalletAmount) {
                     userWallet.walletAmount = userWalletAmount - actualAmount;
-
                     userWallet.transactionHistory.push({
                         description: 'Shopping',
                         addedAmount: actualAmount,
@@ -161,7 +158,6 @@ const verifyPayment = async (req, res) => {
         //console.log("ordered details full", products);
         orderedProducts.push(products);
     });
-
     let receiptId = data.order.receipt;
     RazorpayHelper.verifyOnlinePayment(data)
         .then(async () => {
@@ -189,7 +185,6 @@ const verifyPayment = async (req, res) => {
                 if (cart) {
                     await cart.save();
                 }
-
                 res.json({ status: 'PAYMENT FAILED', placedOrderId: receiptId });
             }
         });
@@ -276,7 +271,6 @@ const cancelOrder = asyncHandler(async (req, res) => {
         }
         // Update order status
         orderDetails.orderStatus = 'Order Cancelled';
-
         // Update product statuses
         orderDetails.products.forEach(async (product) => {
             product.productStatus = 'Order Cancelled';
@@ -287,9 +281,7 @@ const cancelOrder = asyncHandler(async (req, res) => {
                 await productDoc.save();
             }
         });
-
         await orderDetails.save();
-
         res.json({ status: 'success', message: 'Order Cancelled' });
     } catch (error) {
         res.status(500).json({ status: 'error', message: 'Something went wrong' });
@@ -305,7 +297,6 @@ const returnItem = asyncHandler(async (req, res) => {
         // console.log("reason:", selectedReason);
         const orderDetails = await Order.findById(orderId);
         // console.log('orderDetails:',orderDetails.returnOrderStatus);
-
         const productIndex = orderDetails.products.findIndex((product) => product.productId.toString() === selectedProduct);
         //console.log('index:',productIndex);
         const productstatus = orderDetails.products[productIndex].productStatus;
@@ -350,7 +341,6 @@ const loadOrderList = asyncHandler(async (req, res) => {
         // console.log('page:', page);
         // console.log('totalOrder:', totalOrder);
         // console.log('totalPages:', totalPages);
-
         //console.log('order:', orders);
         res.render('order-List', { orders, currentPage: page, totalPages, category });
     } catch (error) {
@@ -361,10 +351,8 @@ const loadOrderList = asyncHandler(async (req, res) => {
 const filterOrder = asyncHandler(async (req, res) => {
     try {
         const filterValue = req.query.identify;
-
         let orders;
         let filterQuery = {};
-
         if (filterValue === 'delivered') {
             filterQuery = { orderStatus: 'Delivered' };
         } else if (filterValue === 'newest') {
@@ -379,11 +367,9 @@ const filterOrder = asyncHandler(async (req, res) => {
             // For 'all' or any other case, fetch all orders
             orders = await Order.find({});
         }
-
         if (Object.keys(filterQuery).length > 0) {
             orders = await Order.find(filterQuery);
         }
-
         //console.log("filterlist", orders);
         res.json(orders); // Sending the filtered orders as a response
     } catch (error) {
@@ -422,7 +408,6 @@ const shipped = asyncHandler(async (req, res) => {
         }
         await orderDetails.save();
         //console.log(orderDetails);
-
         res.json({ status: 'success', message: 'Status Updated' });
     } catch (error) {
         console.error(error);
@@ -446,7 +431,6 @@ const delivered = asyncHandler(async (req, res) => {
         }
         await orderDetails.save();
         //console.log(orderDetails);
-
         res.json({ status: 'success', message: 'Status Updated' });
     } catch (error) {
         console.error(error);
@@ -471,7 +455,7 @@ const returnApporval = asyncHandler(async (req, res) => {
             // });
             orderDetails.returnOrderStatus.status = returnStatus;
             await orderDetails.save();
-            console.log('orderDetails', orderDetails);
+            //console.log('orderDetails', orderDetails);
             // console.log('status:',status);
             res.json({ status: 'success', message: 'Status Updated' });
         }
@@ -483,19 +467,17 @@ const returnApporval = asyncHandler(async (req, res) => {
 const returnConfirmed = asyncHandler(async (req, res) => {
     try {
         const { returnStatus, orderId } = req.body;
-
         const orderDetails = await Order.findById(orderId).populate('products.productId');
         console.log('orderdata from admin:', orderDetails);
         const userId = orderDetails.userId;
         console.log('UserID..', userId);
-
         if (returnStatus === 'Product Returned') {
             const returnedProduct = orderDetails.products.find((product) => product.productStatus === 'Return Approved');
             console.log('return product form admin', returnedProduct);
 
             if (returnedProduct) {
                 const productData = await Product.findById(returnedProduct.productId);
-                console.log('productdatabefore', productData);
+                // console.log('productdatabefore', productData);
                 const returnQuantity = returnedProduct.quantity; // Adjust this based on your data structure
                 productData.stock += returnQuantity;
                 await productData.save();

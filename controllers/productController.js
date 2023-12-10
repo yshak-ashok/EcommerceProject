@@ -39,7 +39,6 @@ const addProducts = async (req, res) => {
         });
         await productData.save();
         const categoryList = await Category.find();
-
         res.render('add-Products', { categories: categoryList, Message: 'Product Added Successfullly' });
     } catch (error) {
         console.log(error.message);
@@ -111,15 +110,12 @@ const updateProduct = async (req, res) => {
     try {
         const { productName, description, regularPrice, stock, size, categoryId, id } = req.body;
         let images = [];
-
         if (req.files && req.files.length > 0) {
             for (let i = 0; i < req.files.length; i++) {
                 images.push(req.files[i].filename);
             }
         }
-
         const product = await Product.findById(id);
-
         if (images.length) {
             const existingImage = product.images.length;
             const uploadingImage = images.length;
@@ -162,17 +158,14 @@ const updateProduct = async (req, res) => {
                 category: categoryId,
                 images,
             };
-
             // Update the product
             const updatedData = await Product.findByIdAndUpdate(id, { $set: updateFields });
-
             // Check and update sale price if offer exists
             if (product.offer && product.offer > 0) {
                 const updatedSalePrice = regularPrice - regularPrice * (product.offer / 100);
                 updateFields.salePrice = updatedSalePrice;
                 await Product.findByIdAndUpdate(id, { $set: { salePrice: updatedSalePrice } });
             }
-
             if (updatedData) {
                 res.redirect('/admin/productList');
             } else {
@@ -191,20 +184,16 @@ const deleteImage = async (req, res) => {
         const indexToRemove = parseInt(imageIndex, 10);
         // Find the product by ID
         const product = await Product.findById(productId);
-
         if (!product) {
             return res.json({ status: 'fail', message: 'Product not found' });
         }
         if (indexToRemove >= 0 && indexToRemove < product.images.length) {
             const imageNameToRemove = product.images[indexToRemove];
-
             // Delete the image file from local storage
             const imagePath = path.join('public/admin-assets/imgs/products', imageNameToRemove);
             fs.unlinkSync(imagePath);
-
             // Update the database by pulling the image name from the array
             const result = await Product.updateOne({ _id: productId }, { $pull: { images: imageNameToRemove } });
-
             if (result.modifiedCount > 0) {
                 res.json({ status: 'success', message: 'Image removed successfully' });
             } else {
